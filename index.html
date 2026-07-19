@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & Variables ──────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f5f7;
@@ -63,8 +62,12 @@
     .page.active { display: block; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); cursor: pointer; user-select: none; }
     .card-title .icon { font-size: 20px; }
+    .card-title .arrow { margin-left: auto; transition: transform 0.2s; font-size: 14px; color: var(--text3); }
+    .card-title .arrow.open { transform: rotate(180deg); }
+    .card-body { overflow: hidden; max-height: 0; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 0; }
+    .card-body.open { max-height: 1000px; padding: 8px 0 0 0; }
     .card-sub { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
@@ -127,6 +130,7 @@
     .text-center { text-align: center; } .text-muted { color: var(--text2); } .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
     .flex { display: flex; } .flex-wrap { flex-wrap: wrap; } .items-center { align-items: center; } .w-full { width: 100%; } .hidden { display: none; }
     .gap-2 { gap: 8px; } .gap-4 { gap: 16px; }
+    .protein-label { color: var(--text); font-weight: 500; }
     @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } }
   </style>
 </head>
@@ -160,7 +164,7 @@
 
   <script>
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App with AAFCO Tracking & USDA Lookup
+    //  FRESHBOWL – Full App with AAFCO Tracking, USDA Lookup, Collapsible Calculators
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── Error catcher ──────────────────────────────────────────────────────
@@ -255,6 +259,8 @@
       theme: 'light',
       usdaKey: '',
       customFoods: {},
+      // For collapsible utilities
+      utilsOpen: {},
     };
 
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -270,6 +276,7 @@
       if (!state.selectedProteins.length) state.selectedProteins = ['Beef (85/15)','Ground Turkey','Pork Loin','Ground Chicken'];
       if (!state.rotation || !Object.keys(state.rotation).length) state.rotation = generateRotation(state.selectedProteins, state.favorites);
       Object.keys(state.customFoods || {}).forEach(name => { FOODS[name] = state.customFoods[name]; });
+      if (!state.utilsOpen) state.utilsOpen = {};
       applyTheme();
       saveState();
     }
@@ -567,9 +574,10 @@
       let protHtml = PROTEIN_OPTIONS.map(p => {
         const checked = state.selectedProteins.includes(p);
         const isFish = p.includes('Sardine') || p.includes('Salmon');
-        return `<label style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;">
-          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" />
-          <span>${p.replace(' (canned)','').replace(' (85/15)','')}</span>
+        const displayName = p.replace(' (canned)','').replace(' (85/15)','');
+        return `<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;color:var(--text);">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" style="accent-color:var(--primary);width:16px;height:16px;" />
+          <span style="color:var(--text);font-weight:500;font-size:14px;">${displayName}</span>
           ${isFish ? '<span style="font-size:10px;color:var(--text3);margin-left:auto;">🐟 fish</span>' : ''}
         </label>`;
       }).join('');
@@ -659,43 +667,75 @@
       `;
     }
 
+    // ── Collapsible Utilities ─────────────────────────────────────────────
+    function toggleUtils(id) {
+      state.utilsOpen[id] = !state.utilsOpen[id];
+      saveState();
+      renderUtilities();
+    }
+
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
-      container.innerHTML = `
-        <div class="card"><div class="card-title"><span class="icon">🔑</span> USDA API Key</div>
+
+      const utils = [
+        { id: 'usda', icon: '🔑', title: 'USDA API Key', content: `
           <div class="input-group"><label>Enter your free USDA API key</label><input type="text" id="usdaKeyInput" placeholder="Paste your API key here" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" /></div>
           <div class="text-xs text-muted">Get a free key at <a href="https://fdc.nal.usda.gov/api-key-signup.html" target="_blank" style="color:var(--primary);">fdc.nal.usda.gov/api-key-signup</a></div>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">🧮</span> Calories</div>
+        ` },
+        { id: 'water', icon: '💧', title: 'Water Intake', content: `
+          <div class="input-group"><label>Weight (lb)</label><input type="number" id="waterWeight" placeholder="Enter weight" value="${getActiveDog().weight || 65}" /></div>
+          <button class="primary w-full" onclick="calcWater()">Calculate Daily Water</button>
+          <div id="waterResult" class="mt-2 text-muted"></div>
+        ` },
+        { id: 'calories', icon: '🧮', title: 'Calories Per Meal', content: `
           <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="calcWeight" value="25" /></div><div class="input-group"><label>Meals</label><select id="calcMeals"><option value="2">2</option><option value="3">3</option></select></div></div>
           <div class="input-group"><label>Activity</label><select id="calcActivity"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div>
           <button class="primary w-full" onclick="runCalorieCalc()">Calculate</button><div id="calcResult" class="mt-2 text-muted"></div>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">🐕</span> Walk Tracker</div>
+        ` },
+        { id: 'walk', icon: '🐕', title: 'Walk Tracker', content: `
           <div id="walkDisplay" class="walk-display"><div class="walk-time">00:00</div><div class="walk-dist">0.00 miles</div><div class="walk-points">0 GPS points</div></div>
           <div class="grid-2"><button class="primary" onclick="startWalk()">▶️ Start</button><button class="secondary" onclick="stopWalk()">⏹ Stop</button></div>
           <button class="secondary w-full mt-2" onclick="showWalkerLogin()">👤 Walker Login</button>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">🐛</span> Flea/Tick</div>
+        ` },
+        { id: 'flea', icon: '🐛', title: 'Flea/Tick Schedule', content: `
           <div class="input-group"><label>Last dose</label><input type="date" id="fleaDate" /></div>
           <div class="input-group"><label>Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div>
           <button class="primary w-full" onclick="generateFleaSchedule()">Generate</button><div id="fleaResult" class="mt-2 text-muted"></div>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">🍫</span> Chocolate</div>
+        ` },
+        { id: 'chocolate', icon: '🍫', title: 'Chocolate Toxicity', content: `
           <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="chocWeight" value="25" /></div><div class="input-group"><label>Amount (g)</label><input type="number" id="chocAmount" value="50" /></div></div>
           <div class="input-group"><label>Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div>
           <button class="primary w-full" onclick="calcChocolate()">Calculate</button><div id="chocResult" class="mt-2 text-muted"></div>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">🍬</span> Treats</div>
+        ` },
+        { id: 'treats', icon: '🍬', title: 'Treat Allowance (10%)', content: `
           <div class="input-group"><label>Weight (kg)</label><input type="number" id="treatWeight" value="25" /></div>
           <button class="primary w-full" onclick="calcTreats()">Calculate</button><div id="treatResult" class="mt-2 text-muted"></div>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">💰</span> Cost</div>
+        ` },
+        { id: 'cost', icon: '💰', title: 'True Cost Per Day', content: `
           <div class="grid-2"><div class="input-group"><label>Price ($)</label><input type="number" id="costPrice" value="45" /></div><div class="input-group"><label>Bag (kg)</label><input type="number" id="costBag" value="15" /></div></div>
           <div class="input-group"><label>Daily portion (g)</label><input type="number" id="costPortion" value="300" /></div>
           <button class="primary w-full" onclick="calcCost()">Calculate</button><div id="costResult" class="mt-2 text-muted"></div>
-        </div>
-      `;
+        ` },
+      ];
+
+      let html = '';
+      utils.forEach(u => {
+        const open = state.utilsOpen[u.id] || false;
+        html += `
+          <div class="card">
+            <div class="card-title" onclick="toggleUtils('${u.id}')">
+              <span class="icon">${u.icon}</span>
+              ${u.title}
+              <span class="arrow ${open ? 'open' : ''}">▼</span>
+            </div>
+            <div class="card-body ${open ? 'open' : ''}">
+              ${u.content}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
     }
 
     function renderGuide() {
@@ -841,6 +881,19 @@
       saveState();
     }
 
+    // ── Water Intake Calculator ───────────────────────────────────────────
+    function calcWater() {
+      const weight = parseFloat(document.getElementById('waterWeight').value);
+      if (!weight || weight <= 0) { document.getElementById('waterResult').innerHTML = 'Please enter a valid weight.'; return; }
+      // 1 oz water per lb of body weight (approx 60 ml/kg)
+      const oz = weight;
+      const ml = oz * 29.5735;
+      document.getElementById('waterResult').innerHTML = `
+        <div><strong>${oz.toFixed(0)} oz</strong> (${Math.round(ml)} ml) per day</div>
+        <div class="text-xs text-muted">Approx. ${Math.round(ml/240)} cups · Adjust for activity, heat, and diet.</div>
+      `;
+    }
+
     // ── Walk Tracker ──────────────────────────────────────────────────────
     let walkInterval=null, walkStartTime=null, walkCoords=[];
     function startWalk() {
@@ -962,6 +1015,8 @@
     window.searchUSDAForAddin = searchUSDAForAddin;
     window.importUSDAFood = importUSDAFood;
     window.saveUSDAKey = saveUSDAKey;
+    window.toggleUtils = toggleUtils;
+    window.calcWater = calcWater;
     window.startWalk = startWalk;
     window.stopWalk = stopWalk;
     window.showWalkerLogin = showWalkerLogin;
