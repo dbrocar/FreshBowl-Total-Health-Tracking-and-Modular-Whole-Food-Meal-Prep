@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    /* ── Reset & Variables ──────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f5f7;
@@ -76,8 +77,9 @@
     .badge.red { background: rgba(255,69,58,0.15); color: #ff453a; }
     .badge.orange { background: rgba(255,159,10,0.15); color: #ff9f0a; }
     .dog-profile { display: flex; align-items: center; gap: 16px; }
-    .dog-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; overflow: hidden; }
+    .dog-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; overflow: hidden; cursor: pointer; }
     .dog-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .dog-avatar input[type="file"] { display: none; }
     .dog-info { flex: 1; }
     .dog-name { font-size: 20px; font-weight: 700; }
     .dog-stats { font-size: 13px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; margin-top: 2px; }
@@ -131,7 +133,11 @@
     .flex { display: flex; } .flex-wrap { flex-wrap: wrap; } .items-center { align-items: center; } .w-full { width: 100%; } .hidden { display: none; }
     .gap-2 { gap: 8px; } .gap-4 { gap: 16px; }
     .protein-label { color: var(--text); font-weight: 500; }
-    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } }
+    .dashboard-results { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .result-pill { background: var(--surface2); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); text-align: center; }
+    .result-pill .val { font-size: 18px; font-weight: 800; color: var(--primary); }
+    .result-pill .lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.3px; }
+    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } .dashboard-results { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -164,17 +170,8 @@
 
   <script>
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App with AAFCO Tracking, USDA Lookup, Collapsible Calculators
+    //  FRESHBOWL – Full App (mirroring live version)
     // ═══════════════════════════════════════════════════════════════════════
-
-    // ── Error catcher ──────────────────────────────────────────────────────
-    window.onerror = function(msg, url, line, col, error) {
-      const el = document.getElementById('error');
-      if (!el) return;
-      el.textContent = `❌ ${msg}\nLine: ${line}\n${error ? error.stack : ''}`;
-      el.className = 'show';
-      return true;
-    };
 
     // ── FOODS Database (per oz) ──────────────────────────────────────────
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
@@ -259,8 +256,9 @@
       theme: 'light',
       usdaKey: '',
       customFoods: {},
-      // For collapsible utilities
       utilsOpen: {},
+      calcResults: {}, // store recent calculator results
+      petPhoto: '',
     };
 
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -277,6 +275,7 @@
       if (!state.rotation || !Object.keys(state.rotation).length) state.rotation = generateRotation(state.selectedProteins, state.favorites);
       Object.keys(state.customFoods || {}).forEach(name => { FOODS[name] = state.customFoods[name]; });
       if (!state.utilsOpen) state.utilsOpen = {};
+      if (!state.calcResults) state.calcResults = {};
       applyTheme();
       saveState();
     }
@@ -521,8 +520,7 @@
       return perOz;
     }
 
-    // ── Render Functions ──────────────────────────────────────────────────
-
+    // ── Render: Home ──────────────────────────────────────────────────────
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -532,14 +530,35 @@
       const amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
       const amMeal = getEffectiveMeal(y,m,d,'am');
       const pmMeal = getEffectiveMeal(y,m,d,'pm');
+      // Nutrition summary
+      const start = new Date(y,m,d);
+      const end = new Date(y,m,d);
+      const nutResult = calcNutritionForDateRange(start, end);
+      const total = nutResult.total;
+      const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
+      // Calculator results (show latest)
+      const results = state.calcResults || {};
+      const resultItems = [];
+      if (results.calories) resultItems.push({ label: 'Calories', val: `${Math.round(results.calories.mer)} kcal` });
+      if (results.water) resultItems.push({ label: 'Water', val: `${Math.round(results.water.oz)} oz` });
+      if (results.cost) resultItems.push({ label: 'Daily Cost', val: `$${results.cost.cpd.toFixed(2)}` });
+      if (results.treats) resultItems.push({ label: 'Treat Budget', val: `${Math.round(results.treats.budget)} kcal` });
+
       const container = document.getElementById('homeContent');
       container.innerHTML = `
         <div class="card">
           <div class="dog-profile">
-            <div class="dog-avatar">🐕</div>
+            <div class="dog-avatar" id="dogAvatar" onclick="document.getElementById('photoInput').click()">
+              ${state.petPhoto ? `<img src="${state.petPhoto}" alt="${dog.name}" />` : '🐕'}
+              <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" />
+            </div>
             <div class="dog-info">
               <div class="dog-name">${dog.name}</div>
-              <div class="dog-stats"><span>⚖️ ${dog.weight} lb</span><span>🏃 ${dog.activityLabel}</span></div>
+              <div class="dog-stats">
+                <span>⚖️ ${dog.weight} lb</span>
+                <span>🏃 ${dog.activityLabel}</span>
+                <span>🔥 ${Math.round(calcMER(dog))} kcal/day</span>
+              </div>
             </div>
           </div>
         </div>
@@ -557,17 +576,26 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-title"><span class="icon">🚶</span> Quick Stats</div>
+          <div class="card-title"><span class="icon">📊</span> Quick Stats</div>
           <div class="grid-3">
             <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted">Walks today</div></div>
             <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted">Meals fed</div></div>
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${state.dogs.length}</div><div class="text-xs text-muted">Dogs</div></div>
+            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted">AAFCO met</div></div>
           </div>
         </div>
+        ${resultItems.length ? `
+        <div class="card">
+          <div class="card-title"><span class="icon">🧮</span> Recent Calculator Results</div>
+          <div class="dashboard-results">
+            ${resultItems.map(r => `<div class="result-pill"><div class="val">${r.val}</div><div class="lbl">${r.label}</div></div>`).join('')}
+          </div>
+        </div>
+        ` : ''}
         <button class="w-full" style="background:var(--primary);color:#0a0e1a;padding:14px;font-weight:700;border-radius:var(--radius-sm);" onclick="navigateTo('utilities')">🚶 Start Walk →</button>
       `;
     }
 
+    // ── Render: Plan ──────────────────────────────────────────────────────
     function renderPlan() {
       const container = document.getElementById('planContent');
       const dog = getActiveDog();
@@ -614,6 +642,7 @@
       `;
     }
 
+    // ── Render: Nutrition ──────────────────────────────────────────────────
     function renderNutrition() {
       const container = document.getElementById('nutritionContent');
       const today = new Date();
@@ -667,7 +696,7 @@
       `;
     }
 
-    // ── Collapsible Utilities ─────────────────────────────────────────────
+    // ── Render: Utilities (collapsible) ──────────────────────────────────
     function toggleUtils(id) {
       state.utilsOpen[id] = !state.utilsOpen[id];
       saveState();
@@ -738,6 +767,7 @@
       container.innerHTML = html;
     }
 
+    // ── Render: Guide ──────────────────────────────────────────────────────
     function renderGuide() {
       const container = document.getElementById('guideContent');
       container.innerHTML = `
@@ -770,6 +800,19 @@
     function toggleFav(cat,item) { const arr = state.favorites[cat]; const idx = arr.indexOf(item); if (idx>=0) arr.splice(idx,1); else arr.push(item); saveState(); renderPlan(); }
     function rebuildRotation() { state.rotation = generateRotation(state.selectedProteins, state.favorites); saveState(); renderPlan(); alert('Rotation rebuilt!'); }
     function updateDogProfile(field,val) { const dog = getActiveDog(); if (field==='name') dog.name=val; else if (field==='weight') dog.weight=val; else if (field==='activity') { const parts=val.split('|'); dog.activity=parseFloat(parts[0]); dog.activityLabel=parts[1]||'Moderate'; } saveState(); renderPlan(); renderHome(); }
+
+    // ── Photo Upload ──────────────────────────────────────────────────────
+    function handlePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        state.petPhoto = ev.target.result;
+        saveState();
+        renderHome();
+      };
+      reader.readAsDataURL(file);
+    }
 
     // ── Swap Modal ──────────────────────────────────────────────────────────
     function openSwap(dateKey, slot) {
@@ -885,13 +928,15 @@
     function calcWater() {
       const weight = parseFloat(document.getElementById('waterWeight').value);
       if (!weight || weight <= 0) { document.getElementById('waterResult').innerHTML = 'Please enter a valid weight.'; return; }
-      // 1 oz water per lb of body weight (approx 60 ml/kg)
       const oz = weight;
       const ml = oz * 29.5735;
+      state.calcResults.water = { oz, ml };
+      saveState();
       document.getElementById('waterResult').innerHTML = `
         <div><strong>${oz.toFixed(0)} oz</strong> (${Math.round(ml)} ml) per day</div>
         <div class="text-xs text-muted">Approx. ${Math.round(ml/240)} cups · Adjust for activity, heat, and diet.</div>
       `;
+      renderHome();
     }
 
     // ── Walk Tracker ──────────────────────────────────────────────────────
@@ -914,6 +959,7 @@
         saveState();
         alert(`Walk saved! ${mins}m ${secs}s, ${dist.toFixed(2)} miles`);
         walkStartTime=null; walkCoords=[]; renderUtilities();
+        renderHome();
       }
     }
     function updateWalkDisplay() {
@@ -944,7 +990,10 @@
       const m=parseInt(document.getElementById('calcMeals').value)||2;
       const a=parseFloat(document.getElementById('calcActivity').value)||1.6;
       const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*a; const oz=mer/42;
+      state.calcResults.calories = { mer, ozPerMeal: oz/m };
+      saveState();
       document.getElementById('calcResult').innerHTML=`<div>RER: ${Math.round(rer)} kcal</div><div>MER: ${Math.round(mer)} kcal/day</div><div>~${oz.toFixed(1)} oz/day (${(oz/m).toFixed(1)} oz/meal)</div>`;
+      renderHome();
     }
     function generateFleaSchedule() {
       const date=document.getElementById('fleaDate').value; const freq=parseInt(document.getElementById('fleaFreq').value)||30;
@@ -968,7 +1017,10 @@
     function calcTreats() {
       const w=parseFloat(document.getElementById('treatWeight').value)||25;
       const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*1.6; const budget=mer*0.10;
+      state.calcResults.treats = { budget };
+      saveState();
       document.getElementById('treatResult').innerHTML=`<div>10% budget: <strong>${Math.round(budget)}</strong> kcal/day</div><div class="text-xs text-muted">~${Math.round(budget/5)} baby carrots</div>`;
+      renderHome();
     }
     function calcCost() {
       const price=parseFloat(document.getElementById('costPrice').value)||0;
@@ -976,7 +1028,10 @@
       const portion=parseFloat(document.getElementById('costPortion').value)||0;
       if (!price||!bag||!portion) return alert('Fill all fields.');
       const days=(bag*1000)/portion; const cpd=price/days;
+      state.calcResults.cost = { cpd, days };
+      saveState();
       document.getElementById('costResult').innerHTML=`<div>Bag lasts ~${days.toFixed(1)} days</div><div><strong>$${cpd.toFixed(2)}</strong> per day</div><div class="text-xs text-muted">$${(cpd*30).toFixed(2)}/mo · $${(cpd*365).toFixed(2)}/yr</div>`;
+      renderHome();
     }
 
     // ── Theme ──────────────────────────────────────────────────────────────
@@ -1017,6 +1072,7 @@
     window.saveUSDAKey = saveUSDAKey;
     window.toggleUtils = toggleUtils;
     window.calcWater = calcWater;
+    window.handlePhotoUpload = handlePhotoUpload;
     window.startWalk = startWalk;
     window.stopWalk = stopWalk;
     window.showWalkerLogin = showWalkerLogin;
