@@ -205,7 +205,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App (with accordion tree utilities)
+    //  FRESHBOWL – Full App (with vaccine datalist & retain)
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── Theme ──────────────────────────────────────────────────────────────
@@ -306,11 +306,11 @@
       utilsOpen: {},
       calcResults: {},
       showAllWalks: false,
-      // New state for utilities tree
       utreeOpen: { calculators: true, vet: false, vaccines: false, misc: false },
       vetInfo: { name: '', clinic: '', phone: '', email: '', address: '', notes: '' },
       vaccines: [],
       miscNotes: '',
+      vaccineForm: { name: '', date: '', nextDate: '', notes: '' }, // retain form values
     };
     let petPhoto = '';
 
@@ -365,11 +365,11 @@
       state.utilsOpen = getStorage('utilsOpen', {});
       state.calcResults = getStorage('calcResults', {});
       state.showAllWalks = getStorage('showAllWalks', false);
-      // New utilities tree state
       state.utreeOpen = getStorage('utreeOpen', { calculators: true, vet: false, vaccines: false, misc: false });
       state.vetInfo = getStorage('vetInfo', { name: '', clinic: '', phone: '', email: '', address: '', notes: '' });
       state.vaccines = getStorage('vaccines', []);
       state.miscNotes = getStorage('miscNotes', '');
+      state.vaccineForm = getStorage('vaccineForm', { name: '', date: '', nextDate: '', notes: '' });
 
       try { petPhoto = localStorage.getItem('fb_petPhoto') || ''; } catch { petPhoto = ''; }
 
@@ -404,6 +404,7 @@
       setStorage('vetInfo', state.vetInfo);
       setStorage('vaccines', state.vaccines);
       setStorage('miscNotes', state.miscNotes);
+      setStorage('vaccineForm', state.vaccineForm);
 
       try {
         if (petPhoto) localStorage.setItem('fb_petPhoto', petPhoto);
@@ -982,7 +983,7 @@
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
-      // ── Calculators content ──
+      // ── Calculators content (unchanged) ──
       const calculatorsContent = `
         <div class="card">
           <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🔑</span> USDA API Key</div>
@@ -1039,8 +1040,8 @@
         </div>
       `;
 
-      // ── Vaccine Records ──
-      const vaccineList = state.vaccines.length > 0 ? state.vaccines.map((v, i) => `
+      // ── Vaccine Records with datalist and retain ──
+      const vaccineListHtml = state.vaccines.length > 0 ? state.vaccines.map((v, i) => `
         <div class="vaccine-item">
           <div class="info">
             <div class="name">${v.name}</div>
@@ -1050,19 +1051,29 @@
         </div>
       `).join('') : '<div class="text-muted text-sm">No vaccines recorded yet.</div>';
 
+      // Build datalist with common vaccines
+      const commonVaccines = ['Rabies', 'DHPP (Distemper/Parvo)', 'Bordetella', 'Lyme', 'Leptospirosis', 'Influenza', 'Kennel Cough', 'Other'];
+      const datalistOptions = commonVaccines.map(v => `<option value="${v}">`).join('');
+
       const vaccinesContent = `
         <div class="card">
           <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💉</span> Vaccine Records</div>
-          ${vaccineList}
+          ${vaccineListHtml}
           <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
             <div style="font-weight:600;font-size:13px;margin-bottom:6px;">Add Vaccine</div>
             <div class="grid-2">
-              <div class="input-group"><label>Name</label><input type="text" id="vaccName" placeholder="e.g. Rabies" /></div>
-              <div class="input-group"><label>Date given</label><input type="date" id="vaccDate" /></div>
+              <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="vaccName" list="vaccineDatalist" placeholder="e.g. Rabies" value="${state.vaccineForm.name}" oninput="updateVaccineForm('name', this.value)" />
+                <datalist id="vaccineDatalist">
+                  ${datalistOptions}
+                </datalist>
+              </div>
+              <div class="input-group"><label>Date given</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaccineForm('date', this.value)" /></div>
             </div>
             <div class="grid-2">
-              <div class="input-group"><label>Next due</label><input type="date" id="vaccNext" /></div>
-              <div class="input-group"><label>Notes</label><input type="text" id="vaccNotes" placeholder="e.g. clinic name" /></div>
+              <div class="input-group"><label>Next due</label><input type="date" id="vaccNext" value="${state.vaccineForm.nextDate}" onchange="updateVaccineForm('nextDate', this.value)" /></div>
+              <div class="input-group"><label>Notes</label><input type="text" id="vaccNotes" placeholder="e.g. clinic name" value="${state.vaccineForm.notes}" onchange="updateVaccineForm('notes', this.value)" /></div>
             </div>
             <button class="primary w-full" onclick="addVaccine()">+ Add Vaccine</button>
           </div>
@@ -1106,6 +1117,30 @@
       container.innerHTML = html;
     }
 
+    // ── Vaccine form helpers ──────────────────────────────────────────────
+    function updateVaccineForm(field, value) {
+      state.vaccineForm[field] = value;
+      saveState();
+    }
+
+    function addVaccine() {
+      const name = state.vaccineForm.name.trim();
+      const date = state.vaccineForm.date;
+      const nextDate = state.vaccineForm.nextDate;
+      const notes = state.vaccineForm.notes.trim();
+      if (!name || !date) return alert('Please enter at least a name and date.');
+      state.vaccines.push({ name, date, nextDate, notes });
+      // Keep the form values – do NOT clear them
+      saveState();
+      renderUtilities();
+    }
+
+    function deleteVaccine(idx) {
+      state.vaccines.splice(idx, 1);
+      saveState();
+      renderUtilities();
+    }
+
     // ── Tree accordion toggle ─────────────────────────────────────────────
     function toggleTreeSection(id) {
       state.utreeOpen[id] = !state.utreeOpen[id];
@@ -1117,24 +1152,6 @@
     function updateVetInfo(field, value) {
       state.vetInfo[field] = value;
       saveState();
-    }
-
-    // ── Vaccine functions ─────────────────────────────────────────────────
-    function addVaccine() {
-      const name = document.getElementById('vaccName').value.trim();
-      const date = document.getElementById('vaccDate').value;
-      const nextDate = document.getElementById('vaccNext').value;
-      const notes = document.getElementById('vaccNotes').value.trim();
-      if (!name || !date) return alert('Please enter at least a name and date.');
-      state.vaccines.push({ name, date, nextDate, notes });
-      saveState();
-      renderUtilities();
-    }
-
-    function deleteVaccine(idx) {
-      state.vaccines.splice(idx, 1);
-      saveState();
-      renderUtilities();
     }
 
     // ── Misc notes ────────────────────────────────────────────────────────
@@ -1422,6 +1439,7 @@
     // ── Tree toggle ──────────────────────────────────────────────────────
     window.toggleTreeSection = toggleTreeSection;
     window.updateVetInfo = updateVetInfo;
+    window.updateVaccineForm = updateVaccineForm;
     window.addVaccine = addVaccine;
     window.deleteVaccine = deleteVaccine;
     window.saveMiscNotes = saveMiscNotes;
@@ -1430,7 +1448,6 @@
     // ── Init ───────────────────────────────────────────────────────────────
     function init() {
       loadState();
-      // Set up theme toggle with event listener
       document.getElementById('themeTrack').addEventListener('click', toggleTheme);
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
       navigateTo('home');
