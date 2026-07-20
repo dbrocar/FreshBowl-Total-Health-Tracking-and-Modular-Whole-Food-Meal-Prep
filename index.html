@@ -48,6 +48,7 @@
     button.secondary:hover { background: var(--border); }
     button.outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
     button.outline:hover { background: var(--primary-dim); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
     /* ── Toggle Switch ── */
     .toggle-switch { display: flex; align-items: center; gap: 6px; }
     .toggle-switch .track { position: relative; width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
@@ -61,7 +62,7 @@
     .header-title small { font-size: 10px; font-weight: 400; color: var(--text2); display: block; margin-top: -2px; }
     .header-actions { display: flex; gap: 8px; align-items: center; }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
-    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); }
+    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); border: none; }
     .bottom-nav button .icon { font-size: 22px; line-height: 1; }
     .bottom-nav button.active { color: var(--primary); }
     .page { display: none; padding: 16px 0 20px; animation: fadeUp 0.25s ease; }
@@ -115,7 +116,7 @@
     @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .modal-title { font-size: 18px; font-weight: 700; color: var(--primary); }
-    .modal-close { background: transparent; padding: 4px 8px; font-size: 24px; color: var(--text2); }
+    .modal-close { background: transparent; padding: 4px 8px; font-size: 24px; color: var(--text2); border: none; }
     .input-group { margin-bottom: 12px; }
     .input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
     .rotation-week { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
@@ -150,7 +151,32 @@
     .vaccine-item .info .detail { font-size: 12px; color: var(--text2); }
     #error { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 8px; margin-bottom: 16px; white-space: pre-wrap; display: none; border: 1px solid #ffcdd2; }
     #error.show { display: block; }
-    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } .vet-field-row { grid-template-columns: 1fr; } }
+    /* ── Dog Switcher ── */
+    .dog-switcher { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 12px 0; }
+    .dog-switcher .name { font-size: 24px; font-weight: 800; color: var(--text); }
+    .dog-switcher .btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text2); transition: all 0.2s; }
+    .dog-switcher .btn:hover { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
+    .dog-switcher .add-btn { background: var(--primary); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #0a0e1a; font-weight: 700; }
+    .dog-switcher .add-btn:hover { background: var(--primary-dark); }
+    .dog-count { font-size: 12px; color: var(--text3); text-align: center; margin-top: 2px; }
+    /* ── Rolodex ── */
+    .rolodex-container { position: relative; min-height: 180px; }
+    .rolodex-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; min-height: 160px; display: flex; flex-direction: column; justify-content: center; transition: all 0.3s ease; position: relative; }
+    .rolodex-card .name { font-size: 18px; font-weight: 700; color: var(--primary); }
+    .rolodex-card .detail { font-size: 14px; color: var(--text2); margin-top: 4px; }
+    .rolodex-card .notes { font-size: 13px; color: var(--text3); margin-top: 8px; font-style: italic; }
+    .rolodex-card .index { position: absolute; top: 12px; right: 16px; font-size: 12px; color: var(--text3); font-weight: 600; }
+    .rolodex-controls { display: flex; justify-content: center; gap: 16px; margin-top: 16px; align-items: center; }
+    .rolodex-controls button { padding: 8px 20px; border-radius: var(--radius-full); font-size: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .rolodex-controls button:hover { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
+    .rolodex-controls .count { font-size: 14px; color: var(--text3); }
+    .rolodex-empty { text-align: center; padding: 30px 0; color: var(--text3); }
+    .rolodex-empty .big { font-size: 48px; display: block; margin-bottom: 12px; }
+    .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .profile-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+    .profile-stat .val { font-size: 22px; font-weight: 800; color: var(--primary); }
+    .profile-stat .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } .vet-field-row { grid-template-columns: 1fr; } .profile-stats-grid { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -174,16 +200,16 @@
     <section id="page-home" class="page active"><div id="homeContent"></div></section>
     <section id="page-plan" class="page"><div id="planContent"></div></section>
     <section id="page-nutrition" class="page"><div id="nutritionContent"></div></section>
+    <section id="page-profile" class="page"><div id="profileContent"></div></section>
     <section id="page-utilities" class="page"><div id="utilitiesContent"></div></section>
-    <section id="page-guide" class="page"><div id="guideContent"></div></section>
   </main>
 
   <nav class="bottom-nav" id="bottomNav">
     <button data-page="home" class="active"><span class="icon">🏠</span>Home</button>
     <button data-page="plan"><span class="icon">📋</span>Plan</button>
     <button data-page="nutrition"><span class="icon">📊</span>Nutrition</button>
+    <button data-page="profile"><span class="icon">🐾</span>Profile</button>
     <button data-page="utilities"><span class="icon">🧰</span>Utilities</button>
-    <button data-page="guide"><span class="icon">📖</span>Guide</button>
   </nav>
 
   <div id="modalRoot"></div>
@@ -205,7 +231,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App (with vaccine datalist & retain)
+    //  FRESHBOWL – Full App (with Dog Switcher, Profile Tab, Vaccine Rolodex)
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── Theme ──────────────────────────────────────────────────────────────
@@ -310,7 +336,8 @@
       vetInfo: { name: '', clinic: '', phone: '', email: '', address: '', notes: '' },
       vaccines: [],
       miscNotes: '',
-      vaccineForm: { name: '', date: '', nextDate: '', notes: '' }, // retain form values
+      vaccineForm: { name: '', date: '', nextDate: '', notes: '' },
+      vaccineRolodexIndex: 0,
     };
     let petPhoto = '';
 
@@ -370,6 +397,7 @@
       state.vaccines = getStorage('vaccines', []);
       state.miscNotes = getStorage('miscNotes', '');
       state.vaccineForm = getStorage('vaccineForm', { name: '', date: '', nextDate: '', notes: '' });
+      state.vaccineRolodexIndex = getStorage('vaccineRolodexIndex', 0);
 
       try { petPhoto = localStorage.getItem('fb_petPhoto') || ''; } catch { petPhoto = ''; }
 
@@ -405,6 +433,7 @@
       setStorage('vaccines', state.vaccines);
       setStorage('miscNotes', state.miscNotes);
       setStorage('vaccineForm', state.vaccineForm);
+      setStorage('vaccineRolodexIndex', state.vaccineRolodexIndex);
 
       try {
         if (petPhoto) localStorage.setItem('fb_petPhoto', petPhoto);
@@ -680,9 +709,57 @@
       return `<svg viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="var(--surface2)" rx="6"/><polyline points="${pts.map(p => p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')}" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${pts[0].x}" cy="${pts[0].y}" r="4" fill="var(--primary)"/><circle cx="${pts[pts.length-1].x}" cy="${pts[pts.length-1].y}" r="4" fill="var(--error)"/></svg>`;
     }
 
-    // ── Render: Home ──────────────────────────────────────────────────────
+    // ── Render: Home (Simplified – just dog name + switcher) ────────────
     function renderHome() {
       const dog = getActiveDog();
+      const totalDogs = state.dogs.length;
+      const currentIdx = state.dogs.findIndex(d => d.id === state.activeDogId);
+      const dogName = dog ? dog.name : 'No dogs';
+
+      const container = document.getElementById('homeContent');
+      container.innerHTML = `
+        <div class="card">
+          <div style="text-align:center;padding:8px 0;">
+            <div style="font-size:13px;color:var(--text3);font-weight:500;">ACTIVE DOG</div>
+          </div>
+          <div class="dog-switcher">
+            <button class="btn" onclick="switchDog(-1)" ${totalDogs <= 1 ? 'disabled' : ''}>‹</button>
+            <div style="text-align:center;">
+              <div class="name">${dogName}</div>
+              <div class="dog-count">${totalDogs} dog${totalDogs > 1 ? 's' : ''} · ${currentIdx+1} of ${totalDogs}</div>
+            </div>
+            <button class="btn" onclick="switchDog(1)" ${totalDogs <= 1 ? 'disabled' : ''}>›</button>
+            <button class="add-btn" onclick="openAddDogModal()" title="Add dog">+</button>
+          </div>
+          ${dog ? `
+          <div style="text-align:center;margin-top:4px;">
+            <span style="font-size:13px;color:var(--text2);">⚖️ ${dog.weight} lb · 🔥 ${Math.round(calcMER(dog))} kcal/day</span>
+          </div>
+          ` : ''}
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">🍽️</span> Today's Meals</div>
+          ${renderTodayMeals()}
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">🚶</span> Walk Tracker</div>
+          ${renderWalkTracker()}
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">📊</span> Quick Stats</div>
+          <div class="grid-3">
+            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted">Walks today</div></div>
+            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted">Meals fed</div></div>
+            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${renderQuickMetCount()}</div><div class="text-xs text-muted">AAFCO met</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTodayMeals() {
       const today = new Date();
       const y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
       const key = dateKey(y,m,d);
@@ -690,18 +767,34 @@
       const amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
       const amMeal = getEffectiveMeal(y,m,d,'am');
       const pmMeal = getEffectiveMeal(y,m,d,'pm');
+
+      return `
+        <div class="meal-card ${amFed?'fed':''}">
+          <div class="meal-header"><span class="meal-label">AM</span><span class="meal-fed ${amFed?'':'not'}">${amFed?'✅ Fed':'Tap to mark fed'}</span></div>
+          ${amMeal ? `<div class="meal-protein">${amMeal.protein}</div><div class="meal-details">${amMeal.starch} · ${amMeal.veg}${amMeal.organ ? ` · ${amMeal.organ}` : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
+          <div class="meal-actions"><button class="primary" onclick="toggleFed('${amKey}')">${amFed?'Undo':'Mark Fed'}</button><button onclick="openSwap('${key}','am')">🔄 Swap</button><button onclick="openAddins('${key}','am')">➕ Add</button></div>
+        </div>
+        <div class="meal-card ${pmFed?'fed':''}">
+          <div class="meal-header"><span class="meal-label">PM</span><span class="meal-fed ${pmFed?'':'not'}">${pmFed?'✅ Fed':'Tap to mark fed'}</span></div>
+          ${pmMeal ? `<div class="meal-protein">${pmMeal.protein}</div><div class="meal-details">${pmMeal.starch} · ${pmMeal.veg}${pmMeal.organ ? ` · ${pmMeal.organ}` : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
+          <div class="meal-actions"><button class="primary" onclick="toggleFed('${pmKey}')">${pmFed?'Undo':'Mark Fed'}</button><button onclick="openSwap('${key}','pm')">🔄 Swap</button><button onclick="openAddins('${key}','pm')">➕ Add</button></div>
+        </div>
+      `;
+    }
+
+    function renderQuickMetCount() {
+      const today = new Date();
+      const y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
       const start = new Date(y,m,d);
       const end = new Date(y,m,d);
-      const nutResult = calcNutritionForDateRange(start, end);
-      const total = nutResult.total;
-      const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
-      const results = state.calcResults || {};
-      const resultItems = [];
-      if (results.calories) resultItems.push({ label: 'Calories', val: `${Math.round(results.calories.mer)} kcal` });
-      if (results.water) resultItems.push({ label: 'Water', val: `${Math.round(results.water.oz)} oz` });
-      if (results.cost) resultItems.push({ label: 'Daily Cost', val: `$${results.cost.cpd.toFixed(2)}` });
-      if (results.treats) resultItems.push({ label: 'Treat Budget', val: `${Math.round(results.treats.budget)} kcal` });
+      const result = calcNutritionForDateRange(start, end);
+      const total = result.total;
+      let met = 0;
+      AAFCO.forEach(t => { if (getAAFCOStatus(total[t.k]||0, t) === 'ok') met++; });
+      return met;
+    }
 
+    function renderWalkTracker() {
       const walkActive = (typeof walkStartTime !== 'undefined' && walkStartTime !== null && walkInterval !== null);
       const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
       const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
@@ -714,7 +807,6 @@
       const totalWalks = state.walkLogs.length;
       if (totalWalks > 0) {
         const displayWalks = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0, 2);
-        const extraCount = totalWalks - 2;
         historyHtml = displayWalks.map((w, idx) => {
           const secs = w.secs || 0;
           return `
@@ -733,7 +825,7 @@
         }).join('');
 
         if (!state.showAllWalks && totalWalks > 2) {
-          historyHtml += `<button class="secondary w-full mt-2" onclick="toggleWalkHistory()">See More (${extraCount} more)</button>`;
+          historyHtml += `<button class="secondary w-full mt-2" onclick="toggleWalkHistory()">See More (${totalWalks - 2} more)</button>`;
         } else if (state.showAllWalks && totalWalks > 2) {
           historyHtml += `<button class="secondary w-full mt-2" onclick="toggleWalkHistory()">Show Less</button>`;
         }
@@ -741,142 +833,184 @@
         historyHtml = `<div class="text-muted text-sm">No walks saved yet.</div>`;
       }
 
-      const walkHtml = `
-        <div class="card">
-          <div class="card-title"><span class="icon">🚶</span> Walk Tracker</div>
-          <div class="walk-display">
-            <div class="walk-time">${String(currentMins).padStart(2,'0')}:${String(currentSecs).padStart(2,'0')}</div>
-            <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
-            <div class="walk-points">${currentCoords.length} GPS points</div>
-          </div>
-          ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
-          <div class="grid-2" style="margin-top:8px;">
-            <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
-            <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled style="opacity:0.5;"' : ''}>⏹ Stop & Save</button>
-          </div>
-          <div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
-            <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Recent Walks</div>
-            ${historyHtml}
-          </div>
+      return `
+        <div class="walk-display">
+          <div class="walk-time">${String(currentMins).padStart(2,'0')}:${String(currentSecs).padStart(2,'0')}</div>
+          <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
+          <div class="walk-points">${currentCoords.length} GPS points</div>
+        </div>
+        ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
+        <div class="grid-2" style="margin-top:8px;">
+          <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
+          <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled style="opacity:0.5;"' : ''}>⏹ Stop & Save</button>
+        </div>
+        <div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+          <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Recent Walks</div>
+          ${historyHtml}
         </div>
       `;
+    }
 
-      const container = document.getElementById('homeContent');
+    // ── Dog Switcher ───────────────────────────────────────────────────────
+    function switchDog(dir) {
+      const idx = state.dogs.findIndex(d => d.id === state.activeDogId);
+      const newIdx = (idx + dir + state.dogs.length) % state.dogs.length;
+      state.activeDogId = state.dogs[newIdx].id;
+      saveState();
+      renderHome();
+      if (document.getElementById('page-profile').classList.contains('active')) renderProfile();
+    }
+    window.switchDog = switchDog;
+
+    function openAddDogModal() {
+      let html = `
+        <div class="modal-overlay" onclick="closeModal(event)"><div class="modal" onclick="event.stopPropagation()">
+          <div class="modal-header"><span class="modal-title">Add New Dog</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+          <div class="input-group"><label>Name</label><input type="text" id="newDogName" placeholder="e.g. Charlie" /></div>
+          <div class="input-group"><label>Weight (lb)</label><input type="number" id="newDogWeight" placeholder="e.g. 55" value="50" /></div>
+          <div class="input-group"><label>Activity</label>
+            <select id="newDogActivity">
+              <option value="1.2|Inactive">Inactive</option>
+              <option value="1.4|Senior">Senior</option>
+              <option value="1.6|Moderate (neutered)" selected>Moderate (neutered)</option>
+              <option value="1.8|Active">Active</option>
+              <option value="2.0|Working">Working</option>
+            </select>
+          </div>
+          <button class="primary w-full" onclick="addDogFromModal()">Add Dog</button>
+        </div></div>
+      `;
+      document.getElementById('modalRoot').innerHTML = html;
+    }
+    window.openAddDogModal = openAddDogModal;
+
+    function addDogFromModal() {
+      const name = document.getElementById('newDogName').value.trim();
+      const weight = parseFloat(document.getElementById('newDogWeight').value) || 50;
+      const activityVal = document.getElementById('newDogActivity').value;
+      const parts = activityVal.split('|');
+      const id = 'dog' + Date.now();
+      state.dogs.push({ id, name: name || 'New Dog', weight, activity: parseFloat(parts[0]), activityLabel: parts[1] || 'Moderate' });
+      state.activeDogId = id;
+      saveState();
+      closeModal();
+      renderHome();
+      if (document.getElementById('page-profile').classList.contains('active')) renderProfile();
+    }
+    window.addDogFromModal = addDogFromModal;
+
+    function deleteDog(dogId) {
+      if (state.dogs.length <= 1) { alert('You need at least one dog.'); return; }
+      if (!confirm('Remove this dog and all their data?')) return;
+      state.dogs = state.dogs.filter(d => d.id !== dogId);
+      if (state.activeDogId === dogId) {
+        state.activeDogId = state.dogs[0].id;
+      }
+      saveState();
+      renderHome();
+      renderProfile();
+    }
+    window.deleteDog = deleteDog;
+
+    // ── Render: Profile ────────────────────────────────────────────────────
+    function renderProfile() {
+      const container = document.getElementById('profileContent');
+      const dog = getActiveDog();
+      if (!dog) {
+        container.innerHTML = `<div class="card"><div class="text-center text-muted">No dogs. Add one from the Home tab.</div></div>`;
+        return;
+      }
+      const mer = calcMER(dog);
+      const dogIdx = state.dogs.findIndex(d => d.id === dog.id);
+
       container.innerHTML = `
         <div class="card">
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">🐾</span> ${dog.name}'s Profile</div>
           <div class="dog-profile">
-            <div class="dog-avatar" id="dogAvatar" onclick="document.getElementById('photoInput').click()">
+            <div class="dog-avatar" id="dogAvatarProfile" onclick="document.getElementById('photoInputProfile').click()">
               ${petPhoto ? `<img src="${petPhoto}" alt="${dog.name}" />` : '🐕'}
-              <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" />
+              <input type="file" id="photoInputProfile" accept="image/*" onchange="handlePhotoUploadProfile(event)" />
             </div>
             <div class="dog-info">
-              <div class="dog-name">${dog.name}</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="dog-name">${dog.name}</div>
+                <button class="secondary" style="padding:2px 8px;font-size:11px;" onclick="deleteDog('${dog.id}')">✕</button>
+              </div>
               <div class="dog-stats">
                 <span>⚖️ ${dog.weight} lb</span>
                 <span>🏃 ${dog.activityLabel}</span>
-                <span>🔥 ${Math.round(calcMER(dog))} kcal/day</span>
+                <span>🔥 ${Math.round(mer)} kcal/day</span>
               </div>
             </div>
           </div>
         </div>
+
         <div class="card">
-          <div class="card-title"><span class="icon">🍽️</span> Today's Meals</div>
-          <div class="meal-card ${amFed?'fed':''}">
-            <div class="meal-header"><span class="meal-label">AM</span><span class="meal-fed ${amFed?'':'not'}">${amFed?'✅ Fed':'Tap to mark fed'}</span></div>
-            ${amMeal ? `<div class="meal-protein">${amMeal.protein}</div><div class="meal-details">${amMeal.starch} · ${amMeal.veg}${amMeal.organ ? ` · ${amMeal.organ}` : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
-            <div class="meal-actions"><button class="primary" onclick="toggleFed('${amKey}')">${amFed?'Undo':'Mark Fed'}</button><button onclick="openSwap('${key}','am')">🔄 Swap</button><button onclick="openAddins('${key}','am')">➕ Add</button></div>
-          </div>
-          <div class="meal-card ${pmFed?'fed':''}">
-            <div class="meal-header"><span class="meal-label">PM</span><span class="meal-fed ${pmFed?'':'not'}">${pmFed?'✅ Fed':'Tap to mark fed'}</span></div>
-            ${pmMeal ? `<div class="meal-protein">${pmMeal.protein}</div><div class="meal-details">${pmMeal.starch} · ${pmMeal.veg}${pmMeal.organ ? ` · ${pmMeal.organ}` : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
-            <div class="meal-actions"><button class="primary" onclick="toggleFed('${pmKey}')">${pmFed?'Undo':'Mark Fed'}</button><button onclick="openSwap('${key}','pm')">🔄 Swap</button><button onclick="openAddins('${key}','pm')">➕ Add</button></div>
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">📊</span> Stats</div>
+          <div class="profile-stats-grid">
+            <div class="profile-stat"><div class="val">${dog.weight}</div><div class="lbl">Weight (lb)</div></div>
+            <div class="profile-stat"><div class="val">${Math.round(mer)}</div><div class="lbl">Daily Calories</div></div>
+            <div class="profile-stat"><div class="val">${dog.activity}</div><div class="lbl">Activity Factor</div></div>
+            <div class="profile-stat"><div class="val">${state.dogs.length}</div><div class="lbl">Total Dogs</div></div>
           </div>
         </div>
-        ${walkHtml}
+
         <div class="card">
-          <div class="card-title"><span class="icon">📊</span> Quick Stats</div>
-          <div class="grid-3">
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted">Walks today</div></div>
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted">Meals fed</div></div>
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary)">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted">AAFCO met</div></div>
+          <div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">✏️</span> Edit Profile</div>
+          <div class="input-group"><label>Name</label><input type="text" value="${dog.name}" onchange="updateDogProfile('name',this.value)" /></div>
+          <div class="grid-2">
+            <div class="input-group"><label>Weight (lb)</label><input type="number" value="${dog.weight}" onchange="updateDogProfile('weight',parseFloat(this.value))" /></div>
+            <div class="input-group"><label>Activity</label>
+              <select onchange="updateDogProfile('activity',this.value)">
+                <option value="1.2|Inactive" ${dog.activity===1.2?'selected':''}>Inactive</option>
+                <option value="1.4|Senior" ${dog.activity===1.4?'selected':''}>Senior</option>
+                <option value="1.6|Moderate (neutered)" ${dog.activity===1.6?'selected':''}>Moderate (neutered)</option>
+                <option value="1.8|Active" ${dog.activity===1.8?'selected':''}>Active</option>
+                <option value="2.0|Working" ${dog.activity===2.0?'selected':''}>Working</option>
+              </select>
+            </div>
           </div>
+          <button class="primary w-full mt-2" onclick="saveProfileChanges()">💾 Save Changes</button>
         </div>
-        ${resultItems.length ? `
-        <div class="card">
-          <div class="card-title"><span class="icon">🧮</span> Recent Calculator Results</div>
-          <div class="dashboard-results">
-            ${resultItems.map(r => `<div class="result-pill"><div class="val">${r.val}</div><div class="lbl">${r.label}</div></div>`).join('')}
-          </div>
-        </div>
-        ` : ''}
       `;
     }
 
-    // ── Toggle walk history ──────────────────────────────────────────────
-    function toggleWalkHistory() {
-      state.showAllWalks = !state.showAllWalks;
-      saveState();
+    function handlePhotoUploadProfile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX = 200;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            const ratio = Math.min(MAX / w, MAX / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          petPhoto = canvas.toDataURL('image/jpeg', 0.7);
+          saveState();
+          renderProfile();
+          renderHome();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    window.handlePhotoUploadProfile = handlePhotoUploadProfile;
+
+    function saveProfileChanges() {
+      renderProfile();
       renderHome();
+      alert('Profile updated!');
     }
-
-    // ── Walk Tracker ──────────────────────────────────────────────────────
-    let walkInterval = null;
-    let walkStartTime = null;
-    let walkCoords = [];
-
-    function startWalk() {
-      if (!navigator.geolocation) return alert('GPS not available.');
-      walkStartTime = Date.now();
-      walkCoords = [];
-      navigator.geolocation.watchPosition(pos => {
-        walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        renderHome();
-      }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
-      walkInterval = setInterval(renderHome, 1000);
-      renderHome();
-    }
-
-    function stopWalk() {
-      if (walkInterval) clearInterval(walkInterval);
-      walkInterval = null;
-      if (walkStartTime) {
-        const elapsed = (Date.now() - walkStartTime) / 1000;
-        const mins = Math.floor(elapsed / 60);
-        const secs = Math.floor(elapsed % 60);
-        const dist = calcDist(walkCoords) * 0.621371;
-        state.walkLogs.unshift({
-          date: todayKey(),
-          mins: mins,
-          secs: secs,
-          dist: dist,
-          coords: walkCoords.slice()
-        });
-        if (state.walkLogs.length > 50) state.walkLogs.length = 50;
-        saveState();
-        walkStartTime = null;
-        walkCoords = [];
-        renderHome();
-        alert(`Walk saved! ${mins}m ${secs}s, ${dist.toFixed(2)} miles`);
-      }
-    }
-
-    function calcDist(coords) {
-      let total = 0;
-      for (let i = 1; i < coords.length; i++) {
-        const a = coords[i-1], b = coords[i];
-        const dLat = (b.lat - a.lat) * Math.PI / 180;
-        const dLng = (b.lng - a.lng) * Math.PI / 180;
-        const h = Math.sin(dLat/2)**2 + Math.cos(a.lat * Math.PI/180) * Math.cos(b.lat * Math.PI/180) * Math.sin(dLng/2)**2;
-        total += 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
-      }
-      return total;
-    }
-
-    function deleteWalkLog(idx) {
-      state.walkLogs.splice(idx, 1);
-      saveState();
-      renderHome();
-    }
+    window.saveProfileChanges = saveProfileChanges;
 
     // ── Render: Plan ──────────────────────────────────────────────────────
     function renderPlan() {
@@ -909,11 +1043,6 @@
         rotationHtml += `</div></div>`;
       }
       container.innerHTML = `
-        <div class="card"><div class="card-title"><span class="icon">🐾</span> Dog Profile</div>
-          <div class="input-group"><label>Name</label><input type="text" value="${dog.name}" onchange="updateDogProfile('name',this.value)" /></div>
-          <div class="grid-2"><div class="input-group"><label>Weight (lb)</label><input type="number" value="${dog.weight}" onchange="updateDogProfile('weight',parseFloat(this.value))" /></div>
-          <div class="input-group"><label>Activity</label><select onchange="updateDogProfile('activity',this.value)"><option value="1.2|Inactive">Inactive</option><option value="1.4|Senior">Senior</option><option value="1.6|Moderate (neutered)" selected>Moderate</option><option value="1.8|Active">Active</option><option value="2.0|Working">Working</option></select></div></div>
-        </div>
         <div class="card"><div class="card-title"><span class="icon">🍗</span> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()">🔄 Rebuild Rotation</button></div>
         <div class="card"><div class="card-title"><span class="icon">⭐</span> Favorites</div>
           <div style="margin-bottom:8px;"><label class="text-muted text-sm">Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'Veg','vegs')}</div></div>
@@ -979,11 +1108,11 @@
       `;
     }
 
-    // ── Render: Utilities (Tree Accordion) ───────────────────────────────
+    // ── Render: Utilities (with Vaccine Rolodex) ──────────────────────────
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
-      // ── Calculators content (unchanged) ──
+      // ── Calculators content ──
       const calculatorsContent = `
         <div class="card">
           <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🔑</span> USDA API Key</div>
@@ -1040,16 +1169,43 @@
         </div>
       `;
 
-      // ── Vaccine Records with datalist and retain ──
-      const vaccineListHtml = state.vaccines.length > 0 ? state.vaccines.map((v, i) => `
-        <div class="vaccine-item">
-          <div class="info">
-            <div class="name">${v.name}</div>
-            <div class="detail">Given: ${v.date} ${v.nextDate ? '· Next due: '+v.nextDate : ''} ${v.notes ? '· '+v.notes : ''}</div>
+      // ── Vaccine Records – ROLODEX STYLE ──
+      const vaccines = state.vaccines || [];
+      const totalVax = vaccines.length;
+      let currentIdx = state.vaccineRolodexIndex || 0;
+      if (currentIdx >= totalVax) currentIdx = Math.max(0, totalVax - 1);
+      if (currentIdx < 0) currentIdx = 0;
+      state.vaccineRolodexIndex = currentIdx;
+      saveState();
+
+      let rolodexHtml = '';
+      if (totalVax === 0) {
+        rolodexHtml = `
+          <div class="rolodex-empty">
+            <span class="big">💉</span>
+            <div>No vaccines recorded yet.</div>
+            <div style="font-size:13px;color:var(--text3);margin-top:4px;">Add one below!</div>
           </div>
-          <button class="text-error text-xs" onclick="deleteVaccine(${i})">✕</button>
-        </div>
-      `).join('') : '<div class="text-muted text-sm">No vaccines recorded yet.</div>';
+        `;
+      } else {
+        const v = vaccines[currentIdx];
+        rolodexHtml = `
+          <div class="rolodex-container">
+            <div class="rolodex-card">
+              <div class="index">${currentIdx+1} / ${totalVax}</div>
+              <div class="name">${v.name}</div>
+              <div class="detail">📅 Given: ${v.date}</div>
+              ${v.nextDate ? `<div class="detail">⏰ Next due: ${v.nextDate}</div>` : ''}
+              ${v.notes ? `<div class="notes">📝 ${v.notes}</div>` : ''}
+            </div>
+            <div class="rolodex-controls">
+              <button onclick="rolodexPrev()" ${currentIdx <= 0 ? 'disabled' : ''}>◀ Prev</button>
+              <span class="count">${currentIdx+1} of ${totalVax}</span>
+              <button onclick="rolodexNext()" ${currentIdx >= totalVax-1 ? 'disabled' : ''}>Next ▶</button>
+            </div>
+          </div>
+        `;
+      }
 
       // Build datalist with common vaccines
       const commonVaccines = ['Rabies', 'DHPP (Distemper/Parvo)', 'Bordetella', 'Lyme', 'Leptospirosis', 'Influenza', 'Kennel Cough', 'Other'];
@@ -1057,17 +1213,15 @@
 
       const vaccinesContent = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💉</span> Vaccine Records</div>
-          ${vaccineListHtml}
-          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-            <div style="font-weight:600;font-size:13px;margin-bottom:6px;">Add Vaccine</div>
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💉</span> Vaccine Records — Rolodex</div>
+          ${rolodexHtml}
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+            <div style="font-weight:600;font-size:13px;margin-bottom:6px;">Add New Vaccine</div>
             <div class="grid-2">
               <div class="input-group">
                 <label>Name</label>
                 <input type="text" id="vaccName" list="vaccineDatalist" placeholder="e.g. Rabies" value="${state.vaccineForm.name}" oninput="updateVaccineForm('name', this.value)" />
-                <datalist id="vaccineDatalist">
-                  ${datalistOptions}
-                </datalist>
+                <datalist id="vaccineDatalist">${datalistOptions}</datalist>
               </div>
               <div class="input-group"><label>Date given</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaccineForm('date', this.value)" /></div>
             </div>
@@ -1075,7 +1229,10 @@
               <div class="input-group"><label>Next due</label><input type="date" id="vaccNext" value="${state.vaccineForm.nextDate}" onchange="updateVaccineForm('nextDate', this.value)" /></div>
               <div class="input-group"><label>Notes</label><input type="text" id="vaccNotes" placeholder="e.g. clinic name" value="${state.vaccineForm.notes}" onchange="updateVaccineForm('notes', this.value)" /></div>
             </div>
-            <button class="primary w-full" onclick="addVaccine()">+ Add Vaccine</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="primary" onclick="addVaccine()">+ Add Vaccine</button>
+              ${totalVax > 0 ? `<button class="secondary" onclick="deleteCurrentVaccine()">✕ Delete Current</button>` : ''}
+            </div>
           </div>
         </div>
       `;
@@ -1117,11 +1274,44 @@
       container.innerHTML = html;
     }
 
+    // ── Rolodex controls ──────────────────────────────────────────────────
+    function rolodexPrev() {
+      if (state.vaccineRolodexIndex > 0) {
+        state.vaccineRolodexIndex--;
+        saveState();
+        renderUtilities();
+      }
+    }
+    window.rolodexPrev = rolodexPrev;
+
+    function rolodexNext() {
+      if (state.vaccineRolodexIndex < (state.vaccines.length - 1)) {
+        state.vaccineRolodexIndex++;
+        saveState();
+        renderUtilities();
+      }
+    }
+    window.rolodexNext = rolodexNext;
+
+    function deleteCurrentVaccine() {
+      const idx = state.vaccineRolodexIndex;
+      if (state.vaccines.length === 0) return;
+      if (!confirm(`Delete "${state.vaccines[idx].name}"?`)) return;
+      state.vaccines.splice(idx, 1);
+      if (state.vaccineRolodexIndex >= state.vaccines.length) {
+        state.vaccineRolodexIndex = Math.max(0, state.vaccines.length - 1);
+      }
+      saveState();
+      renderUtilities();
+    }
+    window.deleteCurrentVaccine = deleteCurrentVaccine;
+
     // ── Vaccine form helpers ──────────────────────────────────────────────
     function updateVaccineForm(field, value) {
       state.vaccineForm[field] = value;
       saveState();
     }
+    window.updateVaccineForm = updateVaccineForm;
 
     function addVaccine() {
       const name = state.vaccineForm.name.trim();
@@ -1130,16 +1320,23 @@
       const notes = state.vaccineForm.notes.trim();
       if (!name || !date) return alert('Please enter at least a name and date.');
       state.vaccines.push({ name, date, nextDate, notes });
-      // Keep the form values – do NOT clear them
+      // Reset form but keep values for convenience
+      state.vaccineForm = { name: '', date: '', nextDate: '', notes: '' };
+      state.vaccineRolodexIndex = state.vaccines.length - 1; // Show the new one
       saveState();
       renderUtilities();
     }
+    window.addVaccine = addVaccine;
 
     function deleteVaccine(idx) {
       state.vaccines.splice(idx, 1);
+      if (state.vaccineRolodexIndex >= state.vaccines.length) {
+        state.vaccineRolodexIndex = Math.max(0, state.vaccines.length - 1);
+      }
       saveState();
       renderUtilities();
     }
+    window.deleteVaccine = deleteVaccine;
 
     // ── Tree accordion toggle ─────────────────────────────────────────────
     function toggleTreeSection(id) {
@@ -1147,30 +1344,21 @@
       saveState();
       renderUtilities();
     }
+    window.toggleTreeSection = toggleTreeSection;
 
     // ── Vet info update ──────────────────────────────────────────────────
     function updateVetInfo(field, value) {
       state.vetInfo[field] = value;
       saveState();
     }
+    window.updateVetInfo = updateVetInfo;
 
     // ── Misc notes ────────────────────────────────────────────────────────
     function saveMiscNotes(value) {
       state.miscNotes = value;
       saveState();
     }
-
-    // ── Render: Guide ──────────────────────────────────────────────────────
-    function renderGuide() {
-      const container = document.getElementById('guideContent');
-      container.innerHTML = `
-        <div class="card"><div class="card-title"><span class="icon">📖</span> Welcome to FRESHBOWL</div><div class="card-sub">Total Health Tracking &amp; Modular Whole-Food Meal Prep</div><p style="line-height:1.6;">This app helps you feed your dog a balanced, whole-food diet using a modular rotation system. Every meal is built from five building blocks: protein, starch, vegetable, organ, and daily constants.</p></div>
-        <div class="card"><div class="card-title"><span class="icon">🧩</span> The Modular Method</div><ul style="list-style:none;padding:0;line-height:1.8;"><li>🥩 <strong>Protein</strong> – rotate 3+ proteins weekly</li><li>🌾 <strong>Starch</strong> – quinoa, sweet potato, oats, rice</li><li>🥬 <strong>Vegetable</strong> – green beans, zucchini, peppers, etc.</li><li>❤️ <strong>Organ</strong> – liver, heart, kidney (0.5 oz/meal)</li><li>🧂 <strong>Daily Constants</strong> – eggshell, salt, psyllium, herb cube, broth</li></ul></div>
-        <div class="card"><div class="card-title"><span class="icon">⚠️</span> Food Safety</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;"><div style="background:rgba(52,199,89,0.08);padding:8px;border-radius:var(--radius-sm);"><div style="color:#34c759;font-weight:700;">✅ Safe</div><div style="font-size:11px;color:var(--text2);">Beef, chicken, turkey, salmon, eggs, carrots, green beans</div></div><div style="background:rgba(255,159,10,0.08);padding:8px;border-radius:var(--radius-sm);"><div style="color:#ff9f0a;font-weight:700;">⚠️ Limit</div><div style="font-size:11px;color:var(--text2);">Bacon, liver (excess), salty foods</div></div><div style="background:rgba(255,69,58,0.08);padding:8px;border-radius:var(--radius-sm);"><div style="color:#ff453a;font-weight:700;">❌ Avoid</div><div style="font-size:11px;color:var(--text2);">Chocolate, grapes, onions, garlic, xylitol</div></div></div></div>
-        <div class="card"><div class="card-title"><span class="icon">📚</span> Daily Constants</div><ul style="list-style:none;padding:0;line-height:1.8;font-size:14px;"><li>🥚 <strong>Eggshell powder</strong> – ½ tsp/meal (calcium)</li><li>🧂 <strong>Iodized salt</strong> – 1 pinch/meal</li><li>🌾 <strong>Psyllium husk</strong> – ¼ tsp/meal (fiber)</li><li>🌿 <strong>Herb cube</strong> – parsley + vitamin E + ginger/spearmint</li><li>🍲 <strong>Broth</strong> – 1½ tbsp reserved cooking liquid</li></ul></div>
-        <div class="card"><div class="card-title"><span class="icon">🐟</span> Supplements</div><ul style="list-style:none;padding:0;line-height:1.8;font-size:14px;"><li>🐟 <strong>Fish oil</strong> – 1,000 mg per 10 lb</li><li>🌿 <strong>Kelp powder</strong> – ½ tsp per 25 lb (iodine)</li><li>🥚 <strong>Raw egg</strong> – 1 per 20 lb, 3-4x/week</li><li>🦪 <strong>Green-lipped mussel</strong> – ½ tsp per 25 lb (joints)</li><li>🌿 <strong>Turmeric golden paste</strong> – ¼ tsp per 25 lb</li></ul></div>
-      `;
-    }
+    window.saveMiscNotes = saveMiscNotes;
 
     // ── Navigation ─────────────────────────────────────────────────────────
     function navigateTo(page) {
@@ -1181,8 +1369,8 @@
         case 'home': renderHome(); break;
         case 'plan': renderPlan(); break;
         case 'nutrition': renderNutrition(); break;
+        case 'profile': renderProfile(); break;
         case 'utilities': renderUtilities(); break;
-        case 'guide': renderGuide(); break;
       }
       window.scrollTo(0,0);
     }
@@ -1201,10 +1389,10 @@
     function rebuildRotation() { state.rotation = generateRotation(state.selectedProteins, state.favorites); saveState(); renderPlan(); alert('Rotation rebuilt!'); }
     window.rebuildRotation = rebuildRotation;
 
-    function updateDogProfile(field,val) { const dog = getActiveDog(); if (field==='name') dog.name=val; else if (field==='weight') dog.weight=val; else if (field==='activity') { const parts=val.split('|'); dog.activity=parseFloat(parts[0]); dog.activityLabel=parts[1]||'Moderate'; } saveState(); renderPlan(); renderHome(); }
+    function updateDogProfile(field,val) { const dog = getActiveDog(); if (field==='name') dog.name=val; else if (field==='weight') dog.weight=val; else if (field==='activity') { const parts=val.split('|'); dog.activity=parseFloat(parts[0]); dog.activityLabel=parts[1]||'Moderate'; } saveState(); renderProfile(); renderHome(); }
     window.updateDogProfile = updateDogProfile;
 
-    // ── Photo Upload ──────────────────────────────────────────────────────
+    // ── Photo Upload (home) ──────────────────────────────────────────────
     function handlePhotoUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1227,6 +1415,7 @@
           petPhoto = canvas.toDataURL('image/jpeg', 0.7);
           saveState();
           renderHome();
+          renderProfile();
         };
         img.src = ev.target.result;
       };
@@ -1433,27 +1622,80 @@
     }
     window.calcCost = calcCost;
 
+    // ── Walk tracker ──────────────────────────────────────────────────────
+    let walkInterval = null;
+    let walkStartTime = null;
+    let walkCoords = [];
+
+    function startWalk() {
+      if (!navigator.geolocation) return alert('GPS not available.');
+      walkStartTime = Date.now();
+      walkCoords = [];
+      navigator.geolocation.watchPosition(pos => {
+        walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        renderHome();
+      }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
+      walkInterval = setInterval(renderHome, 1000);
+      renderHome();
+    }
+    window.startWalk = startWalk;
+
+    function stopWalk() {
+      if (walkInterval) clearInterval(walkInterval);
+      walkInterval = null;
+      if (walkStartTime) {
+        const elapsed = (Date.now() - walkStartTime) / 1000;
+        const mins = Math.floor(elapsed / 60);
+        const secs = Math.floor(elapsed % 60);
+        const dist = calcDist(walkCoords) * 0.621371;
+        state.walkLogs.unshift({
+          date: todayKey(),
+          mins: mins,
+          secs: secs,
+          dist: dist,
+          coords: walkCoords.slice()
+        });
+        if (state.walkLogs.length > 50) state.walkLogs.length = 50;
+        saveState();
+        walkStartTime = null;
+        walkCoords = [];
+        renderHome();
+        alert(`Walk saved! ${mins}m ${secs}s, ${dist.toFixed(2)} miles`);
+      }
+    }
+    window.stopWalk = stopWalk;
+
+    function calcDist(coords) {
+      let total = 0;
+      for (let i = 1; i < coords.length; i++) {
+        const a = coords[i-1], b = coords[i];
+        const dLat = (b.lat - a.lat) * Math.PI / 180;
+        const dLng = (b.lng - a.lng) * Math.PI / 180;
+        const h = Math.sin(dLat/2)**2 + Math.cos(a.lat * Math.PI/180) * Math.cos(b.lat * Math.PI/180) * Math.sin(dLng/2)**2;
+        total += 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
+      }
+      return total;
+    }
+
+    function deleteWalkLog(idx) {
+      state.walkLogs.splice(idx, 1);
+      saveState();
+      renderHome();
+    }
+    window.deleteWalkLog = deleteWalkLog;
+
+    function toggleWalkHistory() {
+      state.showAllWalks = !state.showAllWalks;
+      saveState();
+      renderHome();
+    }
+    window.toggleWalkHistory = toggleWalkHistory;
+
     // ── Theme toggle ─────────────────────────────────────────────────────
     window.toggleTheme = toggleTheme;
-
-    // ── Tree toggle ──────────────────────────────────────────────────────
-    window.toggleTreeSection = toggleTreeSection;
-    window.updateVetInfo = updateVetInfo;
-    window.updateVaccineForm = updateVaccineForm;
-    window.addVaccine = addVaccine;
-    window.deleteVaccine = deleteVaccine;
-    window.saveMiscNotes = saveMiscNotes;
-    window.toggleWalkHistory = toggleWalkHistory;
 
     // ── Init ───────────────────────────────────────────────────────────────
     function init() {
       loadState();
       document.getElementById('themeTrack').addEventListener('click', toggleTheme);
-      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
-      navigateTo('home');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
-</body>
-</html>
+      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click',
