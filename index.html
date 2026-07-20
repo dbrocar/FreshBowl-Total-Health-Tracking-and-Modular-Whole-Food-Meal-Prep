@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── CSS (same as before – include full styles) ── */
+    /* ── CSS ── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f5f7;
@@ -48,13 +48,18 @@
     button.secondary:hover { background: var(--border); }
     button.outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
     button.outline:hover { background: var(--primary-dim); }
+    /* ── Toggle Switch ── */
+    .toggle-switch { display: flex; align-items: center; gap: 6px; }
+    .toggle-switch .track { position: relative; width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
+    .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    [data-theme="dark"] .toggle-switch .track { background: var(--primary); }
+    [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
+    .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
     .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; }
     .header-title { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; }
     .header-title small { font-size: 10px; font-weight: 400; color: var(--text2); display: block; margin-top: -2px; }
     .header-actions { display: flex; gap: 8px; align-items: center; }
-    .header-actions button { background: transparent; padding: 6px 10px; font-size: 20px; color: var(--text2); border-radius: var(--radius-sm); }
-    .header-actions button:hover { background: var(--surface2); }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
     .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); }
     .bottom-nav button .icon { font-size: 22px; line-height: 1; }
@@ -63,13 +68,8 @@
     .page.active { display: block; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); cursor: pointer; user-select: none; }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
     .card-title .icon { font-size: 20px; }
-    .card-title .arrow { margin-left: auto; transition: transform 0.2s; font-size: 14px; color: var(--text3); }
-    .card-title .arrow.open { transform: rotate(180deg); }
-    .card-body { overflow: hidden; max-height: 0; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 0; }
-    .card-body.open { max-height: 1000px; padding: 8px 0 0 0; }
-    .card-sub { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
     .badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: var(--primary-dim); color: var(--primary); }
@@ -126,22 +126,18 @@
     .walk-points { font-size: 12px; color: var(--text3); }
     .walk-map { width: 100%; height: 100px; border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; margin-top: 8px; }
     .walk-map svg { width: 100%; height: 100%; display: block; }
-    .swap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 300px; overflow-y: auto; }
-    .swap-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; text-align: center; font-size: 13px; cursor: pointer; transition: all var(--transition); }
-    .swap-item:hover, .swap-item.active { border-color: var(--primary); background: var(--primary-dim); color: var(--primary); font-weight: 600; }
-    .flex-between { display: flex; justify-content: space-between; align-items: center; }
-    .mt-2 { margin-top: 8px; } .mt-4 { margin-top: 16px; } .mb-2 { margin-bottom: 8px; } .mb-4 { margin-bottom: 16px; }
-    .text-center { text-align: center; } .text-muted { color: var(--text2); } .text-sm { font-size: 13px; } .text-xs { font-size: 11px; }
-    .flex { display: flex; } .flex-wrap { flex-wrap: wrap; } .items-center { align-items: center; } .w-full { width: 100%; } .hidden { display: none; }
-    .gap-2 { gap: 8px; } .gap-4 { gap: 16px; }
-    .protein-label { color: var(--text); font-weight: 500; }
-    .dashboard-results { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .result-pill { background: var(--surface2); padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); text-align: center; }
-    .result-pill .val { font-size: 18px; font-weight: 800; color: var(--primary); }
-    .result-pill .lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.3px; }
+    .carousel { position: relative; overflow: hidden; }
+    .carousel-container { display: flex; transition: transform 0.3s ease; }
+    .carousel-item { flex: 0 0 100%; padding: 0 4px; }
+    .carousel-nav { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
+    .carousel-nav button { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 6px 14px; border-radius: var(--radius-sm); font-size: 16px; }
+    .carousel-nav button:hover { background: var(--primary-dim); }
+    .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+    .carousel-dot.active { background: var(--primary); }
     #error { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 8px; margin-bottom: 16px; white-space: pre-wrap; display: none; border: 1px solid #ffcdd2; }
     #error.show { display: block; }
-    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } .dashboard-results { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } }
   </style>
 </head>
 <body>
@@ -151,7 +147,13 @@
       <div class="header-title">FRESHBOWL <small>Total Health Tracking &amp; Modular Whole-Food Meal Prep</small></div>
     </div>
     <div class="header-actions">
-      <button id="themeToggle" aria-label="Toggle theme">☀️</button>
+      <div class="toggle-switch">
+        <span class="label">☀️</span>
+        <div class="track" id="themeTrack" onclick="toggleTheme()">
+          <div class="thumb"></div>
+        </div>
+        <span class="label">🌙</span>
+      </div>
     </div>
   </header>
 
@@ -182,7 +184,6 @@
       el.className = 'show';
       return true;
     };
-
     window.addEventListener('unhandledrejection', function(e) {
       const el = document.getElementById('error');
       if (!el) return;
@@ -191,14 +192,13 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App (with fixed walk log display)
+    //  FRESHBOWL – Full App
     // ═══════════════════════════════════════════════════════════════════════
 
-    // ── Theme (must be defined early) ─────────────────────────────────────
+    // ── Theme ──────────────────────────────────────────────────────────────
     function applyTheme() {
       const dark = state.theme === 'dark';
       document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-      document.getElementById('themeToggle').textContent = dark ? '🌙' : '☀️';
     }
 
     function toggleTheme() {
@@ -207,7 +207,7 @@
       saveState();
     }
 
-    // ── FOODS Database (per oz) ──────────────────────────────────────────
+    // ── FOODS Database ────────────────────────────────────────────────────
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -292,8 +292,8 @@
       customFoods: {},
       utilsOpen: {},
       calcResults: {},
+      utilCarouselIndex: 0,
     };
-
     let petPhoto = '';
 
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -346,11 +346,12 @@
       state.customFoods = getStorage('customFoods', {});
       state.utilsOpen = getStorage('utilsOpen', {});
       state.calcResults = getStorage('calcResults', {});
-      
+      state.utilCarouselIndex = getStorage('utilCarouselIndex', 0);
+
       try { petPhoto = localStorage.getItem('fb_petPhoto') || ''; } catch { petPhoto = ''; }
 
       Object.keys(state.customFoods || {}).forEach(name => { FOODS[name] = state.customFoods[name]; });
-      
+
       if (!state.rotation || !Object.keys(state.rotation).length) {
         state.rotation = generateRotation(state.selectedProteins, state.favorites);
       }
@@ -375,7 +376,8 @@
       setStorage('customFoods', state.customFoods);
       setStorage('utilsOpen', state.utilsOpen);
       setStorage('calcResults', state.calcResults);
-      
+      setStorage('utilCarouselIndex', state.utilCarouselIndex);
+
       try {
         if (petPhoto) localStorage.setItem('fb_petPhoto', petPhoto);
         else localStorage.removeItem('fb_petPhoto');
@@ -627,28 +629,31 @@
 
     // ── Walk helpers ──────────────────────────────────────────────────────
     function walkRouteToSvg(coords, width, height) {
-      if (!coords || coords.length < 2) return '';
+      if (!coords || coords.length === 0) return '';
+      const w = width || 400;
+      const h = height || 100;
+      // If only one point, draw a single dot.
+      if (coords.length === 1) {
+        return `<svg viewBox="0 0 ${w} ${h}"><circle cx="${w/2}" cy="${h/2}" r="6" fill="var(--primary)"/></svg>`;
+      }
       const lats = coords.map(c => c.lat);
       const lngs = coords.map(c => c.lng);
       const minLat = Math.min(...lats);
       const maxLat = Math.max(...lats);
       const minLng = Math.min(...lngs);
       const maxLng = Math.max(...lngs);
-      const pad = 10;
+      const pad = 12;
       const latRange = maxLat - minLat || 0.001;
       const lngRange = maxLng - minLng || 0.001;
       const pts = coords.map(c => ({
-        x: pad + (c.lng - minLng) / lngRange * (width - 2*pad),
-        y: height - pad - (c.lat - minLat) / latRange * (height - 2*pad)
+        x: pad + (c.lng - minLng) / lngRange * (w - 2*pad),
+        y: h - pad - (c.lat - minLat) / latRange * (h - 2*pad)
       }));
-      let d = 'M' + pts[0].x.toFixed(1) + ',' + pts[0].y.toFixed(1);
-      for (let i = 1; i < pts.length; i++) {
-        d += ' L' + pts[i].x.toFixed(1) + ',' + pts[i].y.toFixed(1);
-      }
-      return `<svg viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="var(--surface2)" rx="6"/><polyline points="${pts.map(p => p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')}" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${pts[0].x}" cy="${pts[0].y}" r="4" fill="var(--primary)"/><circle cx="${pts[pts.length-1].x}" cy="${pts[pts.length-1].y}" r="4" fill="var(--error)"/></svg>`;
+      const d = pts.map((p,i) => (i===0?'M':'L') + p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+      return `<svg viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="var(--surface2)" rx="6"/><polyline points="${pts.map(p => p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')}" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${pts[0].x}" cy="${pts[0].y}" r="4" fill="var(--primary)"/><circle cx="${pts[pts.length-1].x}" cy="${pts[pts.length-1].y}" r="4" fill="var(--error)"/></svg>`;
     }
 
-    // ── Render: Home (with walk tracker – fixed variable 's') ────────────
+    // ── Render: Home ──────────────────────────────────────────────────────
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -670,8 +675,6 @@
       if (results.cost) resultItems.push({ label: 'Daily Cost', val: `$${results.cost.cpd.toFixed(2)}` });
       if (results.treats) resultItems.push({ label: 'Treat Budget', val: `${Math.round(results.treats.budget)} kcal` });
 
-      // Walk tracker display
-      let walkHtml = '';
       const walkActive = (typeof walkStartTime !== 'undefined' && walkStartTime !== null && walkInterval !== null);
       const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
       const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
@@ -680,7 +683,7 @@
       const currentMins = Math.floor(currentTime / 60);
       const currentSecs = Math.floor(currentTime % 60);
 
-      walkHtml = `
+      let walkHtml = `
         <div class="card">
           <div class="card-title"><span class="icon">🚶</span> Walk Tracker</div>
           <div class="walk-display">
@@ -688,7 +691,7 @@
             <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
             <div class="walk-points">${currentCoords.length} GPS points</div>
           </div>
-          ${currentCoords.length > 1 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
+          ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
           <div class="grid-2" style="margin-top:8px;">
             <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
             <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled style="opacity:0.5;"' : ''}>⏹ Stop & Save</button>
@@ -696,7 +699,6 @@
         </div>
       `;
 
-      // Recent walks – fixed the "s" variable issue
       let recentWalksHtml = '';
       if (state.walkLogs.length > 0) {
         const recent = state.walkLogs.slice(0, 5);
@@ -704,7 +706,6 @@
           <div class="card">
             <div class="card-title"><span class="icon">📋</span> Recent Walks</div>
             ${recent.map((w, idx) => {
-              // Ensure secs exists and is a number
               const secs = w.secs || 0;
               return `
               <div class="walk-log-item" style="border-bottom:1px solid var(--border);padding:8px 0;">
@@ -716,7 +717,7 @@
                   </div>
                   <button class="text-error text-xs" onclick="deleteWalkLog(${idx})">✕</button>
                 </div>
-                ${w.coords && w.coords.length > 1 ? `<div class="walk-map" style="height:60px;margin-top:4px;">${walkRouteToSvg(w.coords, 400, 60)}</div>` : ''}
+                ${w.coords && w.coords.length > 0 ? `<div class="walk-map" style="height:60px;margin-top:4px;">${walkRouteToSvg(w.coords, 400, 60)}</div>` : ''}
               </div>
             `}).join('')}
           </div>
@@ -775,7 +776,7 @@
       `;
     }
 
-    // ── Walk Tracker variables and functions ─────────────────────────────
+    // ── Walk Tracker ──────────────────────────────────────────────────────
     let walkInterval = null;
     let walkStartTime = null;
     let walkCoords = [];
@@ -935,12 +936,8 @@
       `;
     }
 
-    // ── Render: Utilities ──────────────────────────────────────────────────
-    function toggleUtils(id) {
-      state.utilsOpen[id] = !state.utilsOpen[id];
-      saveState();
-      renderUtilities();
-    }
+    // ── Render: Utilities (Carousel) ──────────────────────────────────────
+    let utilCarouselItems = [];
 
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
@@ -986,24 +983,64 @@
         ` },
       ];
 
-      let html = '';
-      utils.forEach(u => {
-        const open = state.utilsOpen[u.id] || false;
-        html += `
-          <div class="card">
-            <div class="card-title" onclick="toggleUtils('${u.id}')">
-              <span class="icon">${u.icon}</span>
-              ${u.title}
-              <span class="arrow ${open ? 'open' : ''}">▼</span>
+      // Build carousel items
+      utilCarouselItems = utils;
+      const total = utils.length;
+      const index = state.utilCarouselIndex || 0;
+      const current = utils[index] || utils[0];
+
+      let html = `
+        <div class="card">
+          <div class="card-title"><span class="icon">🧰</span> Utilities</div>
+          <div class="carousel">
+            <div class="carousel-container" id="carouselContainer" style="transform: translateX(-${index * 100}%);">
+              ${utils.map((u, i) => `
+                <div class="carousel-item">
+                  <div class="card" style="margin-bottom:0;">
+                    <div class="card-title" style="cursor:default;font-size:14px;">
+                      <span class="icon">${u.icon}</span>
+                      ${u.title}
+                    </div>
+                    ${u.content}
+                  </div>
+                </div>
+              `).join('')}
             </div>
-            <div class="card-body ${open ? 'open' : ''}">
-              ${u.content}
+            <div class="carousel-nav">
+              <button onclick="utilCarouselMove(-1)">‹</button>
+              <button onclick="utilCarouselMove(1)">›</button>
+            </div>
+            <div class="carousel-dots" id="carouselDots">
+              ${utils.map((u, i) => `<span class="carousel-dot ${i === index ? 'active' : ''}" onclick="utilCarouselMoveTo(${i})"></span>`).join('')}
             </div>
           </div>
-        `;
-      });
+        </div>
+      `;
 
       container.innerHTML = html;
+    }
+
+    function utilCarouselMove(direction) {
+      const total = utilCarouselItems.length;
+      let idx = (state.utilCarouselIndex || 0) + direction;
+      if (idx < 0) idx = total - 1;
+      if (idx >= total) idx = 0;
+      state.utilCarouselIndex = idx;
+      saveState();
+      // Update carousel without full re-render for smoothness
+      const container = document.getElementById('carouselContainer');
+      if (container) container.style.transform = `translateX(-${idx * 100}%)`;
+      const dots = document.querySelectorAll('#carouselDots .carousel-dot');
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+    }
+
+    function utilCarouselMoveTo(idx) {
+      state.utilCarouselIndex = idx;
+      saveState();
+      const container = document.getElementById('carouselContainer');
+      if (container) container.style.transform = `translateX(-${idx * 100}%)`;
+      const dots = document.querySelectorAll('#carouselDots .carousel-dot');
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
     }
 
     // ── Render: Guide ──────────────────────────────────────────────────────
@@ -1279,14 +1316,11 @@
     }
     window.calcCost = calcCost;
 
-    // ── Theme toggle ─────────────────────────────────────────────────────
-    window.toggleTheme = toggleTheme;
-
     // ── Init ───────────────────────────────────────────────────────────────
     function init() {
       loadState();
       document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
-      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      document.getElementById('themeTrack').addEventListener('click', toggleTheme);
       navigateTo('home');
     }
 
