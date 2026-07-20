@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── (Same CSS as before – I'll keep it compact) ── */
+    /* ── CSS ── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f5f7;
@@ -189,7 +189,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App
+    //  FRESHBOWL – Full App (fixed for localStorage quota)
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── FOODS Database (per oz) ──────────────────────────────────────────
@@ -277,8 +277,10 @@
       customFoods: {},
       utilsOpen: {},
       calcResults: {},
-      petPhoto: '',
     };
+
+    // ── Photo stored separately ────────────────────────────────────────────
+    let petPhoto = '';
 
     const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const PROTEIN_OPTIONS = ['Beef (85/15)','Ground Turkey','Ground Chicken','Pork Loin','Lamb','Veal','Bison','Duck','Sardines (canned)','Salmon (canned)'];
@@ -294,19 +296,88 @@
     }
 
     // ── State management ──────────────────────────────────────────────────
+    function getStorage(key, defaultVal) {
+      try {
+        const val = localStorage.getItem('fb_' + key);
+        return val ? JSON.parse(val) : defaultVal;
+      } catch { return defaultVal; }
+    }
+
+    function setStorage(key, val) {
+      try {
+        localStorage.setItem('fb_' + key, JSON.stringify(val));
+        return true;
+      } catch (e) {
+        // Quota exceeded – try to free space by removing photo if present
+        if (e.name === 'QuotaExceededError' || e.code === 22) {
+          try {
+            localStorage.removeItem('fb_petPhoto');
+          } catch {}
+        }
+        return false;
+      }
+    }
+
     function loadState() {
-      try { const s = localStorage.getItem('freshbowl_state'); if (s) Object.assign(state, JSON.parse(s)); } catch(e) {}
-      if (!state.dogs.length) state.dogs = [{ id:'dog1', name:'Bella', weight:65, activity:1.6, activityLabel:'Moderate (neutered)' }];
-      if (!state.activeDogId) state.activeDogId = state.dogs[0].id;
-      if (!state.selectedProteins.length) state.selectedProteins = ['Beef (85/15)','Ground Turkey','Pork Loin','Ground Chicken'];
-      if (!state.rotation || !Object.keys(state.rotation).length) state.rotation = generateRotation(state.selectedProteins, state.favorites);
+      state.dogs = getStorage('dogs', [{ id:'dog1', name:'Bella', weight:65, activity:1.6, activityLabel:'Moderate (neutered)' }]);
+      state.activeDogId = getStorage('activeDogId', state.dogs[0]?.id || '');
+      state.selectedProteins = getStorage('selectedProteins', ['Beef (85/15)','Ground Turkey','Pork Loin','Ground Chicken']);
+      state.favorites = getStorage('favorites', { vegs: [], starches: [], organs: [] });
+      state.rotation = getStorage('rotation', {});
+      state.fedLog = getStorage('fedLog', {});
+      state.addinsLog = getStorage('addinsLog', {});
+      state.swaps = getStorage('swaps', {});
+      state.suppChecks = getStorage('suppChecks', {});
+      state.walkLogs = getStorage('walkLogs', []);
+      state.walkerPin = getStorage('walkerPin', '1234');
+      state.theme = getStorage('theme', 'light');
+      state.usdaKey = getStorage('usdaKey', '');
+      state.customFoods = getStorage('customFoods', {});
+      state.utilsOpen = getStorage('utilsOpen', {});
+      state.calcResults = getStorage('calcResults', {});
+      
+      // Load photo separately
+      try { petPhoto = localStorage.getItem('fb_petPhoto') || ''; } catch { petPhoto = ''; }
+
+      // Restore custom foods into FOODS
       Object.keys(state.customFoods || {}).forEach(name => { FOODS[name] = state.customFoods[name]; });
-      if (!state.utilsOpen) state.utilsOpen = {};
-      if (!state.calcResults) state.calcResults = {};
+      
+      if (!state.rotation || !Object.keys(state.rotation).length) {
+        state.rotation = generateRotation(state.selectedProteins, state.favorites);
+      }
       applyTheme();
       saveState();
     }
-    function saveState() { localStorage.setItem('freshbowl_state', JSON.stringify(state)); }
+
+    function saveState() {
+      // Try to save each key separately; if one fails, the rest still save
+      setStorage('dogs', state.dogs);
+      setStorage('activeDogId', state.activeDogId);
+      setStorage('selectedProteins', state.selectedProteins);
+      setStorage('favorites', state.favorites);
+      setStorage('rotation', state.rotation);
+      setStorage('fedLog', state.fedLog);
+      setStorage('addinsLog', state.addinsLog);
+      setStorage('swaps', state.swaps);
+      setStorage('suppChecks', state.suppChecks);
+      setStorage('walkLogs', state.walkLogs);
+      setStorage('walkerPin', state.walkerPin);
+      setStorage('theme', state.theme);
+      setStorage('usdaKey', state.usdaKey);
+      setStorage('customFoods', state.customFoods);
+      setStorage('utilsOpen', state.utilsOpen);
+      setStorage('calcResults', state.calcResults);
+      
+      // Save photo separately
+      try {
+        if (petPhoto) localStorage.setItem('fb_petPhoto', petPhoto);
+        else localStorage.removeItem('fb_petPhoto');
+      } catch (e) {
+        // If photo is too large, remove it
+        try { localStorage.removeItem('fb_petPhoto'); } catch {}
+        petPhoto = '';
+      }
+    }
 
     // ── Rotation Engine ────────────────────────────────────────────────────
     function generateRotation(proteins, favs) {
@@ -316,12 +387,72 @@
       const mainA = { 1:mains[0], 2:mains[2], 3:mains[1], 4:mains[3] };
       const mainB = { 1:mains[1], 2:mains[3], 3:mains[0], 4:mains[2] };
       const alt   = { 1:fish[0]||mains[0], 2:fish[1]||mains[2], 3:fish[0]||mains[1], 4:fish[1]||mains[3] };
-      // Base template (we'll include the full one from earlier)
-      const base = { /* ... full base ... */ };
-      // Since the base is long, I'll just keep the structure; we'll include it in the final code.
-      // For now, I'll assume we copy the exact same base from the working version.
-      // To keep this answer concise, I'll include the full base in the final answer.
-      // (I'll put it here, but for readability I'll skip in this explanation)
+      const base = {
+        1: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null },
+                pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' },
+                pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Tue: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Bell Peppers', organ:'Beef Heart' },
+                pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Liver' } },
+          Wed: { am: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' },
+                pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null },
+                pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Liver' },
+                pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' },
+                pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } },
+        },
+        2: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:null },
+                pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' },
+                pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' },
+                pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' },
+                pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null },
+                pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Peas', organ:'Beef Heart' },
+                pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Liver' },
+                pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+        },
+        3: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Peas', organ:null },
+                pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' },
+                pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Tue: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' },
+                pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Beef Heart' },
+                pm: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null },
+                pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Chicken Liver' } },
+          Fri: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' },
+                pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Sat: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' },
+                pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } },
+        },
+        4: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null },
+                pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' },
+                pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' },
+                pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Wed: { am: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Carrots', organ:'Beef Liver' },
+                pm: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:null },
+                pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } },
+          Fri: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' },
+                pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Sat: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Zucchini', organ:'Beef Liver' },
+                pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+        },
+      };
       const result = {};
       let idx = 0;
       for (let w = 1; w <= 4; w++) {
@@ -498,13 +629,11 @@
       const amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
       const amMeal = getEffectiveMeal(y,m,d,'am');
       const pmMeal = getEffectiveMeal(y,m,d,'pm');
-      // Nutrition summary
       const start = new Date(y,m,d);
       const end = new Date(y,m,d);
       const nutResult = calcNutritionForDateRange(start, end);
       const total = nutResult.total;
       const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
-      // Calculator results
       const results = state.calcResults || {};
       const resultItems = [];
       if (results.calories) resultItems.push({ label: 'Calories', val: `${Math.round(results.calories.mer)} kcal` });
@@ -517,7 +646,7 @@
         <div class="card">
           <div class="dog-profile">
             <div class="dog-avatar" id="dogAvatar" onclick="document.getElementById('photoInput').click()">
-              ${state.petPhoto ? `<img src="${state.petPhoto}" alt="${dog.name}" />` : '🐕'}
+              ${petPhoto ? `<img src="${petPhoto}" alt="${dog.name}" />` : '🐕'}
               <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" />
             </div>
             <div class="dog-info">
@@ -761,7 +890,7 @@
       }
       window.scrollTo(0,0);
     }
-    window.navigateTo = navigateTo; // <-- IMMEDIATELY exposed
+    window.navigateTo = navigateTo;
 
     // ── Actions ────────────────────────────────────────────────────────────
     function toggleFed(key) { state.fedLog[key] = !state.fedLog[key]; saveState(); renderHome(); if (document.getElementById('page-nutrition').classList.contains('active')) renderNutrition(); }
@@ -785,9 +914,27 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(ev) {
-        state.petPhoto = ev.target.result;
-        saveState();
-        renderHome();
+        // Compress the image to avoid quota issues
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX = 200;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            const ratio = Math.min(MAX / w, MAX / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          // Use JPEG with 0.7 quality to reduce size
+          petPhoto = canvas.toDataURL('image/jpeg', 0.7);
+          saveState();
+          renderHome();
+        };
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     }
