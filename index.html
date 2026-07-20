@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── CSS (same as before – omitted for brevity, but include full styles) ── */
+    /* ── CSS (same as before – include full styles) ── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f5f5f7;
@@ -191,7 +191,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App
+    //  FRESHBOWL – Full App (with fixed walk log display)
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── Theme (must be defined early) ─────────────────────────────────────
@@ -648,7 +648,7 @@
       return `<svg viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="var(--surface2)" rx="6"/><polyline points="${pts.map(p => p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')}" stroke="var(--primary)" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${pts[0].x}" cy="${pts[0].y}" r="4" fill="var(--primary)"/><circle cx="${pts[pts.length-1].x}" cy="${pts[pts.length-1].y}" r="4" fill="var(--error)"/></svg>`;
     }
 
-    // ── Render: Home (with walk tracker) ──────────────────────────────────
+    // ── Render: Home (with walk tracker – fixed variable 's') ────────────
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -696,26 +696,29 @@
         </div>
       `;
 
-      // Recent walks
+      // Recent walks – fixed the "s" variable issue
       let recentWalksHtml = '';
       if (state.walkLogs.length > 0) {
         const recent = state.walkLogs.slice(0, 5);
         recentWalksHtml = `
           <div class="card">
             <div class="card-title"><span class="icon">📋</span> Recent Walks</div>
-            ${recent.map((w, idx) => `
+            ${recent.map((w, idx) => {
+              // Ensure secs exists and is a number
+              const secs = w.secs || 0;
+              return `
               <div class="walk-log-item" style="border-bottom:1px solid var(--border);padding:8px 0;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                   <div>
                     <span class="text-sm font-medium">${w.date}</span>
-                    <span class="text-xs text-muted">${w.mins}m ${w.secs?s:0}s</span>
+                    <span class="text-xs text-muted">${w.mins}m ${secs}s</span>
                     <span class="text-xs text-muted">${w.dist.toFixed(2)} miles</span>
                   </div>
                   <button class="text-error text-xs" onclick="deleteWalkLog(${idx})">✕</button>
                 </div>
                 ${w.coords && w.coords.length > 1 ? `<div class="walk-map" style="height:60px;margin-top:4px;">${walkRouteToSvg(w.coords, 400, 60)}</div>` : ''}
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
         `;
       }
@@ -1276,7 +1279,7 @@
     }
     window.calcCost = calcCost;
 
-    // ── Theme toggle (already defined early) ─────────────────────────────
+    // ── Theme toggle ─────────────────────────────────────────────────────
     window.toggleTheme = toggleTheme;
 
     // ── Init ───────────────────────────────────────────────────────────────
