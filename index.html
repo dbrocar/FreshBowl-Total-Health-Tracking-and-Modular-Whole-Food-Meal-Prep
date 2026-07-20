@@ -68,8 +68,12 @@
     .page.active { display: block; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--primary); cursor: pointer; user-select: none; }
     .card-title .icon { font-size: 20px; }
+    .card-title .arrow { margin-left: auto; transition: transform 0.2s; font-size: 14px; color: var(--text3); }
+    .card-title .arrow.open { transform: rotate(180deg); }
+    .card-body { overflow: hidden; max-height: 0; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 0; }
+    .card-body.open { max-height: 2000px; padding: 8px 0 0 0; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
     .badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: var(--primary-dim); color: var(--primary); }
@@ -126,18 +130,27 @@
     .walk-points { font-size: 12px; color: var(--text3); }
     .walk-map { width: 100%; height: 100px; border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; margin-top: 8px; }
     .walk-map svg { width: 100%; height: 100%; display: block; }
-    .carousel { position: relative; overflow: hidden; }
-    .carousel-container { display: flex; transition: transform 0.3s ease; }
-    .carousel-item { flex: 0 0 100%; padding: 0 4px; }
-    .carousel-nav { display: flex; justify-content: center; gap: 12px; margin-top: 12px; }
-    .carousel-nav button { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 6px 14px; border-radius: var(--radius-sm); font-size: 16px; }
-    .carousel-nav button:hover { background: var(--primary-dim); }
-    .carousel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
-    .carousel-dot.active { background: var(--primary); }
+    .walk-history-item { border-bottom: 1px solid var(--border); padding: 8px 0; }
+    .walk-history-item:last-child { border-bottom: none; }
+    .accordion-item { margin-bottom: 8px; }
+    .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface2); border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border); transition: background 0.2s; }
+    .accordion-header:hover { background: var(--border); }
+    .accordion-header .arrow { transition: transform 0.2s; font-size: 14px; color: var(--text3); }
+    .accordion-header .arrow.open { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 4px; }
+    .accordion-body.open { max-height: 3000px; padding: 8px 4px 0 4px; }
+    .accordion-body .card { margin-bottom: 12px; }
+    .accordion-body .card:last-child { margin-bottom: 0; }
+    .vet-field-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .vet-field-label { font-size: 13px; font-weight: 600; color: var(--text2); }
+    .vaccine-item { border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+    .vaccine-item:last-child { border-bottom: none; }
+    .vaccine-item .info { flex: 1; }
+    .vaccine-item .info .name { font-weight: 600; }
+    .vaccine-item .info .detail { font-size: 12px; color: var(--text2); }
     #error { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 8px; margin-bottom: 16px; white-space: pre-wrap; display: none; border: 1px solid #ffcdd2; }
     #error.show { display: block; }
-    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } }
+    @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr 1fr; } .dog-profile { flex-direction: column; text-align: center; } .dog-stats { justify-content: center; } .donut-wrap { flex-direction: column; align-items: stretch; } .vet-field-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -149,7 +162,7 @@
     <div class="header-actions">
       <div class="toggle-switch">
         <span class="label">☀️</span>
-        <div class="track" id="themeTrack" onclick="toggleTheme()">
+        <div class="track" id="themeTrack">
           <div class="thumb"></div>
         </div>
         <span class="label">🌙</span>
@@ -192,7 +205,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  FRESHBOWL – Full App
+    //  FRESHBOWL – Full App (with accordion tree utilities)
     // ═══════════════════════════════════════════════════════════════════════
 
     // ── Theme ──────────────────────────────────────────────────────────────
@@ -292,7 +305,12 @@
       customFoods: {},
       utilsOpen: {},
       calcResults: {},
-      utilCarouselIndex: 0,
+      showAllWalks: false,
+      // New state for utilities tree
+      utreeOpen: { calculators: true, vet: false, vaccines: false, misc: false },
+      vetInfo: { name: '', clinic: '', phone: '', email: '', address: '', notes: '' },
+      vaccines: [],
+      miscNotes: '',
     };
     let petPhoto = '';
 
@@ -346,7 +364,12 @@
       state.customFoods = getStorage('customFoods', {});
       state.utilsOpen = getStorage('utilsOpen', {});
       state.calcResults = getStorage('calcResults', {});
-      state.utilCarouselIndex = getStorage('utilCarouselIndex', 0);
+      state.showAllWalks = getStorage('showAllWalks', false);
+      // New utilities tree state
+      state.utreeOpen = getStorage('utreeOpen', { calculators: true, vet: false, vaccines: false, misc: false });
+      state.vetInfo = getStorage('vetInfo', { name: '', clinic: '', phone: '', email: '', address: '', notes: '' });
+      state.vaccines = getStorage('vaccines', []);
+      state.miscNotes = getStorage('miscNotes', '');
 
       try { petPhoto = localStorage.getItem('fb_petPhoto') || ''; } catch { petPhoto = ''; }
 
@@ -376,7 +399,11 @@
       setStorage('customFoods', state.customFoods);
       setStorage('utilsOpen', state.utilsOpen);
       setStorage('calcResults', state.calcResults);
-      setStorage('utilCarouselIndex', state.utilCarouselIndex);
+      setStorage('showAllWalks', state.showAllWalks);
+      setStorage('utreeOpen', state.utreeOpen);
+      setStorage('vetInfo', state.vetInfo);
+      setStorage('vaccines', state.vaccines);
+      setStorage('miscNotes', state.miscNotes);
 
       try {
         if (petPhoto) localStorage.setItem('fb_petPhoto', petPhoto);
@@ -632,7 +659,6 @@
       if (!coords || coords.length === 0) return '';
       const w = width || 400;
       const h = height || 100;
-      // If only one point, draw a single dot.
       if (coords.length === 1) {
         return `<svg viewBox="0 0 ${w} ${h}"><circle cx="${w/2}" cy="${h/2}" r="6" fill="var(--primary)"/></svg>`;
       }
@@ -683,7 +709,38 @@
       const currentMins = Math.floor(currentTime / 60);
       const currentSecs = Math.floor(currentTime % 60);
 
-      let walkHtml = `
+      let historyHtml = '';
+      const totalWalks = state.walkLogs.length;
+      if (totalWalks > 0) {
+        const displayWalks = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0, 2);
+        const extraCount = totalWalks - 2;
+        historyHtml = displayWalks.map((w, idx) => {
+          const secs = w.secs || 0;
+          return `
+            <div class="walk-history-item">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <span class="text-sm font-medium">${w.date}</span>
+                  <span class="text-xs text-muted">${w.mins}m ${secs}s</span>
+                  <span class="text-xs text-muted">${w.dist.toFixed(2)} miles</span>
+                </div>
+                <button class="text-error text-xs" onclick="deleteWalkLog(${idx})">✕</button>
+              </div>
+              ${w.coords && w.coords.length > 0 ? `<div class="walk-map" style="height:60px;margin-top:4px;">${walkRouteToSvg(w.coords, 400, 60)}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+
+        if (!state.showAllWalks && totalWalks > 2) {
+          historyHtml += `<button class="secondary w-full mt-2" onclick="toggleWalkHistory()">See More (${extraCount} more)</button>`;
+        } else if (state.showAllWalks && totalWalks > 2) {
+          historyHtml += `<button class="secondary w-full mt-2" onclick="toggleWalkHistory()">Show Less</button>`;
+        }
+      } else {
+        historyHtml = `<div class="text-muted text-sm">No walks saved yet.</div>`;
+      }
+
+      const walkHtml = `
         <div class="card">
           <div class="card-title"><span class="icon">🚶</span> Walk Tracker</div>
           <div class="walk-display">
@@ -696,33 +753,12 @@
             <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
             <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled style="opacity:0.5;"' : ''}>⏹ Stop & Save</button>
           </div>
+          <div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">
+            <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Recent Walks</div>
+            ${historyHtml}
+          </div>
         </div>
       `;
-
-      let recentWalksHtml = '';
-      if (state.walkLogs.length > 0) {
-        const recent = state.walkLogs.slice(0, 5);
-        recentWalksHtml = `
-          <div class="card">
-            <div class="card-title"><span class="icon">📋</span> Recent Walks</div>
-            ${recent.map((w, idx) => {
-              const secs = w.secs || 0;
-              return `
-              <div class="walk-log-item" style="border-bottom:1px solid var(--border);padding:8px 0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <div>
-                    <span class="text-sm font-medium">${w.date}</span>
-                    <span class="text-xs text-muted">${w.mins}m ${secs}s</span>
-                    <span class="text-xs text-muted">${w.dist.toFixed(2)} miles</span>
-                  </div>
-                  <button class="text-error text-xs" onclick="deleteWalkLog(${idx})">✕</button>
-                </div>
-                ${w.coords && w.coords.length > 0 ? `<div class="walk-map" style="height:60px;margin-top:4px;">${walkRouteToSvg(w.coords, 400, 60)}</div>` : ''}
-              </div>
-            `}).join('')}
-          </div>
-        `;
-      }
 
       const container = document.getElementById('homeContent');
       container.innerHTML = `
@@ -756,7 +792,6 @@
           </div>
         </div>
         ${walkHtml}
-        ${recentWalksHtml}
         <div class="card">
           <div class="card-title"><span class="icon">📊</span> Quick Stats</div>
           <div class="grid-3">
@@ -774,6 +809,13 @@
         </div>
         ` : ''}
       `;
+    }
+
+    // ── Toggle walk history ──────────────────────────────────────────────
+    function toggleWalkHistory() {
+      state.showAllWalks = !state.showAllWalks;
+      saveState();
+      renderHome();
     }
 
     // ── Walk Tracker ──────────────────────────────────────────────────────
@@ -936,111 +978,169 @@
       `;
     }
 
-    // ── Render: Utilities (Carousel) ──────────────────────────────────────
-    let utilCarouselItems = [];
-
+    // ── Render: Utilities (Tree Accordion) ───────────────────────────────
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
-      const utils = [
-        { id: 'usda', icon: '🔑', title: 'USDA API Key', content: `
+      // ── Calculators content ──
+      const calculatorsContent = `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🔑</span> USDA API Key</div>
           <div class="input-group"><label>Enter your free USDA API key</label><input type="text" id="usdaKeyInput" placeholder="Paste your API key here" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" /></div>
           <div class="text-xs text-muted">Get a free key at <a href="https://fdc.nal.usda.gov/api-key-signup.html" target="_blank" style="color:var(--primary);">fdc.nal.usda.gov/api-key-signup</a></div>
-        ` },
-        { id: 'water', icon: '💧', title: 'Water Intake', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💧</span> Water Intake</div>
           <div class="input-group"><label>Weight (lb)</label><input type="number" id="waterWeight" placeholder="Enter weight" value="${getActiveDog().weight || 65}" /></div>
           <button class="primary w-full" onclick="calcWater()">Calculate Daily Water</button>
           <div id="waterResult" class="mt-2 text-muted"></div>
-        ` },
-        { id: 'calories', icon: '🧮', title: 'Calories Per Meal', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🧮</span> Calories Per Meal</div>
           <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="calcWeight" value="25" /></div><div class="input-group"><label>Meals</label><select id="calcMeals"><option value="2">2</option><option value="3">3</option></select></div></div>
           <div class="input-group"><label>Activity</label><select id="calcActivity"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div>
           <button class="primary w-full" onclick="runCalorieCalc()">Calculate</button><div id="calcResult" class="mt-2 text-muted"></div>
-        ` },
-        { id: 'walk', icon: '🐕', title: 'Walk Tracker', content: `
-          <div id="walkDisplay" class="walk-display"><div class="walk-time">00:00</div><div class="walk-dist">0.00 miles</div><div class="walk-points">0 GPS points</div></div>
-          <div class="grid-2"><button class="primary" onclick="startWalk()">▶️ Start</button><button class="secondary" onclick="stopWalk()">⏹ Stop</button></div>
-          <button class="secondary w-full mt-2" onclick="showWalkerLogin()">👤 Walker Login</button>
-        ` },
-        { id: 'flea', icon: '🐛', title: 'Flea/Tick Schedule', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🐛</span> Flea/Tick Schedule</div>
           <div class="input-group"><label>Last dose</label><input type="date" id="fleaDate" /></div>
           <div class="input-group"><label>Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div>
           <button class="primary w-full" onclick="generateFleaSchedule()">Generate</button><div id="fleaResult" class="mt-2 text-muted"></div>
-        ` },
-        { id: 'chocolate', icon: '🍫', title: 'Chocolate Toxicity', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🍫</span> Chocolate Toxicity</div>
           <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="chocWeight" value="25" /></div><div class="input-group"><label>Amount (g)</label><input type="number" id="chocAmount" value="50" /></div></div>
           <div class="input-group"><label>Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div>
           <button class="primary w-full" onclick="calcChocolate()">Calculate</button><div id="chocResult" class="mt-2 text-muted"></div>
-        ` },
-        { id: 'treats', icon: '🍬', title: 'Treat Allowance (10%)', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🍬</span> Treat Allowance (10%)</div>
           <div class="input-group"><label>Weight (kg)</label><input type="number" id="treatWeight" value="25" /></div>
           <button class="primary w-full" onclick="calcTreats()">Calculate</button><div id="treatResult" class="mt-2 text-muted"></div>
-        ` },
-        { id: 'cost', icon: '💰', title: 'True Cost Per Day', content: `
+        </div>
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💰</span> True Cost Per Day</div>
           <div class="grid-2"><div class="input-group"><label>Price ($)</label><input type="number" id="costPrice" value="45" /></div><div class="input-group"><label>Bag (kg)</label><input type="number" id="costBag" value="15" /></div></div>
           <div class="input-group"><label>Daily portion (g)</label><input type="number" id="costPortion" value="300" /></div>
           <button class="primary w-full" onclick="calcCost()">Calculate</button><div id="costResult" class="mt-2 text-muted"></div>
-        ` },
-      ];
+        </div>
+      `;
 
-      // Build carousel items
-      utilCarouselItems = utils;
-      const total = utils.length;
-      const index = state.utilCarouselIndex || 0;
-      const current = utils[index] || utils[0];
-
-      let html = `
+      // ── Vet Information ──
+      const vetContent = `
         <div class="card">
-          <div class="card-title"><span class="icon">🧰</span> Utilities</div>
-          <div class="carousel">
-            <div class="carousel-container" id="carouselContainer" style="transform: translateX(-${index * 100}%);">
-              ${utils.map((u, i) => `
-                <div class="carousel-item">
-                  <div class="card" style="margin-bottom:0;">
-                    <div class="card-title" style="cursor:default;font-size:14px;">
-                      <span class="icon">${u.icon}</span>
-                      ${u.title}
-                    </div>
-                    ${u.content}
-                  </div>
-                </div>
-              `).join('')}
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">🏥</span> Vet Information</div>
+          <div class="vet-field-row"><span class="vet-field-label">Vet name</span><input class="vet-field-input" type="text" id="vetName" placeholder="Dr. Smith" value="${state.vetInfo.name}" onchange="updateVetInfo('name',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Clinic</span><input class="vet-field-input" type="text" id="vetClinic" placeholder="Animal Care Clinic" value="${state.vetInfo.clinic}" onchange="updateVetInfo('clinic',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Phone</span><input class="vet-field-input" type="text" id="vetPhone" placeholder="(555) 123-4567" value="${state.vetInfo.phone}" onchange="updateVetInfo('phone',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Email</span><input class="vet-field-input" type="text" id="vetEmail" placeholder="clinic@example.com" value="${state.vetInfo.email}" onchange="updateVetInfo('email',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Address</span><input class="vet-field-input" type="text" id="vetAddress" placeholder="123 Main St, City" value="${state.vetInfo.address}" onchange="updateVetInfo('address',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Notes</span><input class="vet-field-input" type="text" id="vetNotes" placeholder="After-hours line, emergency contact..." value="${state.vetInfo.notes}" onchange="updateVetInfo('notes',this.value)" /></div>
+        </div>
+      `;
+
+      // ── Vaccine Records ──
+      const vaccineList = state.vaccines.length > 0 ? state.vaccines.map((v, i) => `
+        <div class="vaccine-item">
+          <div class="info">
+            <div class="name">${v.name}</div>
+            <div class="detail">Given: ${v.date} ${v.nextDate ? '· Next due: '+v.nextDate : ''} ${v.notes ? '· '+v.notes : ''}</div>
+          </div>
+          <button class="text-error text-xs" onclick="deleteVaccine(${i})">✕</button>
+        </div>
+      `).join('') : '<div class="text-muted text-sm">No vaccines recorded yet.</div>';
+
+      const vaccinesContent = `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">💉</span> Vaccine Records</div>
+          ${vaccineList}
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+            <div style="font-weight:600;font-size:13px;margin-bottom:6px;">Add Vaccine</div>
+            <div class="grid-2">
+              <div class="input-group"><label>Name</label><input type="text" id="vaccName" placeholder="e.g. Rabies" /></div>
+              <div class="input-group"><label>Date given</label><input type="date" id="vaccDate" /></div>
             </div>
-            <div class="carousel-nav">
-              <button onclick="utilCarouselMove(-1)">‹</button>
-              <button onclick="utilCarouselMove(1)">›</button>
+            <div class="grid-2">
+              <div class="input-group"><label>Next due</label><input type="date" id="vaccNext" /></div>
+              <div class="input-group"><label>Notes</label><input type="text" id="vaccNotes" placeholder="e.g. clinic name" /></div>
             </div>
-            <div class="carousel-dots" id="carouselDots">
-              ${utils.map((u, i) => `<span class="carousel-dot ${i === index ? 'active' : ''}" onclick="utilCarouselMoveTo(${i})"></span>`).join('')}
-            </div>
+            <button class="primary w-full" onclick="addVaccine()">+ Add Vaccine</button>
           </div>
         </div>
       `;
 
+      // ── Misc Notes ──
+      const miscContent = `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><span class="icon">📝</span> Misc Notes</div>
+          <textarea id="miscNotesArea" class="note-textarea" placeholder="General notes, reminders, or anything else..." rows="6" onchange="saveMiscNotes(this.value)">${state.miscNotes}</textarea>
+          <div class="text-xs text-muted mt-2">Auto-saved as you type.</div>
+        </div>
+      `;
+
+      // ── Build the accordion ──
+      const sections = [
+        { id: 'calculators', icon: '🧮', label: 'Calculators', content: calculatorsContent },
+        { id: 'vet', icon: '🏥', label: 'Vet Information', content: vetContent },
+        { id: 'vaccines', icon: '💉', label: 'Vaccine Records', content: vaccinesContent },
+        { id: 'misc', icon: '📝', label: 'Misc Notes', content: miscContent },
+      ];
+
+      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);"><span class="icon">🌳</span> Utilities</div>`;
+      sections.forEach(s => {
+        const open = state.utreeOpen[s.id] || false;
+        html += `
+          <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleTreeSection('${s.id}')">
+              <span><span class="icon">${s.icon}</span> ${s.label}</span>
+              <span class="arrow ${open ? 'open' : ''}">▼</span>
+            </div>
+            <div class="accordion-body ${open ? 'open' : ''}">
+              ${s.content}
+            </div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+
       container.innerHTML = html;
     }
 
-    function utilCarouselMove(direction) {
-      const total = utilCarouselItems.length;
-      let idx = (state.utilCarouselIndex || 0) + direction;
-      if (idx < 0) idx = total - 1;
-      if (idx >= total) idx = 0;
-      state.utilCarouselIndex = idx;
+    // ── Tree accordion toggle ─────────────────────────────────────────────
+    function toggleTreeSection(id) {
+      state.utreeOpen[id] = !state.utreeOpen[id];
       saveState();
-      // Update carousel without full re-render for smoothness
-      const container = document.getElementById('carouselContainer');
-      if (container) container.style.transform = `translateX(-${idx * 100}%)`;
-      const dots = document.querySelectorAll('#carouselDots .carousel-dot');
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+      renderUtilities();
     }
 
-    function utilCarouselMoveTo(idx) {
-      state.utilCarouselIndex = idx;
+    // ── Vet info update ──────────────────────────────────────────────────
+    function updateVetInfo(field, value) {
+      state.vetInfo[field] = value;
       saveState();
-      const container = document.getElementById('carouselContainer');
-      if (container) container.style.transform = `translateX(-${idx * 100}%)`;
-      const dots = document.querySelectorAll('#carouselDots .carousel-dot');
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+    }
+
+    // ── Vaccine functions ─────────────────────────────────────────────────
+    function addVaccine() {
+      const name = document.getElementById('vaccName').value.trim();
+      const date = document.getElementById('vaccDate').value;
+      const nextDate = document.getElementById('vaccNext').value;
+      const notes = document.getElementById('vaccNotes').value.trim();
+      if (!name || !date) return alert('Please enter at least a name and date.');
+      state.vaccines.push({ name, date, nextDate, notes });
+      saveState();
+      renderUtilities();
+    }
+
+    function deleteVaccine(idx) {
+      state.vaccines.splice(idx, 1);
+      saveState();
+      renderUtilities();
+    }
+
+    // ── Misc notes ────────────────────────────────────────────────────────
+    function saveMiscNotes(value) {
+      state.miscNotes = value;
+      saveState();
     }
 
     // ── Render: Guide ──────────────────────────────────────────────────────
@@ -1316,11 +1416,23 @@
     }
     window.calcCost = calcCost;
 
+    // ── Theme toggle ─────────────────────────────────────────────────────
+    window.toggleTheme = toggleTheme;
+
+    // ── Tree toggle ──────────────────────────────────────────────────────
+    window.toggleTreeSection = toggleTreeSection;
+    window.updateVetInfo = updateVetInfo;
+    window.addVaccine = addVaccine;
+    window.deleteVaccine = deleteVaccine;
+    window.saveMiscNotes = saveMiscNotes;
+    window.toggleWalkHistory = toggleWalkHistory;
+
     // ── Init ───────────────────────────────────────────────────────────────
     function init() {
       loadState();
-      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
+      // Set up theme toggle with event listener
       document.getElementById('themeTrack').addEventListener('click', toggleTheme);
+      document.querySelectorAll('.bottom-nav button').forEach(btn => btn.addEventListener('click', () => navigateTo(btn.dataset.page)));
       navigateTo('home');
     }
 
