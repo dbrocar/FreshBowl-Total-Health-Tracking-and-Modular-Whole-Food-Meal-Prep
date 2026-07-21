@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FRESH BOWL METHOD — whole food rotation feeding for dogs</title>
+  <title>FRESHBOWL — Total Health Tracking</title>
   <meta name="theme-color" content="#c8933a" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="FRESH BOWL METHOD" />
+  <meta name="apple-mobile-web-app-title" content="FRESHBOWL" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <!-- Font Awesome 6 (free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- Leaflet CSS for walk maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    /* ─── CSS ────────────────────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f8f4ec;
@@ -66,114 +63,104 @@
     [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
     .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
-    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; }
-    .header-title { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
-    .header-title small { font-size: 11px; font-weight: 400; color: var(--text3); display: block; margin-top: -4px; -webkit-text-fill-color: var(--text3); }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .header-title { font-size: 17px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.3px; line-height: 1.2; }
+    .header-title small { font-size: 10px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; }
+    .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .walker-btn { background: var(--green-dim); border: 1px solid var(--green); border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 800; color: var(--green); display: flex; align-items: center; gap: 4px; }
+    .walker-btn:active { transform: scale(0.95); }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
-    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 11px; font-weight: 600; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); border: none; }
-    .bottom-nav button .icon { font-size: 24px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
+    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 1px; transition: color var(--transition); border: none; }
+    .bottom-nav button .icon { font-size: 22px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
     .bottom-nav button.active .icon { color: var(--primary); transform: scale(1.1); }
     .bottom-nav button.active { color: var(--primary); }
-    .page { display: none; padding: 16px 0 20px; animation: fadeUp 0.25s ease; }
+    .page { display: none; padding: 12px 0 20px; animation: fadeUp 0.25s ease; }
     .page.active { display: block; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; color: var(--primary); cursor: default; }
-    .card-title .icon { font-size: 26px; width: 34px; text-align: center; background: var(--primary-dim); border-radius: 10px; padding: 4px; color: var(--primary); }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .card-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: var(--primary); cursor: default; }
+    .card-title .icon { font-size: 22px; width: 30px; text-align: center; background: var(--primary-dim); border-radius: 8px; padding: 4px; color: var(--primary); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .badge { display: inline-block; padding: 2px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; background: var(--primary-dim); color: var(--primary); }
     .badge.green { background: var(--green-dim); color: var(--green); }
     .badge.red { background: rgba(224,82,82,0.15); color: #e05252; }
     .badge.orange { background: rgba(230,150,50,0.15); color: #d98c2a; }
     .badge.blue { background: var(--blue-dim); color: var(--blue); }
-    .dog-switcher { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 8px 0; }
-    .dog-switcher .name { font-size: 26px; font-weight: 900; color: var(--text); }
-    .dog-switcher .btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text2); transition: all 0.2s; }
-    .dog-switcher .btn:hover { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
-    .dog-switcher .add-btn { background: var(--primary); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #0a0e1a; font-weight: 700; }
-    .dog-switcher .add-btn:hover { background: var(--primary-dark); }
-    .dog-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; overflow: hidden; cursor: pointer; }
-    .dog-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .dog-avatar input[type="file"] { display: none; }
-    .dog-stats { font-size: 14px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
-    .inventory-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .inventory-row:last-child { border-bottom: none; }
-    .inventory-row .label { font-weight: 600; font-size: 15px; }
-    .inventory-row .count { display: flex; align-items: center; gap: 10px; }
-    .inventory-row .count button { padding: 2px 10px; font-size: 18px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 32px; }
-    .inventory-row .count button:hover { background: var(--primary); border-color: var(--primary); }
-    .inventory-row .count .num { font-weight: 800; min-width: 28px; text-align: center; font-size: 17px; }
-    .inventory-row .warning { font-size: 12px; color: #e05252; font-weight: 700; margin-left: 8px; }
+    .dog-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+    .dog-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 6px 14px; font-family: var(--font); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+    .dog-chip.active { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
+    .dog-chip.add { border-style: dashed; background: transparent; }
+    .dog-chip:active { transform: scale(0.95); }
+    .inventory-warning { background: rgba(224,82,82,0.08); border-left: 4px solid #e05252; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+    .inventory-warning strong { color: #e05252; }
     .meal-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--border); }
     .meal-card.fed { border-left-color: var(--green); background: var(--green-dim); }
     .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
     .meal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); }
     .meal-fed { font-size: 13px; font-weight: 700; color: var(--green); }
     .meal-fed.not { color: var(--text3); }
-    .meal-protein { font-size: 17px; font-weight: 800; }
-    .meal-details { font-size: 14px; color: var(--text2); line-height: 1.6; }
-    .meal-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .meal-protein { font-size: 16px; font-weight: 800; }
+    .meal-details { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .meal-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
     .meal-actions button { padding: 4px 12px; font-size: 12px; border-radius: var(--radius-full); background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
     .meal-actions button.primary { background: var(--primary); color: #0a0e1a; border: none; }
-    .donut-wrap { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
-    .donut-legend { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .donut-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-    .donut-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
-    .donut-label { flex: 1; color: var(--text2); font-weight: 600; }
-    .donut-val { color: var(--text); font-weight: 700; }
-    .nutrient-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .nutrient-item .bar { height: 6px; background: var(--surface2); border-radius: 4px; margin-top: 4px; overflow: hidden; }
-    .nutrient-item .bar .fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+    .walk-display { text-align: center; padding: 12px; background: var(--surface2); border-radius: var(--radius-sm); margin: 8px 0; }
+    .walk-time { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
+    .walk-dist { font-size: 16px; color: var(--text2); margin-top: 2px; font-weight: 600; }
+    .walk-points { font-size: 12px; color: var(--text3); }
+    .walk-map { width: 100%; height: 180px; border-radius: var(--radius-sm); overflow: hidden; margin-top: 8px; background: var(--surface2); position: relative; }
+    .walk-map .leaflet-container { width: 100%; height: 100%; }
+    .walk-history-item { border-bottom: 1px solid var(--border); padding: 6px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .walk-history-item:last-child { border-bottom: none; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s; }
     .modal { background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 20px 16px; animation: slideUp 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .modal-title { font-size: 19px; font-weight: 800; color: var(--primary); }
-    .modal-close { background: transparent; padding: 4px 8px; font-size: 26px; color: var(--text2); border: none; }
-    .input-group { margin-bottom: 12px; }
-    .input-group label { display: block; font-size: 14px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
-    .rotation-week { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
-    .rotation-week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .rotation-week-title { font-weight: 800; color: var(--primary); }
-    .rotation-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .rotation-day { background: var(--surface); border-radius: 6px; padding: 4px 2px; text-align: center; font-size: 10px; border: 1px solid var(--border); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .modal-title { font-size: 18px; font-weight: 800; color: var(--primary); }
+    .modal-close { background: transparent; padding: 4px 8px; font-size: 24px; color: var(--text2); border: none; }
+    .input-group { margin-bottom: 10px; }
+    .input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 3px; }
+    .rotation-week { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px; }
+    .rotation-week-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; }
+    .rotation-week-title { font-weight: 800; color: var(--primary); font-size: 15px; }
+    .rotation-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; overflow: hidden; transition: max-height 0.3s ease; }
+    .rotation-days.collapsed { max-height: 0; padding: 0; margin: 0; }
+    .rotation-days.expanded { max-height: 2000px; }
+    .rotation-day { background: var(--surface); border-radius: 6px; padding: 4px 2px; text-align: center; font-size: 9px; border: 1px solid var(--border); }
     .rotation-day.fish { border-color: var(--blue); background: var(--blue-dim); }
-    .walk-display { text-align: center; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); margin: 12px 0; }
-    .walk-time { font-size: 34px; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
-    .walk-dist { font-size: 17px; color: var(--text2); margin-top: 4px; font-weight: 600; }
-    .walk-points { font-size: 13px; color: var(--text3); }
-    .walk-map { width: 100%; height: 200px; border-radius: var(--radius-sm); overflow: hidden; margin-top: 8px; background: var(--surface2); position: relative; }
-    .walk-map .leaflet-container { width: 100%; height: 100%; }
-    .walk-history-item { border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
-    .walk-history-item:last-child { border-bottom: none; }
-    .accordion-item { margin-bottom: 8px; }
-    .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface2); border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border); transition: background 0.2s; }
-    .accordion-header:hover { background: var(--border); }
-    .accordion-header .arrow { transition: transform 0.2s; font-size: 14px; color: var(--text3); }
-    .accordion-header .arrow.open { transform: rotate(180deg); }
-    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 4px; }
-    .accordion-body.open { max-height: 3000px; padding: 8px 4px 0 4px; }
-    .accordion-body .card { margin-bottom: 12px; }
-    .accordion-body .card:last-child { margin-bottom: 0; }
-    .vet-field-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
-    .vet-field-label { font-size: 14px; font-weight: 600; color: var(--text2); }
-    .rolodex-container { min-height: 180px; }
-    .rolodex-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; min-height: 140px; display: flex; flex-direction: column; justify-content: center; position: relative; }
-    .rolodex-card .name { font-size: 19px; font-weight: 800; color: var(--primary); }
-    .rolodex-card .detail { font-size: 15px; color: var(--text2); margin-top: 4px; }
-    .rolodex-card .notes { font-size: 14px; color: var(--text3); margin-top: 8px; font-style: italic; }
-    .rolodex-card .index { position: absolute; top: 12px; right: 16px; font-size: 13px; color: var(--text3); font-weight: 700; }
-    .rolodex-controls { display: flex; justify-content: center; gap: 16px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
-    .rolodex-controls button { padding: 8px 20px; border-radius: var(--radius-full); font-size: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
-    .rolodex-controls button:hover { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
-    .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-    .profile-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-    .profile-stat .val { font-size: 24px; font-weight: 900; color: var(--primary); }
-    .profile-stat .lbl { font-size: 13px; color: var(--text2); margin-top: 2px; font-weight: 600; }
-    .error-box { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 8px; margin: 10px; display: none; border: 1px solid #ffcdd2; white-space: pre-wrap; }
+    .rotation-day .am-pm { font-size: 8px; color: var(--text3); }
+    .donut-wrap { display: flex; align-items: center; gap: 14px; padding: 4px 0; }
+    .donut-legend { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .donut-row { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+    .donut-swatch { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
+    .donut-label { flex: 1; color: var(--text2); font-weight: 600; }
+    .donut-val { color: var(--text); font-weight: 700; }
+    .ca-p-ratio { display: inline-block; padding: 4px 14px; border-radius: var(--radius-full); font-size: 14px; font-weight: 800; background: var(--primary-dim); color: var(--primary); margin-top: 4px; }
+    .ca-p-ratio.ok { background: var(--green-dim); color: var(--green); }
+    .ca-p-ratio.off { background: rgba(224,82,82,0.15); color: #e05252; }
+    .history-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .history-tab { padding: 4px 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; }
+    .history-tab.active { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
+    .history-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; background: var(--surface); border-radius: var(--radius-sm); padding: 8px 12px; }
+    .history-nav .label { font-size: 16px; font-weight: 800; text-align: center; flex: 1; }
+    .history-nav button { padding: 4px 14px; font-size: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); }
+    .hist-day-item { background: var(--surface); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 6px; border: 1px solid var(--border); }
+    .hist-day-item.today { border-color: var(--primary); }
+    .hist-day-item .date { font-weight: 700; font-size: 14px; }
+    .hist-day-item .meals { display: flex; gap: 8px; margin-top: 4px; font-size: 13px; }
+    .hist-day-item .meals .slot { flex: 1; padding: 4px 8px; border-radius: 6px; background: var(--surface2); }
+    .hist-day-item .meals .slot.fed { background: var(--green-dim); color: var(--green); }
+    .hist-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .hist-month-cell { background: var(--surface); border-radius: 6px; padding: 6px 2px; text-align: center; font-size: 12px; border: 1px solid var(--border); cursor: pointer; }
+    .hist-month-cell.today { border-color: var(--primary); }
+    .hist-month-cell .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin: 2px; }
+    .hist-month-cell .dot.on { background: var(--green); }
+    .hist-month-cell .dot.off { background: var(--border); }
+    .error-box { background: #ffebee; color: #b71c1c; padding: 10px; border-radius: 8px; margin: 10px; display: none; border: 1px solid #ffcdd2; white-space: pre-wrap; font-size: 13px; }
     .error-box.show { display: block; }
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
     .text-muted { color: var(--text3); }
@@ -182,54 +169,43 @@
     .text-center { text-align: center; }
     .mt-1 { margin-top: 4px; }
     .mt-2 { margin-top: 8px; }
-    .mt-3 { margin-top: 12px; }
     .w-full { width: 100%; }
-    .tools-tab-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
-    .tools-tab { padding: 6px 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; }
-    .tools-tab.active { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
-    .tools-tab:hover { background: var(--primary-dim); }
-    .save-prompt { background: var(--primary-dim); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .save-prompt .text { font-size: 14px; font-weight: 600; color: var(--text2); }
-    .save-prompt button { padding: 4px 16px; font-size: 13px; border-radius: var(--radius-full); }
-    .rr-counter { text-align: center; padding: 20px; }
-    .rr-counter .big { font-size: 52px; font-weight: 900; color: var(--primary); }
-    .rr-counter .label { font-size: 16px; color: var(--text2); margin-top: 4px; font-weight: 600; }
-    .walker-view { padding: 16px; }
-    .walker-view .note { font-size: 15px; color: var(--text2); margin-top: 8px; }
-    .nutrient-breakdown-list { margin-top: 8px; }
-    .nutrient-breakdown-list .item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-    .nutrient-breakdown-list .item .pct { font-weight: 700; color: var(--primary); }
-    .badge-aafco { background: var(--green-dim); color: var(--green); font-weight: 800; padding: 4px 14px; border-radius: var(--radius-full); font-size: 12px; display: inline-block; margin-left: 8px; }
+    .collapse-arrow { transition: transform 0.2s; }
+    .collapse-arrow.open { transform: rotate(180deg); }
     .icon-gold { color: var(--primary); }
     .icon-green { color: var(--green); }
     .icon-blue { color: var(--blue); }
+    .protein-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .protein-pick-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: var(--surface2); border-radius: var(--radius-sm); border: 1px solid var(--border); cursor: pointer; }
+    .protein-pick-item.checked { border-color: var(--primary); background: var(--primary-dim); }
+    .protein-pick-item input { width: 16px; height: 16px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
+    .protein-pick-item .name { font-size: 14px; flex: 1; }
+    .protein-pick-item .tag { font-size: 11px; color: var(--text3); }
     @media (max-width: 480px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
-      .vet-field-row { grid-template-columns: 1fr; }
-      .profile-stats-grid { grid-template-columns: 1fr 1fr; }
-      .tools-tab-row { justify-content: center; }
+      .header-title { font-size: 14px; }
+      .walker-btn { font-size: 10px; padding: 3px 8px; }
+      .bottom-nav button { font-size: 9px; }
+      .bottom-nav button .icon { font-size: 20px; }
     }
-    /* Leaflet map container fix */
-    .walk-map .leaflet-control-zoom { display: none; }
-    .walk-map .leaflet-control-attribution { font-size: 9px; opacity: 0.7; }
   </style>
 </head>
 <body>
   <div id="errorBox" class="error-box"></div>
 
   <header class="header">
-    <div>
-      <div class="header-title">🍲 FRESH BOWL METHOD <small>v.96</small></div>
-    </div>
-    <div class="header-actions">
-      <button onclick="openWalkerSetup()" style="background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:4px 12px;font-size:13px;font-weight:800;color:var(--green);">
-        <i class="fa-solid fa-dog" style="margin-right:4px;"></i> Walker
-      </button>
-      <div class="toggle-switch">
-        <span class="label">☀️</span>
-        <div class="track" id="themeTrack"><div class="thumb"></div></div>
-        <span class="label">🌙</span>
+    <div class="header-row">
+      <div class="header-left">
+        <button class="walker-btn" onclick="quickStartWalk()"><i class="fa-solid fa-person-walking"></i> WALK</button>
+        <div class="header-title">FRESHBOWL <small>Total Health Tracking &amp; Modular Whole-Food Meal Prep For Your Dog.</small></div>
+      </div>
+      <div class="header-right">
+        <div class="toggle-switch">
+          <span class="label">☀️</span>
+          <div class="track" id="themeTrack"><div class="thumb"></div></div>
+          <span class="label">🌙</span>
+        </div>
       </div>
     </div>
   </header>
@@ -238,8 +214,8 @@
     <section id="page-home" class="page active"><div id="homeContent"></div></section>
     <section id="page-plan" class="page"><div id="planContent"></div></section>
     <section id="page-nutrition" class="page"><div id="nutritionContent"></div></section>
+    <section id="page-history" class="page"><div id="historyContent"></div></section>
     <section id="page-profile" class="page"><div id="profileContent"></div></section>
-    <section id="page-tools" class="page"><div id="toolsContent"></div></section>
     <section id="page-utilities" class="page"><div id="utilitiesContent"></div></section>
   </main>
 
@@ -247,8 +223,8 @@
     <button data-page="home" class="active"><i class="fa-solid fa-house icon"></i>Home</button>
     <button data-page="plan"><i class="fa-solid fa-clipboard-list icon"></i>Plan</button>
     <button data-page="nutrition"><i class="fa-solid fa-chart-pie icon"></i>Nutrition</button>
+    <button data-page="history"><i class="fa-solid fa-clock-rotate-left icon"></i>History</button>
     <button data-page="profile"><i class="fa-solid fa-user icon"></i>Profile</button>
-    <button data-page="tools"><i class="fa-solid fa-screwdriver-wrench icon"></i>Tools</button>
     <button data-page="utilities"><i class="fa-solid fa-gear icon"></i>Utils</button>
   </nav>
 
@@ -266,9 +242,9 @@
       if (el) { el.textContent = '❌ Unhandled Promise: ' + e.reason; el.className = 'error-box show'; }
     });
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  STATE (unchanged structure from original)
-    // ═══════════════════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    //  STATE
+    // ═══════════════════════════════════════════════════════════
 
     let state = {
       dogs: [{ id: 'dog1', name: 'Bella', weight: 65, activity: 1.6, activityLabel: 'Moderate (neutered)' }],
@@ -293,7 +269,6 @@
       miscNotes: '',
       vaccineForm: { name: '', date: '', nextDate: '', notes: '' },
       vaccineRolodexIndex: 0,
-      toolsTab: 'walk',
       inventory: {
         proteinBags: { count: 1, min: 4 },
         organCubes: { count: -24, min: 6 },
@@ -302,9 +277,12 @@
         herbCubes: { count: -7, min: 6 },
         starch: { count: 0, min: 0 }
       },
-      rrHistory: [],
       walkerMode: false,
-      walkerNote: ''
+      walkerNote: '',
+      historyView: 'day',
+      historyDate: new Date().toISOString().split('T')[0],
+      historyMonth: new Date().getMonth(),
+      historyYear: new Date().getFullYear()
     };
     let petPhoto = '';
 
@@ -315,7 +293,7 @@
     const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
     const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
 
-    // ── FOODS Database ── (full from original)
+    // ── FOODS ── (shortened for brevity, full in actual)
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -349,7 +327,7 @@
       "Blueberries": mkN(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
     };
 
-    // ── AAFCO Targets ──
+    // ── AAFCO ──
     const AAFCO = [
       { k:'protein', label:'Protein', unit:'g', min:45, max:999 },
       { k:'fat', label:'Fat', unit:'g', min:13.8, max:55 },
@@ -382,7 +360,7 @@
     ];
     const NUTRIENT_KEYS = AAFCO.map(a => a.k);
 
-    // ── Helper functions (unchanged) ──
+    // ── Helpers ──
     function getActiveDog() { return state.dogs.find(d => d.id === state.activeDogId) || state.dogs[0]; }
     function calcMER(dog) { const kg = (dog.weight || 65) / 2.2046; return 70 * Math.pow(kg, 0.75) * (dog.activity || 1.6); }
     function dateKey(y,m,d) { return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
@@ -404,7 +382,7 @@
     }
     function isFish(p) { return p && (p.includes('Sardine') || p.includes('Salmon')); }
 
-    // ── Nutrition Engine ── (unchanged)
+    // ── Nutrition Engine ──
     function zeroNutrients() { const o = {}; NUTRIENT_KEYS.forEach(k => o[k] = 0); return o; }
     function addFood(total, food, oz) {
       if (!food || !oz) return;
@@ -430,37 +408,6 @@
       });
       return total;
     }
-    function calcNutritionForDateRange(startDate, endDate) {
-      const total = zeroNutrients(); let mealCount = 0;
-      const sources = {};
-      let cur = new Date(startDate);
-      while (cur <= endDate) {
-        const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
-        const key = dateKey(y,m,d);
-        for (const slot of ['am','pm']) {
-          const logKey = key + '_' + slot;
-          if (state.fedLog[logKey]) {
-            const nut = calcMealNutrition(y,m,d,slot);
-            NUTRIENT_KEYS.forEach(k => {
-              const val = nut[k] || 0;
-              if (val > 0) {
-                total[k] = (total[k] || 0) + val;
-                // track sources: we need food breakdown per nutrient
-                // We'll build sources by re-calculating with tracked components.
-                // For simplicity we'll reuse the meal calc with source tracking.
-              }
-            });
-            mealCount++;
-          }
-        }
-        cur.setDate(cur.getDate() + 1);
-      }
-      // Re-run with source tracking for the period
-      const sourceData = calcNutritionWithSources(startDate, endDate);
-      return { total, mealCount, sources: sourceData.sources };
-    }
-
-    // New function to compute nutrient sources per period
     function calcNutritionWithSources(startDate, endDate) {
       const totals = zeroNutrients();
       const sources = {};
@@ -475,7 +422,6 @@
           if (state.fedLog[logKey]) {
             const meal = getEffectiveMeal(y,m,d,slot);
             if (!meal) continue;
-            // Add each component with tracking
             const components = [
               { name: meal.protein, oz: 8 },
               { name: meal.starch, oz: 2.5 },
@@ -494,13 +440,11 @@
                 }
               });
             });
-            // Add supplements
             const supps = state.suppChecks?.[logKey] || {};
             if (supps.eggshell !== false) { totals.calcium += 800; sources.calcium['Eggshell'] = (sources.calcium['Eggshell']||0)+800; }
             if (supps.salt !== false) { totals.sodium += 115; totals.chloride += 175; totals.iodine += 0.10; sources.sodium['Salt'] = (sources.sodium['Salt']||0)+115; sources.chloride['Salt'] = (sources.chloride['Salt']||0)+175; sources.iodine['Salt'] = (sources.iodine['Salt']||0)+0.10; }
             if (supps.herbcube !== false) { totals.vitE += 3.4; totals.vitA += 10; totals.vitK += 4; sources.vitE['Herb Cube'] = (sources.vitE['Herb Cube']||0)+3.4; sources.vitA['Herb Cube'] = (sources.vitA['Herb Cube']||0)+10; sources.vitK['Herb Cube'] = (sources.vitK['Herb Cube']||0)+4; }
             if (supps.broth !== false) { const b = FOODS[meal.protein]; if (b) { const oz = 0.75*0.08; NUTRIENT_KEYS.forEach(k => { const val = (b[k]||0)*oz; if (val>0) { totals[k] = (totals[k]||0)+val; sources[k]['Broth'] = (sources[k]['Broth']||0)+val; } }); } }
-            // Add-ins
             const addins = state.addinsLog?.[logKey] || {};
             Object.keys(addins).forEach(name => {
               const f = FOODS[name];
@@ -521,22 +465,20 @@
       }
       return { totals, sources, mealCount };
     }
-
     function getAAFCOStatus(value, target) {
       if (value < target.min) return 'low';
       if (target.max < 9999 && value > target.max) return 'high';
       return 'ok';
     }
 
-    // ── Rotation Engine ── (unchanged)
+    // ── Rotation Engine ──
     function generateRotation(proteins, favs) {
-      // ... (full function from original)
       const mains = proteins.filter(p => !p.includes('Sardine') && !p.includes('Salmon'));
       const fish = proteins.filter(p => p.includes('Sardine') || p.includes('Salmon'));
       while (mains.length < 4) mains.push('Beef (85/15)');
       const mainA = { 1:mains[0], 2:mains[2], 3:mains[1], 4:mains[3] };
       const mainB = { 1:mains[1], 2:mains[3], 3:mains[0], 4:mains[2] };
-      const alt   = { 1:fish[0]||mains[0], 2:fish[1]||mains[2], 3:fish[0]||mains[1], 4:fish[1]||mains[3] };
+      const alt = { 1:fish[0]||mains[0], 2:fish[1]||mains[2], 3:fish[0]||mains[1], 4:fish[1]||mains[3] };
       const base = {
         1: {
           Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
@@ -596,57 +538,18 @@
       return result;
     }
 
-    // ── USDA ── (unchanged)
-    function searchUSDA(query, callback) {
-      if (!state.usdaKey) { callback({ error: 'No USDA API key.' }); return; }
-      fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key='+state.usdaKey+'&query='+encodeURIComponent(query)+'&pageSize=10')
-        .then(r => r.json()).then(data => { if (data.foods) callback(data.foods); else callback({ error: 'No results' }); })
-        .catch(err => callback({ error: 'Network error' }));
-    }
-    function getUSDAFoodDetails(fdcId, callback) {
-      if (!state.usdaKey) { callback({ error: 'No API key' }); return; }
-      fetch('https://api.nal.usda.gov/fdc/v1/food/'+fdcId+'?api_key='+state.usdaKey)
-        .then(r => r.json()).then(data => callback(data)).catch(err => callback({ error: 'Failed' }));
-    }
-    function parseUSDAFood(foodDetail) {
-      const nutMap = { 'Protein':'protein','Total lipid (fat)':'fat','Calcium, Ca':'calcium','Phosphorus, P':'phosphorus','Potassium, K':'potassium','Sodium, Na':'sodium','Chloride, Cl':'chloride','Magnesium, Mg':'magnesium','Iron, Fe':'iron','Copper, Cu':'copper','Zinc, Zn':'zinc','Selenium, Se':'selenium','Vitamin A, IU':'vitA','Vitamin D':'vitD','Vitamin E (alpha-tocopherol)':'vitE','Vitamin K (phylloquinone)':'vitK','Thiamin':'vitB1','Riboflavin':'vitB2','Niacin':'vitB3','Pantothenic acid':'vitB5','Vitamin B-6':'vitB6','Vitamin B-12':'vitB12','Folate, total':'folate','Choline, total':'choline','Manganese, Mn':'manganese','Iodine, I':'iodine','Omega-3':'omega3','Omega-6':'omega6' };
-      const per100g = {};
-      (foodDetail.foodNutrients || []).forEach(e => {
-        const name = e.nutrient?.name || e.nutrientName || '';
-        const value = e.amount || e.value || 0;
-        const unit = e.nutrient?.unitName || e.unitName || '';
-        for (const [usdaKey, ourKey] of Object.entries(nutMap)) {
-          if (name.includes(usdaKey) || usdaKey.includes(name)) {
-            if (unit === 'G') per100g[ourKey] = value * 1000;
-            else per100g[ourKey] = value;
-            break;
-          }
-        }
-      });
-      const factor = 28.3495 / 100;
-      const perOz = {};
-      NUTRIENT_KEYS.forEach(k => { perOz[k] = (per100g[k] || 0) * factor; });
-      perOz._name = foodDetail.description || 'USDA Food';
-      return perOz;
-    }
-
-    // ── Walk helpers with Leaflet map ──
+    // ── Walk helpers ──
     let walkInterval = null, walkStartTime = null, walkCoords = [];
     let walkMapInstance = null;
-    let walkMapPolyline = null;
-    let walkMarkers = [];
 
     function renderWalkMap(containerId, coords) {
       if (!coords || coords.length === 0) {
-        if (document.getElementById(containerId)) {
-          document.getElementById(containerId).innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">No walk data</div>';
-        }
+        const el = document.getElementById(containerId);
+        if (el) el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">Start a walk to see the map</div>';
         return;
       }
-      // Use Leaflet
       if (typeof L === 'undefined') {
-        // fallback to SVG if Leaflet not loaded
-        document.getElementById(containerId).innerHTML = walkRouteToSvg(coords, 400, 200);
+        document.getElementById(containerId).innerHTML = walkRouteToSvg(coords, 400, 180);
         return;
       }
       const mapDiv = document.getElementById(containerId);
@@ -658,22 +561,13 @@
         maxZoom: 18,
       }).addTo(map);
       const latlngs = coords.map(c => [c.lat, c.lng]);
-      const polyline = L.polyline(latlngs, { color: '#c8933a', weight: 4, opacity: 0.8 }).addTo(map);
-      map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
-      // Markers
+      L.polyline(latlngs, { color: '#c8933a', weight: 4, opacity: 0.8 }).addTo(map);
+      map.fitBounds(L.latLngBounds(latlngs), { padding: [20, 20] });
       if (coords.length > 0) {
         L.marker([coords[0].lat, coords[0].lng], { title: 'Start' }).addTo(map).bindPopup('Start');
         L.marker([coords[coords.length-1].lat, coords[coords.length-1].lng], { title: 'End' }).addTo(map).bindPopup('End');
       }
-      // Store reference for cleanup
       walkMapInstance = map;
-    }
-
-    function cleanupWalkMap() {
-      if (walkMapInstance) {
-        walkMapInstance.remove();
-        walkMapInstance = null;
-      }
     }
 
     function walkRouteToSvg(coords, width, height) {
@@ -687,8 +581,14 @@
       return '<svg viewBox="0 0 '+w+' '+h+'"><rect width="'+w+'" height="'+h+'" fill="var(--surface2)" rx="6"/><polyline points="'+pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'" stroke="var(--primary)" stroke-width="2.5" fill="none"/><circle cx="'+pts[0].x+'" cy="'+pts[0].y+'" r="4" fill="var(--primary)"/><circle cx="'+pts[pts.length-1].x+'" cy="'+pts[pts.length-1].y+'" r="4" fill="#ff453a"/></svg>';
     }
     function calcDist(coords) { let total=0; for (let i=1;i<coords.length;i++){ const a=coords[i-1],b=coords[i]; const dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180; const h=Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2; total += 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)); } return total; }
+    function quickStartWalk() {
+      if (!navigator.geolocation) return alert('GPS not available.');
+      navigateTo('home');
+      setTimeout(() => { startWalk(); }, 300);
+    }
     function startWalk() {
       if (!navigator.geolocation) return alert('GPS not available.');
+      if (walkStartTime !== null) return;
       walkStartTime = Date.now(); walkCoords = [];
       navigator.geolocation.watchPosition(pos => { walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude }); renderAll(); }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
       walkInterval = setInterval(renderAll, 1000);
@@ -709,7 +609,7 @@
     }
     function deleteWalkLog(idx) { state.walkLogs.splice(idx,1); saveState(); renderAll(); }
 
-    // ── Storage ── (unchanged)
+    // ── Storage ──
     function saveState() {
       try { localStorage.setItem('fb_state', JSON.stringify(state)); } catch(e) {}
       try { if (petPhoto) localStorage.setItem('fb_photo', petPhoto); else localStorage.removeItem('fb_photo'); } catch(e) {}
@@ -736,7 +636,6 @@
     }
     function toggleTheme() { state.theme = state.theme === 'dark' ? 'light' : 'dark'; applyTheme(); saveState(); }
 
-    // ── Render all pages ── (redirect to specific render functions)
     function renderAll() {
       const activePage = document.querySelector('.page.active');
       if (activePage) {
@@ -745,14 +644,14 @@
           case 'home': renderHome(); break;
           case 'plan': renderPlan(); break;
           case 'nutrition': renderNutrition(); break;
+          case 'history': renderHistory(); break;
           case 'profile': renderProfile(); break;
-          case 'tools': renderTools(); break;
           case 'utilities': renderUtilities(); break;
         }
       }
     }
 
-    // ── RENDER: HOME ── (with updated icons/colors)
+    // ── RENDER: HOME ──
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -763,82 +662,32 @@
       const amMeal = getEffectiveMeal(y,m,d,'am');
       const pmMeal = getEffectiveMeal(y,m,d,'pm');
       const start = new Date(y,m,d), end = new Date(y,m,d);
-      const nutResult = calcNutritionForDateRange(start, end);
-      const total = nutResult.total;
+      const nutResult = calcNutritionWithSources(start, end);
+      const total = nutResult.totals;
       const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
 
-      // Inventory status
-      const inv = state.inventory;
-      const invItems = [
-        { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#e05252', count:inv.proteinBags.count, min:inv.proteinBags.min },
-        { id:'organCubes', label:'Organ cubes', icon:'fa-heart', color:'#d98c2a', count:inv.organCubes.count, min:inv.organCubes.min },
-        { id:'vegBags', label:'Vegetable bags', icon:'fa-leaf', color:'#2c6e49', count:inv.vegBags.count, min:inv.vegBags.min },
-        { id:'liquidCubes', label:'Liquid cubes', icon:'fa-droplet', color:'#4a8db7', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
-        { id:'herbCubes', label:'Herb cubes', icon:'fa-seedling', color:'#b07d2a', count:inv.herbCubes.count, min:inv.herbCubes.min },
-        { id:'starch', label:'Starch (fridge)', icon:'fa-bowl-food', color:'#c8933a', count:inv.starch.count, min:inv.starch.min },
-      ];
-      let invHtml = invItems.map(item => {
-        const ok = item.count >= item.min;
-        const status = ok ? '🟢' : '🔴';
-        return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px solid var(--border);">
-          <span><i class="fa-solid ${item.icon}" style="color:${item.color};width:24px;"></i> ${item.label}</span>
-          <span><strong>${item.count}</strong> ${item.min > 0 ? 'min '+item.min : ''} ${!ok ? '⚠️ batch soon' : ''}</span>
-        </div>`;
+      // Dog chips
+      let chipsHtml = state.dogs.map(dg => {
+        const active = dg.id === state.activeDogId ? 'active' : '';
+        return `<button class="dog-chip ${active}" onclick="switchDog('${dg.id}')">${dg.name}</button>`;
       }).join('');
+      chipsHtml += `<button class="dog-chip add" onclick="openAddDogModal()">+ Add</button>`;
 
-      const container = document.getElementById('homeContent');
-      container.innerHTML = `
-        <div class="card">
-          <div style="text-align:center;font-size:14px;color:var(--text3);font-weight:600;"><i class="fa-solid fa-paw" style="color:var(--primary);"></i> ACTIVE DOG</div>
-          <div class="dog-switcher">
-            <button class="btn" onclick="switchDog(-1)" ${state.dogs.length<=1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>
-            <div style="text-align:center;">
-              <div class="name"><i class="fa-solid fa-dog" style="color:var(--primary);margin-right:6px;"></i>${dog.name}</div>
-              <div class="dog-count">${state.dogs.length} dog${state.dogs.length>1?'s':''}</div>
-            </div>
-            <button class="btn" onclick="switchDog(1)" ${state.dogs.length<=1?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>
-            <button class="add-btn" onclick="openAddDogModal()"><i class="fa-solid fa-plus"></i></button>
-          </div>
-          <div style="text-align:center;margin-top:4px;font-size:14px;color:var(--text2);"><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ${dog.weight} lb · <i class="fa-solid fa-fire" style="color:#e05252;"></i> ${Math.round(calcMER(dog))} kcal/day</div>
-        </div>
+      // Inventory warnings (only show if below min)
+      const inv = state.inventory;
+      const warnings = [];
+      const items = [
+        { id:'proteinBags', label:'Protein bags', count:inv.proteinBags.count, min:inv.proteinBags.min },
+        { id:'organCubes', label:'Organ cubes', count:inv.organCubes.count, min:inv.organCubes.min },
+        { id:'vegBags', label:'Vegetable bags', count:inv.vegBags.count, min:inv.vegBags.min },
+        { id:'liquidCubes', label:'Liquid cubes', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+        { id:'herbCubes', label:'Herb cubes', count:inv.herbCubes.count, min:inv.herbCubes.min },
+        { id:'starch', label:'Starch (fridge)', count:inv.starch.count, min:inv.starch.min },
+      ];
+      items.forEach(it => { if (it.count < it.min) warnings.push(`${it.label} (${it.count}/${it.min})`); });
+      let warnHtml = warnings.length ? `<div class="inventory-warning"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Batch soon:</strong> ${warnings.join(', ')}</div>` : '';
 
-        <div class="card">
-          <div class="card-title"><i class="fa-solid fa-warehouse icon"></i> Freezer Inventory</div>
-          ${invHtml}
-          <button class="secondary w-full mt-2" onclick="navigateTo('utilities')"><i class="fa-solid fa-pen"></i> Manage Inventory →</button>
-        </div>
-
-        <div class="card">
-          <div class="card-title"><i class="fa-solid fa-bowl-food icon"></i> Today's Meals</div>
-          <div class="meal-card ${amFed?'fed':''}">
-            <div class="meal-header"><span class="meal-label"><i class="fa-solid fa-sun"></i> AM</span><span class="meal-fed ${amFed?'':'not'}">${amFed?'✅ Fed':'Tap to mark fed'}</span></div>
-            ${amMeal ? `<div class="meal-protein">${amMeal.protein}</div><div class="meal-details">${amMeal.starch} · ${amMeal.veg}${amMeal.organ ? ' · '+amMeal.organ : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
-            <div class="meal-actions"><button class="primary" onclick="toggleFed(\'${amKey}\')">${amFed?'Undo':'Mark Fed'}</button><button onclick="openSwap(\'${key}\',\'am\')"><i class="fa-solid fa-arrows-rotate"></i> Swap</button><button onclick="openAddins(\'${key}\',\'am\')"><i class="fa-solid fa-plus"></i> Add</button></div>
-          </div>
-          <div class="meal-card ${pmFed?'fed':''}">
-            <div class="meal-header"><span class="meal-label"><i class="fa-solid fa-moon"></i> PM</span><span class="meal-fed ${pmFed?'':'not'}">${pmFed?'✅ Fed':'Tap to mark fed'}</span></div>
-            ${pmMeal ? `<div class="meal-protein">${pmMeal.protein}</div><div class="meal-details">${pmMeal.starch} · ${pmMeal.veg}${pmMeal.organ ? ' · '+pmMeal.organ : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
-            <div class="meal-actions"><button class="primary" onclick="toggleFed(\'${pmKey}\')">${pmFed?'Undo':'Mark Fed'}</button><button onclick="openSwap(\'${key}\',\'pm\')"><i class="fa-solid fa-arrows-rotate"></i> Swap</button><button onclick="openAddins(\'${key}\',\'pm\')"><i class="fa-solid fa-plus"></i> Add</button></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Walk Tracker</div>
-          ${renderWalkTracker()}
-        </div>
-
-        <div class="card">
-          <div class="card-title"><i class="fa-solid fa-chart-simple icon"></i> Quick Stats</div>
-          <div class="grid-3">
-            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted"><i class="fa-solid fa-shoe-prints"></i> Walks today</div></div>
-            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted"><i class="fa-solid fa-utensils"></i> Meals fed</div></div>
-            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met</div></div>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderWalkTracker() {
+      // Walk tracker
       const walkActive = (walkStartTime !== null && walkInterval !== null);
       const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
       const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
@@ -848,81 +697,140 @@
       let historyHtml = '';
       if (state.walkLogs.length > 0) {
         const display = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0,2);
-        historyHtml = display.map((w,i) => `<div class="walk-history-item"><div><span>${w.date}</span> <span class="text-muted">${w.mins}m ${w.secs||0}s</span> <span class="text-muted">${w.dist.toFixed(2)} mi</span></div><button class="secondary" style="padding:2px 10px;font-size:12px;" onclick="deleteWalkLog(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+        historyHtml = display.map((w,i) => `<div class="walk-history-item"><span>${w.date} · ${w.mins}m ${w.secs||0}s · ${w.dist.toFixed(2)} mi</span><button class="secondary" style="padding:2px 10px;font-size:12px;" onclick="deleteWalkLog(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
         if (!state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">See More</button>`;
         else if (state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">Show Less</button>`;
       } else { historyHtml = '<div class="text-muted text-sm">No walks saved.</div>'; }
 
-      // Map container
       const mapId = 'walkMapContainer';
       setTimeout(() => {
-        if (currentCoords.length > 0) {
-          renderWalkMap(mapId, currentCoords);
-        } else {
-          const mapDiv = document.getElementById(mapId);
-          if (mapDiv) mapDiv.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">Start a walk to see the map</div>';
-        }
+        if (currentCoords.length > 0) renderWalkMap(mapId, currentCoords);
+        else { const el = document.getElementById(mapId); if (el) el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">Start a walk to see the map</div>'; }
       }, 50);
 
-      return `
-        <div class="walk-display">
-          <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
-          <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
-          <div class="walk-points">${currentCoords.length} GPS points</div>
+      const container = document.getElementById('homeContent');
+      container.innerHTML = `
+        <div class="dog-chips">${chipsHtml}</div>
+
+        ${warnHtml}
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-bowl-food icon"></i> Today's Meals</div>
+          <div class="meal-card ${amFed?'fed':''}">
+            <div class="meal-header"><span class="meal-label"><i class="fa-solid fa-sun"></i> AM</span><span class="meal-fed ${amFed?'':'not'}">${amFed?'✅ Fed':'Tap to mark fed'}</span></div>
+            ${amMeal ? `<div class="meal-protein">${amMeal.protein}</div><div class="meal-details">${amMeal.starch} · ${amMeal.veg}${amMeal.organ ? ' · '+amMeal.organ : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
+            <div class="meal-actions"><button class="primary" onclick="toggleFed(\'${amKey}\')">${amFed?'Undo':'Mark Fed'}</button><button onclick="openSwap(\'${key}\',\'am\')"><i class="fa-solid fa-arrows-rotate"></i></button><button onclick="openAddins(\'${key}\',\'am\')"><i class="fa-solid fa-plus"></i></button></div>
+          </div>
+          <div class="meal-card ${pmFed?'fed':''}">
+            <div class="meal-header"><span class="meal-label"><i class="fa-solid fa-moon"></i> PM</span><span class="meal-fed ${pmFed?'':'not'}">${pmFed?'✅ Fed':'Tap to mark fed'}</span></div>
+            ${pmMeal ? `<div class="meal-protein">${pmMeal.protein}</div><div class="meal-details">${pmMeal.starch} · ${pmMeal.veg}${pmMeal.organ ? ' · '+pmMeal.organ : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
+            <div class="meal-actions"><button class="primary" onclick="toggleFed(\'${pmKey}\')">${pmFed?'Undo':'Mark Fed'}</button><button onclick="openSwap(\'${key}\',\'pm\')"><i class="fa-solid fa-arrows-rotate"></i></button><button onclick="openAddins(\'${key}\',\'pm\')"><i class="fa-solid fa-plus"></i></button></div>
+          </div>
         </div>
-        <div class="walk-map" id="${mapId}">${currentCoords.length > 0 ? 'Loading map...' : 'Start a walk to see the map'}</div>
-        <div class="grid-2" style="margin-top:8px;">
-          <button class="primary" onclick="startWalk()"><i class="fa-solid fa-play"></i> ${walkActive ? 'Recording...' : 'Start Walk'}</button>
-          <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}><i class="fa-solid fa-stop"></i> Stop & Save</button>
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Walk Tracker</div>
+          <div class="walk-display">
+            <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
+            <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
+            <div class="walk-points">${currentCoords.length} GPS points</div>
+          </div>
+          <div class="walk-map" id="${mapId}">${currentCoords.length > 0 ? 'Loading map...' : 'Start a walk to see the map'}</div>
+          <div class="grid-2" style="margin-top:8px;">
+            <button class="primary" onclick="startWalk()"><i class="fa-solid fa-play"></i> ${walkActive ? 'Recording...' : 'Start'}</button>
+            <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}><i class="fa-solid fa-stop"></i> Stop</button>
+          </div>
+          <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
+            ${historyHtml}
+          </div>
         </div>
-        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
-          <div style="font-weight:700;font-size:15px;margin-bottom:6px;"><i class="fa-solid fa-clock-rotate-left"></i> Recent Walks</div>
-          ${historyHtml}
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-chart-simple icon"></i> Quick Stats</div>
+          <div class="grid-3">
+            <div class="text-center"><div style="font-size:24px;font-weight:900;color:var(--primary);">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted">Walks today</div></div>
+            <div class="text-center"><div style="font-size:24px;font-weight:900;color:var(--primary);">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted">Meals fed</div></div>
+            <div class="text-center"><div style="font-size:24px;font-weight:900;color:var(--primary);">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted">AAFCO met</div></div>
+          </div>
         </div>
       `;
     }
 
-    // ── RENDER: PLAN ── (unchanged structure, just icon updates)
+    // ── RENDER: PLAN ──
     function renderPlan() {
-      // ... same as before with icons updated
       const container = document.getElementById('planContent');
+      // Protein picker
       let protHtml = PROTEIN_OPTIONS.map(p => {
         const checked = state.selectedProteins.includes(p);
         const isFish = p.includes('Sardine') || p.includes('Salmon');
         const display = p.replace(' (canned)','').replace(' (85/15)','');
-        return `<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;">
-          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" style="accent-color:var(--primary);width:16px;height:16px;" />
-          <span>${display}</span>${isFish?' <i class="fa-solid fa-fish" style="color:var(--blue);"></i>':''}
+        return `<label class="protein-pick-item ${checked?'checked':''}">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" />
+          <span class="name">${display}</span>
+          ${isFish ? '<span class="tag">🐟 2x/week</span>' : ''}
         </label>`;
       }).join('');
+
+      // Favorites
       let favHtml = (arr,cat) => arr.map(v => {
         const on = state.favorites[cat].includes(v);
-        return `<button class="${on?'primary':'secondary'}" style="padding:4px 14px;font-size:13px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' <i class="fa-solid fa-star" style="color:var(--primary);"></i>':''}</button>`;
+        return `<button class="${on?'primary':'secondary'}" style="padding:4px 12px;font-size:13px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' ★':''}</button>`;
       }).join('');
+
+      // Rotation (collapsible)
       let rotationHtml = '';
       for (let w=1; w<=4; w++) {
         const wd = state.rotation[w] || {};
-        rotationHtml += `<div class="rotation-week"><div class="rotation-week-header"><span class="rotation-week-title"><i class="fa-solid fa-calendar-week"></i> Week ${w}</span></div><div class="rotation-days">`;
-        DAYS.forEach(day => {
-          const d = wd[day];
-          if (!d) { rotationHtml += `<div class="rotation-day"><div>${day.slice(0,2)}</div><div>—</div></div>`; return; }
-          rotationHtml += `<div class="rotation-day ${isFish(d.am.protein)?'fish':''}"><div>${day.slice(0,2)}</div><div>${d.am.protein.replace(' (canned)','').replace(' (85/15)','')}</div><div style="font-size:8px;">${d.pm.protein.replace(' (canned)','').replace(' (85/15)','')}</div></div>`;
-        });
-        rotationHtml += `</div></div>`;
+        const expanded = state._rotOpen && state._rotOpen[w] ? 'expanded' : 'collapsed';
+        rotationHtml += `<div class="rotation-week">
+          <div class="rotation-week-header" onclick="toggleRotationWeek(${w})">
+            <span class="rotation-week-title"><i class="fa-solid fa-calendar-week"></i> Week ${w}</span>
+            <span class="collapse-arrow ${state._rotOpen && state._rotOpen[w] ? 'open' : ''}"><i class="fa-solid fa-chevron-down"></i></span>
+          </div>
+          <div class="rotation-days ${expanded}">
+            ${DAYS.map(day => {
+              const d = wd[day];
+              if (!d) return `<div class="rotation-day"><div>${day.slice(0,2)}</div><div>—</div></div>`;
+              const fish = isFish(d.am.protein);
+              return `<div class="rotation-day ${fish?'fish':''}"><div>${day.slice(0,2)}</div><div>${d.am.protein.replace(' (canned)','').replace(' (85/15)','')}</div><div class="am-pm">${d.pm.protein.replace(' (canned)','').replace(' (85/15)','')}</div></div>`;
+            }).join('')}
+          </div>
+        </div>`;
       }
+
       container.innerHTML = `
-        <div class="card"><div class="card-title"><i class="fa-solid fa-drumstick-bite icon"></i> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Rebuild Rotation</button></div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-star icon"></i> Favorites</div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-leaf" style="color:var(--green);"></i> Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-bowl-food" style="color:var(--primary);"></i> Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-drumstick-bite icon"></i> Proteins</div>
+          <div class="protein-pick-grid">${protHtml}</div>
+          <button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Rebuild Rotation</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-star icon"></i> Favorites</div>
+          <div style="margin-bottom:6px;"><label class="text-muted text-sm"><i class="fa-solid fa-leaf" style="color:var(--green);"></i> Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
+          <div style="margin-bottom:6px;"><label class="text-muted text-sm"><i class="fa-solid fa-bowl-food" style="color:var(--primary);"></i> Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
           <div><label class="text-muted text-sm"><i class="fa-solid fa-heart" style="color:#d98c2a;"></i> Organs</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(ORGAN_OPTIONS,'organs')}</div></div>
           <button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Update with Favorites</button>
         </div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-calendar-days icon"></i> 4‑Week Rotation</div>${rotationHtml}</div>
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-calendar-days icon"></i> 4‑Week Rotation</div>
+          ${rotationHtml}
+          <div class="text-xs text-muted mt-1">🐟 Salmon/Sardines appear 2× per week (Thu & Sun). Tap week to expand/collapse.</div>
+        </div>
       `;
     }
 
-    // ── RENDER: NUTRITION ── (with enhanced source breakdown)
+    let _rotOpen = {};
+
+    function toggleRotationWeek(w) {
+      _rotOpen[w] = !_rotOpen[w];
+      state._rotOpen = _rotOpen;
+      renderPlan();
+    }
+
+    // ── RENDER: NUTRITION ──
     function renderNutrition() {
       const container = document.getElementById('nutritionContent');
       const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
@@ -934,7 +842,8 @@
       const protein = total.protein||0, fat = total.fat||0, carbs = total.carbs||0, moisture = total.moisture||0, ash = total.ash||0;
       const macroTotal = protein + fat + carbs + moisture + ash || 1;
       const slices = [{label:'Protein',val:protein,color:'#c8933a'},{label:'Fat',val:fat,color:'#d98c2a'},{label:'Carbs',val:carbs,color:'#b07d2a'},{label:'Moisture',val:moisture,color:'#4a8db7'},{label:'Ash',val:ash,color:'#7a6a5a'}].filter(s=>s.val>0.01);
-      let donutHtml='';
+
+      let donutHtml = '';
       if (slices.length) {
         const cx=60,cy=60,r=50,ir=30; let cum=-Math.PI/2; let paths='';
         slices.forEach(s => {
@@ -949,7 +858,15 @@
         });
         donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="800">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
       } else { donutHtml = '<div class="text-muted text-center"><i class="fa-solid fa-circle-exclamation"></i> No meals logged today.</div>'; }
-      let metCount=0, nutrientHtml='';
+
+      // Ca:P ratio
+      const ca = total.calcium || 0;
+      const ph = total.phosphorus || 0;
+      const caP = ph > 0 ? ca / ph : 0;
+      const caPStatus = (caP >= 1.0 && caP <= 2.0) ? 'ok' : 'off';
+      const caPDisplay = caP > 0 ? caP.toFixed(2) : '—';
+
+      let metCount = 0, nutrientHtml = '';
       AAFCO.forEach(target => {
         const value = total[target.k] || 0;
         const status = getAAFCOStatus(value, target);
@@ -957,31 +874,41 @@
         const pct = target.max<9999 ? Math.min((value/target.max)*100,100) : Math.min((value/(target.min*1.5))*100,100);
         const color = status==='ok' ? 'var(--green)' : (status==='low' ? '#d98c2a' : '#e05252');
         const label = status==='ok' ? 'OK' : (status==='low' ? 'LOW' : 'HIGH');
-        // click to show sources
         const clickAttr = `onclick="openNutrientBreakdown('${target.k}', ${JSON.stringify(sources[target.k] || {})}, '${target.label}')"`;
         nutrientHtml += `<div class="nutrient-item" style="cursor:pointer;" ${clickAttr}>
           <div class="flex-between"><span>${target.label}</span><span>${value.toFixed(1)} ${target.unit} <span class="badge ${status==='ok'?'green':(status==='low'?'orange':'red')}">${label}</span></span></div>
           <div class="bar"><div class="fill" style="width:${pct}%;background:${color};"></div></div>
-          <div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit} <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-left:4px;" title="Tap for food sources"></i></div>
+          <div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit} <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-left:4px;"></i></div>
         </div>`;
       });
+
       container.innerHTML = `
-        <div class="card"><div class="card-title"><i class="fa-solid fa-chart-pie icon"></i> Today's Nutrition <span class="badge-aafco">AAFCO 2023 + NRC 2006</span></div><div class="flex-between"><span class="text-muted"><i class="fa-solid fa-utensils"></i> Meals logged: ${mealCount}</span><span class="text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met: ${metCount}/${AAFCO.length}</span></div>${donutHtml}</div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-bullseye icon"></i> AAFCO Tracking <span style="font-size:12px;font-weight:400;color:var(--text3);">(tap any nutrient for food sources)</span></div>${nutrientHtml}</div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-chart-pie icon"></i> Macros & Ca:P</div>
+          ${donutHtml}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <span class="ca-p-ratio ${caPStatus}"><i class="fa-solid fa-scale-balanced"></i> Ca:P = ${caPDisplay}:1</span>
+            <span class="badge ${caPStatus==='ok'?'green':'orange'}">${caPStatus==='ok' ? '✅ In range' : '⚠️ Check ratio'}</span>
+          </div>
+          <div class="text-xs text-muted mt-1">Target Ca:P range: 1:1 – 2:1 (AAFCO)</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-bullseye icon"></i> AAFCO Tracking <span style="font-size:12px;font-weight:400;color:var(--text3);">(tap any nutrient for sources)</span></div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">Meals logged: ${mealCount} · AAFCO met: ${metCount}/${AAFCO.length}</div>
+          ${nutrientHtml}
+        </div>
       `;
     }
 
-    // ── Nutrient breakdown modal (enhanced) ──
+    // ── Nutrient breakdown modal ──
     function openNutrientBreakdown(key, sourcesMap, label) {
       const total = Object.values(sourcesMap).reduce((a,b) => a+b, 0);
-      if (total === 0) {
-        alert('No contributing foods for this nutrient in the logged period.');
-        return;
-      }
+      if (total === 0) { alert('No contributing foods for this nutrient.'); return; }
       const sorted = Object.keys(sourcesMap).sort((a,b) => sourcesMap[b] - sourcesMap[a]);
       let rows = sorted.map(name => {
         const val = sourcesMap[name];
-        const pct = total > 0 ? (val/total*100) : 0;
+        const pct = (val/total*100);
         return `<div class="item"><span>${name}</span><span>${val.toFixed(2)} <span class="pct">(${pct.toFixed(1)}%)</span></span></div>`;
       }).join('');
       const modalHtml = `
@@ -991,7 +918,7 @@
               <span class="modal-title"><i class="fa-solid fa-utensils"></i> ${label} Sources</span>
               <button class="modal-close" onclick="closeBreakdownModal()">&times;</button>
             </div>
-            <div style="margin-bottom:8px;font-size:15px;color:var(--text2);">Total: ${total.toFixed(2)} ${AAFCO.find(a=>a.k===key)?.unit || ''}</div>
+            <div style="margin-bottom:8px;font-size:14px;color:var(--text2);">Total: ${total.toFixed(2)} ${AAFCO.find(a=>a.k===key)?.unit || ''}</div>
             <div class="nutrient-breakdown-list">${rows || '<div class="text-muted">No sources</div>'}</div>
           </div>
         </div>
@@ -1000,12 +927,120 @@
       overlay.innerHTML = modalHtml;
       document.body.appendChild(overlay.firstElementChild);
     }
-    function closeBreakdownModal() {
-      const el = document.getElementById('breakdownModal');
-      if (el) el.remove();
+    function closeBreakdownModal() { const el = document.getElementById('breakdownModal'); if (el) el.remove(); }
+
+    // ── RENDER: HISTORY ──
+    function renderHistory() {
+      const container = document.getElementById('historyContent');
+      const view = state.historyView || 'day';
+      const dateStr = state.historyDate || todayKey();
+      const parts = dateStr.split('-').map(Number);
+      let y = parts[0], m = parts[1]-1, d = parts[2];
+      if (isNaN(y)) { const t = new Date(); y=t.getFullYear(); m=t.getMonth(); d=t.getDate(); }
+
+      const tabs = ['day','week','month'];
+      let tabHtml = `<div class="history-tabs">`;
+      tabs.forEach(t => {
+        const active = t === view ? 'active' : '';
+        tabHtml += `<button class="history-tab ${active}" onclick="setHistoryView('${t}')">${t.charAt(0).toUpperCase()+t.slice(1)}</button>`;
+      });
+      tabHtml += `</div>`;
+
+      let navLabel = '';
+      let content = '';
+
+      if (view === 'day') {
+        navLabel = new Date(y,m,d).toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' });
+        const ds = dateKey(y,m,d);
+        const amFed = !!state.fedLog[ds+'_am'], pmFed = !!state.fedLog[ds+'_pm'];
+        const amMeal = getEffectiveMeal(y,m,d,'am');
+        const pmMeal = getEffectiveMeal(y,m,d,'pm');
+        content = `
+          <div class="hist-day-item today">
+            <div class="date">${navLabel}</div>
+            <div class="meals">
+              <div class="slot ${amFed?'fed':''}">AM: ${amMeal ? amMeal.protein : '—'}</div>
+              <div class="slot ${pmFed?'fed':''}">PM: ${pmMeal ? pmMeal.protein : '—'}</div>
+            </div>
+          </div>
+        `;
+      } else if (view === 'week') {
+        const start = new Date(y,m,d);
+        start.setDate(start.getDate() - start.getDay());
+        navLabel = `${start.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${new Date(start.getFullYear(),start.getMonth(),start.getDate()+6).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+        for (let i=0; i<7; i++) {
+          const dt = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
+          const ds = dateKey(dt.getFullYear(), dt.getMonth(), dt.getDate());
+          const amFed = !!state.fedLog[ds+'_am'], pmFed = !!state.fedLog[ds+'_pm'];
+          const isToday = ds === todayKey();
+          const amMeal = getEffectiveMeal(dt.getFullYear(), dt.getMonth(), dt.getDate(), 'am');
+          const pmMeal = getEffectiveMeal(dt.getFullYear(), dt.getMonth(), dt.getDate(), 'pm');
+          content += `
+            <div class="hist-day-item ${isToday?'today':''}">
+              <div class="date">${dt.toLocaleDateString('en-US',{weekday:'short', month:'short', day:'numeric'})}</div>
+              <div class="meals">
+                <div class="slot ${amFed?'fed':''}">AM: ${amMeal ? amMeal.protein : '—'}</div>
+                <div class="slot ${pmFed?'fed':''}">PM: ${pmMeal ? pmMeal.protein : '—'}</div>
+              </div>
+            </div>
+          `;
+        }
+      } else if (view === 'month') {
+        const month = state.historyMonth !== undefined ? state.historyMonth : m;
+        const year = state.historyYear !== undefined ? state.historyYear : y;
+        navLabel = new Date(year, month, 1).toLocaleDateString('en-US', { month:'long', year:'numeric' });
+        const firstDow = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month+1, 0).getDate();
+        content = `<div class="hist-month-grid">`;
+        ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(wd => { content += `<div style="text-align:center;font-size:11px;font-weight:700;color:var(--text3);">${wd}</div>`; });
+        for (let i=0; i<firstDow; i++) content += `<div></div>`;
+        for (let day=1; day<=daysInMonth; day++) {
+          const ds = dateKey(year, month, day);
+          const amFed = !!state.fedLog[ds+'_am'], pmFed = !!state.fedLog[ds+'_pm'];
+          const isToday = ds === todayKey();
+          const fedCount = (amFed?1:0)+(pmFed?1:0);
+          content += `
+            <div class="hist-month-cell ${isToday?'today':''}" onclick="openHistoryDay('${ds}')">
+              ${day}
+              <div><span class="dot ${amFed?'on':'off'}"></span><span class="dot ${pmFed?'on':'off'}"></span></div>
+            </div>
+          `;
+        }
+        content += `</div>`;
+      }
+
+      const navHtml = `
+        <div class="history-nav">
+          <button onclick="navHistory(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="label">${navLabel}</span>
+          <button onclick="navHistory(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      `;
+
+      container.innerHTML = tabHtml + navHtml + content;
     }
 
-    // ── RENDER: PROFILE ── (with updated icons)
+    function setHistoryView(v) { state.historyView = v; renderHistory(); }
+    function navHistory(dir) {
+      const view = state.historyView || 'day';
+      let date = new Date(state.historyDate || todayKey());
+      if (view === 'day') { date.setDate(date.getDate() + dir); }
+      else if (view === 'week') { date.setDate(date.getDate() + dir*7); }
+      else if (view === 'month') { date.setMonth(date.getMonth() + dir); }
+      state.historyDate = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+      state.historyMonth = date.getMonth();
+      state.historyYear = date.getFullYear();
+      renderHistory();
+    }
+    function openHistoryDay(ds) {
+      const p = ds.split('-').map(Number);
+      state.historyDate = ds;
+      state.historyView = 'day';
+      renderHistory();
+      navigateTo('history');
+    }
+
+    // ── RENDER: PROFILE ──
     function renderProfile() {
       const dog = getActiveDog();
       if (!dog) { document.getElementById('profileContent').innerHTML = '<div class="card"><div class="text-muted">No dogs.</div></div>'; return; }
@@ -1087,12 +1122,11 @@
     }
     function saveProfile() { alert('Profile updated!'); }
 
-    // ── DOG SWITCHER / ADD / DELETE (unchanged) ──
-    function switchDog(dir) {
-      const idx = state.dogs.findIndex(d => d.id === state.activeDogId);
-      const newIdx = (idx + dir + state.dogs.length) % state.dogs.length;
-      state.activeDogId = state.dogs[newIdx].id;
-      saveState(); renderAll();
+    // ── DOG SWITCH / ADD / DELETE ──
+    function switchDog(id) {
+      state.activeDogId = id;
+      saveState();
+      renderAll();
     }
     function openAddDogModal() {
       const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
@@ -1135,7 +1169,7 @@
     }
     function closeModal() { const m = document.querySelector('.modal-overlay'); if (m) m.remove(); }
 
-    // ── INVENTORY MANAGEMENT (unchanged) ──
+    // ── INVENTORY ──
     function updateInventory(item, delta) {
       if (!state.inventory[item]) return;
       state.inventory[item].count += delta;
@@ -1148,316 +1182,9 @@
       saveState();
     }
 
-    // ── TOOLS (unchanged) ──
-    function renderTools() {
-      if (state.walkerMode) { renderWalkerView(); return; }
-      const dog = getActiveDog();
-      const dname = dog ? dog.name : 'your dog';
-      const tabs = [
-        { id: 'walk', lbl: '🚶 Walks' },
-        { id: 'rr', lbl: '💨 RR' },
-        { id: 'cal', lbl: '🍽️ Calories' },
-        { id: 'choc', lbl: '🍫 Chocolate' },
-        { id: 'flea', lbl: '🐛 Flea' },
-        { id: 'treat', lbl: '🍬 Treats' },
-        { id: 'cost', lbl: '💰 Cost' }
-      ];
-      let html = `<div class="card" style="padding:12px 14px;margin-bottom:12px;">
-        <div style="font-weight:900;font-size:20px;color:var(--primary);"><i class="fa-solid fa-screwdriver-wrench"></i> Health Tools</div>
-        <div style="font-size:14px;color:var(--text2);">Vet-inspired calculators for ${dname}. Results save to profile.</div>
-      </div>`;
-      html += `<div class="tools-tab-row">`;
-      tabs.forEach(t => {
-        const active = state.toolsTab === t.id ? 'active' : '';
-        html += `<button class="tools-tab ${active}" onclick="switchToolsTab('${t.id}')">${t.lbl}</button>`;
-      });
-      html += `</div>`;
-      html += `<div id="toolsPanel">${getToolsPanel()}</div>`;
-      document.getElementById('toolsContent').innerHTML = html;
-    }
-    function switchToolsTab(id) {
-      state.toolsTab = id;
-      saveState();
-      renderTools();
-    }
-    function getToolsPanel() {
-      const dog = getActiveDog();
-      const dname = dog ? dog.name : 'your dog';
-      switch(state.toolsTab) {
-        case 'walk': return getWalkTools();
-        case 'rr': return getRRTools(dname);
-        case 'cal': return getCalorieTools(dname);
-        case 'choc': return getChocolateTools(dname);
-        case 'flea': return getFleaTools(dname);
-        case 'treat': return getTreatTools(dname);
-        case 'cost': return getCostTools(dname);
-        default: return '<div class="text-muted">Select a tool.</div>';
-      }
-    }
-    function getWalkTools() {
-      return `<div class="card">${renderWalkTracker()}</div>`;
-    }
-    // ── RR, Calories, Chocolate, Flea, Treats, Cost (unchanged) ──
-    let rrTimer = null, rrCount = 0, rrRunning = false, rrSeconds = 0;
-    function getRRTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-lungs" style="color:var(--blue);"></i> Resting Respiratory Rate</div>
-          <div class="rr-counter">
-            <div class="big">${rrCount}</div>
-            <div class="label">breaths ${rrRunning ? 'counting...' : 'counted'}</div>
-            <div class="text-muted text-sm">${rrRunning ? rrSeconds+'s' : 'Press start to count breaths for 60s'}</div>
-          </div>
-          <div class="grid-2">
-            <button class="primary" onclick="startRR()" ${rrRunning?'disabled':''}><i class="fa-solid fa-play"></i> Start 60s</button>
-            <button class="secondary" onclick="resetRR()" ${!rrRunning?'disabled':''}><i class="fa-solid fa-stop"></i> Stop</button>
-          </div>
-          <button class="secondary w-full mt-2" onclick="saveRR('${dname}')" ${rrCount===0?'disabled':''}><i class="fa-solid fa-floppy-disk"></i> Save ${rrCount} breaths to ${dname}'s profile</button>
-          <div id="rrResult" class="mt-2 text-muted"></div>
-          <div class="text-xs text-muted mt-2">Normal: 10-30 breaths/min. Count each rise/fall of chest.</div>
-        </div>
-      `;
-    }
-    function startRR() {
-      if (rrRunning) return;
-      rrRunning = true; rrCount = 0; rrSeconds = 0;
-      rrTimer = setInterval(() => { rrSeconds++; if (rrSeconds >= 60) { stopRR(); } }, 1000);
-      document.addEventListener('click', countBreath);
-      document.addEventListener('keydown', countBreath);
-      renderTools();
-    }
-    function countBreath(e) {
-      if (rrRunning) { rrCount++; }
-    }
-    function stopRR() {
-      rrRunning = false;
-      if (rrTimer) { clearInterval(rrTimer); rrTimer = null; }
-      document.removeEventListener('click', countBreath);
-      document.removeEventListener('keydown', countBreath);
-      renderTools();
-    }
-    function resetRR() {
-      stopRR(); rrCount = 0; rrSeconds = 0;
-      renderTools();
-    }
-    function saveRR(dname) {
-      if (rrCount === 0) return alert('Count some breaths first.');
-      state.calcResults.rr = { breaths: rrCount, date: todayKey() };
-      if (!state.rrHistory) state.rrHistory = [];
-      state.rrHistory.push({ date: todayKey(), breaths: rrCount });
-      saveState();
-      document.getElementById('rrResult').innerHTML = '✅ Saved '+rrCount+' breaths/min to '+dname+'\'s profile.';
-      renderHome();
-    }
-    // Calories
-    function getCalorieTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-bowl-food" style="color:var(--primary);"></i> Calories Per Meal</div>
-          <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="calW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label><i class="fa-solid fa-utensils"></i> Meals</label><select id="calM"><option value="2">2</option><option value="3">3</option></select></div></div>
-          <div class="input-group"><label><i class="fa-solid fa-person-running"></i> Activity</label><select id="calA"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div>
-          <button class="primary w-full" onclick="calcCalories()"><i class="fa-solid fa-calculator"></i> Calculate</button>
-          <div id="calRes" class="mt-2 text-muted"></div>
-          <div class="save-prompt"><span class="text"><i class="fa-solid fa-floppy-disk"></i> Save to ${dname}'s profile?</span><button class="primary" onclick="saveCalorieResult('${dname}')">Save</button></div>
-        </div>
-      `;
-    }
-    function calcCalories() {
-      const w=parseFloat(document.getElementById('calW').value)||25;
-      const m=parseInt(document.getElementById('calM').value)||2;
-      const a=parseFloat(document.getElementById('calA').value)||1.6;
-      const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*a; const oz=mer/42;
-      state._calResult = { rer, mer, oz, ozPerMeal: oz/m };
-      document.getElementById('calRes').innerHTML = 'RER: '+Math.round(rer)+' kcal · MER: '+Math.round(mer)+' kcal · ~'+oz.toFixed(1)+' oz/day ('+(oz/m).toFixed(1)+' oz/meal)';
-    }
-    function saveCalorieResult(dname) {
-      if (!state._calResult) return alert('Calculate first.');
-      state.calcResults.calories = state._calResult;
-      saveState();
-      alert('Saved to '+dname+'\'s profile!');
-      renderHome();
-    }
-    // Chocolate
-    function getChocolateTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-candy-cane" style="color:#8b5cf6;"></i> Chocolate Toxicity</div>
-          <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="chocW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label><i class="fa-solid fa-weight-hanging"></i> Amount (g)</label><input type="number" id="chocAmt" value="50" /></div></div>
-          <div class="input-group"><label><i class="fa-solid fa-chocolate-bar"></i> Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div>
-          <button class="primary w-full" onclick="calcChoc()"><i class="fa-solid fa-calculator"></i> Calculate</button>
-          <div id="chocRes" class="mt-2 text-muted"></div>
-          <div class="save-prompt"><span class="text"><i class="fa-solid fa-floppy-disk"></i> Save to ${dname}'s profile?</span><button class="primary" onclick="saveChocResult('${dname}')">Save</button></div>
-        </div>
-      `;
-    }
-    function calcChoc() {
-      const w=parseFloat(document.getElementById('chocW').value)||25;
-      const amt=parseFloat(document.getElementById('chocAmt').value)||0;
-      const type=parseInt(document.getElementById('chocType').value)||150;
-      if (amt<=0) return alert('Enter amount.');
-      const dose=(amt*(type/1000)/w)*1000;
-      let risk='Low', color='var(--green)';
-      if (dose>200){risk='Extreme – emergency!';color='#e05252';}
-      else if (dose>100){risk='High – call vet';color='#d98c2a';}
-      else if (dose>40){risk='Moderate – watch';color='#d98c2a';}
-      state._chocResult = { dose, risk };
-      document.getElementById('chocRes').innerHTML = '<div style="color:'+color+';font-weight:700;">'+risk+'</div><div>Dose: '+dose.toFixed(1)+' mg/kg</div>';
-    }
-    function saveChocResult(dname) {
-      if (!state._chocResult) return alert('Calculate first.');
-      state.calcResults.chocolate = state._chocResult;
-      saveState();
-      alert('Saved to '+dname+'\'s profile!');
-      renderHome();
-    }
-    // Flea
-    function getFleaTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-bug" style="color:#d98c2a;"></i> Flea/Tick Schedule</div>
-          <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-calendar-day"></i> Last dose</label><input type="date" id="fleaDate" /></div><div class="input-group"><label><i class="fa-solid fa-arrows-rotate"></i> Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div></div>
-          <button class="primary w-full" onclick="genFlea()"><i class="fa-solid fa-clock"></i> Generate</button>
-          <div id="fleaRes" class="mt-2 text-muted"></div>
-          <div class="save-prompt"><span class="text"><i class="fa-solid fa-floppy-disk"></i> Save to ${dname}'s profile?</span><button class="primary" onclick="saveFleaResult('${dname}')">Save</button></div>
-        </div>
-      `;
-    }
-    function genFlea() {
-      const date=document.getElementById('fleaDate').value; const freq=parseInt(document.getElementById('fleaFreq').value)||30;
-      if (!date) return alert('Select a date.');
-      const d=new Date(date+'T00:00:00'); const dates=[];
-      for (let i=0;i<6;i++){d.setDate(d.getDate()+freq);dates.push(d.toISOString().split('T')[0]);}
-      state._fleaResult = { last: date, freq, nextDates: dates };
-      document.getElementById('fleaRes').innerHTML = '<strong>Next due:</strong><br>'+dates.join(' · ');
-    }
-    function saveFleaResult(dname) {
-      if (!state._fleaResult) return alert('Generate schedule first.');
-      state.calcResults.flea = state._fleaResult;
-      saveState();
-      alert('Saved to '+dname+'\'s profile!');
-      renderHome();
-    }
-    // Treats
-    function getTreatTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-candy" style="color:#d98c2a;"></i> Treat Allowance (10%)</div>
-          <div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="treatW" value="${getActiveDog().weight / 2.2046 || 25}" /></div>
-          <button class="primary w-full" onclick="calcTreats()"><i class="fa-solid fa-calculator"></i> Calculate</button>
-          <div id="treatRes" class="mt-2 text-muted"></div>
-          <div class="save-prompt"><span class="text"><i class="fa-solid fa-floppy-disk"></i> Save to ${dname}'s profile?</span><button class="primary" onclick="saveTreatResult('${dname}')">Save</button></div>
-        </div>
-      `;
-    }
-    function calcTreats() {
-      const w=parseFloat(document.getElementById('treatW').value)||25;
-      const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*1.6; const budget=mer*0.10;
-      state._treatResult = { budget };
-      document.getElementById('treatRes').innerHTML = '10% budget: <strong>'+Math.round(budget)+'</strong> kcal/day (~'+Math.round(budget/5)+' baby carrots)';
-    }
-    function saveTreatResult(dname) {
-      if (!state._treatResult) return alert('Calculate first.');
-      state.calcResults.treats = state._treatResult;
-      saveState();
-      alert('Saved to '+dname+'\'s profile!');
-      renderHome();
-    }
-    // Cost
-    function getCostTools(dname) {
-      return `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-coins" style="color:var(--primary);"></i> True Cost Per Day</div>
-          <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-dollar-sign"></i> Price ($)</label><input type="number" id="costP" value="45" /></div><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Bag (kg)</label><input type="number" id="costB" value="15" /></div></div>
-          <div class="input-group"><label><i class="fa-solid fa-utensils"></i> Daily portion (g)</label><input type="number" id="costPort" value="300" /></div>
-          <button class="primary w-full" onclick="calcCost()"><i class="fa-solid fa-calculator"></i> Calculate</button>
-          <div id="costRes" class="mt-2 text-muted"></div>
-          <div class="save-prompt"><span class="text"><i class="fa-solid fa-floppy-disk"></i> Save to ${dname}'s profile?</span><button class="primary" onclick="saveCostResult('${dname}')">Save</button></div>
-        </div>
-      `;
-    }
-    function calcCost() {
-      const price=parseFloat(document.getElementById('costP').value)||0;
-      const bag=parseFloat(document.getElementById('costB').value)||0;
-      const portion=parseFloat(document.getElementById('costPort').value)||0;
-      if (!price||!bag||!portion) return alert('Fill all fields.');
-      const days=(bag*1000)/portion; const cpd=price/days;
-      state._costResult = { cpd, days };
-      document.getElementById('costRes').innerHTML = 'Bag lasts ~'+days.toFixed(1)+' days<br><strong>$'+cpd.toFixed(2)+'</strong> per day ($'+(cpd*30).toFixed(2)+'/mo)';
-    }
-    function saveCostResult(dname) {
-      if (!state._costResult) return alert('Calculate first.');
-      state.calcResults.cost = state._costResult;
-      saveState();
-      alert('Saved to '+dname+'\'s profile!');
-      renderHome();
-    }
-
-    // ── WALKER ACCESS (unchanged) ──
-    function openWalkerSetup() {
-      if (state.walkerMode) {
-        state.walkerMode = false;
-        saveState();
-        renderTools();
-        return;
-      }
-      const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
-      overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
-      overlay.innerHTML = `
-        <div class="modal" onclick="event.stopPropagation();">
-          <div class="modal-header"><span style="font-weight:800;"><i class="fa-solid fa-dog" style="color:var(--primary);"></i> Walker Access</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
-          <div class="input-group"><label><i class="fa-solid fa-lock"></i> Enter PIN</label><input type="password" id="walkerPinInput" placeholder="default: 1234" /></div>
-          <button class="primary w-full" onclick="enterWalkerMode()"><i class="fa-solid fa-right-to-bracket"></i> Enter Walker Mode</button>
-          <div class="text-xs text-muted mt-2">Walker mode shows only the walk tracker and notes.</div>
-        </div>
-      `;
-      document.body.appendChild(overlay);
-    }
-    function enterWalkerMode() {
-      const pin = document.getElementById('walkerPinInput').value.trim();
-      if (pin === state.walkerPin) {
-        state.walkerMode = true;
-        saveState();
-        closeModal();
-        renderTools();
-        navigateTo('tools');
-      } else {
-        alert('Incorrect PIN. Default is 1234.');
-      }
-    }
-    function renderWalkerView() {
-      const container = document.getElementById('toolsContent');
-      container.innerHTML = `
-        <div class="walker-view">
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:800;font-size:20px;color:var(--primary);"><i class="fa-solid fa-dog"></i> Walker Mode</span>
-              <button class="secondary" onclick="exitWalkerMode()"><i class="fa-solid fa-right-from-bracket"></i> Exit</button>
-            </div>
-            <div class="text-muted text-sm mt-1">Tracking walks for ${getActiveDog().name}</div>
-          </div>
-          <div class="card">${renderWalkTracker()}</div>
-          <div class="card">
-            <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-pen"></i> Walker Notes</div>
-            <textarea rows="3" style="width:100%;" onchange="saveWalkerNote(this.value)" placeholder="Notes about the walk...">${state.walkerNote || ''}</textarea>
-            <div class="text-xs text-muted mt-1">Auto-saved</div>
-          </div>
-        </div>
-      `;
-    }
-    function exitWalkerMode() {
-      state.walkerMode = false;
-      saveState();
-      renderTools();
-    }
-    function saveWalkerNote(val) {
-      state.walkerNote = val;
-      saveState();
-    }
-
-    // ── RENDER: UTILITIES ── (unchanged structure, with new icons)
+    // ── UTILITIES ──
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
-
       const inv = state.inventory;
       const invItems = [
         { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#e05252', count:inv.proteinBags.count, min:inv.proteinBags.min },
@@ -1469,7 +1196,7 @@
       ];
       let invHtml = invItems.map(item => `
         <div class="inventory-row">
-          <span class="label"><i class="fa-solid ${item.icon}" style="color:${item.color};width:26px;"></i> ${item.label}</span>
+          <span class="label"><i class="fa-solid ${item.icon}" style="color:${item.color};width:24px;"></i> ${item.label}</span>
           <div class="count">
             <button onclick="updateInventory('${item.id}', -1)">−</button>
             <span class="num">${item.count}</span>
@@ -1479,151 +1206,79 @@
         </div>
       `).join('');
 
-      const installHtml = `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-mobile-screen-button icon"></i> Install as an App</div>
-          <div style="font-size:14px;color:var(--text2);line-height:1.7;">
-            FRESH BOWL METHOD can live on your home screen like a native app — full screen, its own icon.<br><br>
-            <i class="fa-brands fa-apple" style="color:#555;"></i> <strong>iPhone/iPad:</strong> Share → <strong>Add to Home Screen</strong>.<br>
-            <i class="fa-brands fa-android" style="color:#3ddc84;"></i> <strong>Android/Chrome:</strong> browser menu → <strong>Install app</strong>.<br><br>
-            Data stays on this device. Keep periodic exports as backup.
-          </div>
+      const html = `
+        <div class="card"><div class="card-title"><i class="fa-solid fa-warehouse icon"></i> Freezer Inventory</div>${invHtml}</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-key icon"></i> USDA API Key</div><input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" /><div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div></div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-hospital icon"></i> Vet Info</div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-user-doctor"></i></span><input type="text" value="${state.vetInfo.name}" placeholder="Vet name" onchange="updateVet('name',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-building"></i></span><input type="text" value="${state.vetInfo.clinic}" placeholder="Clinic" onchange="updateVet('clinic',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-phone"></i></span><input type="text" value="${state.vetInfo.phone}" placeholder="Phone" onchange="updateVet('phone',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-envelope"></i></span><input type="text" value="${state.vetInfo.email}" placeholder="Email" onchange="updateVet('email',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-location-dot"></i></span><input type="text" value="${state.vetInfo.address}" placeholder="Address" onchange="updateVet('address',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-pen"></i></span><input type="text" value="${state.vetInfo.notes}" placeholder="Notes" onchange="updateVet('notes',this.value)" /></div>
         </div>
-      `;
-
-      const usdaHtml = `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-key icon"></i> USDA API Key</div>
-          <input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" />
-          <div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div>
-        </div>
-      `;
-
-      const v = state.vetInfo;
-      const vetHtml = `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-hospital icon"></i> Vet Information</div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-user-doctor"></i></span><input type="text" value="${v.name}" placeholder="Vet name" onchange="updateVet('name',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-building"></i></span><input type="text" value="${v.clinic}" placeholder="Clinic" onchange="updateVet('clinic',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-phone"></i></span><input type="text" value="${v.phone}" placeholder="Phone" onchange="updateVet('phone',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-envelope"></i></span><input type="text" value="${v.email}" placeholder="Email" onchange="updateVet('email',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-location-dot"></i></span><input type="text" value="${v.address}" placeholder="Address" onchange="updateVet('address',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-pen"></i></span><input type="text" value="${v.notes}" placeholder="Notes" onchange="updateVet('notes',this.value)" /></div>
-        </div>
-      `;
-
-      const vax = state.vaccines || [];
-      const totalVax = vax.length;
-      let idx = state.vaccineRolodexIndex || 0;
-      if (idx >= totalVax) idx = Math.max(0, totalVax - 1);
-      if (idx < 0) idx = 0;
-      state.vaccineRolodexIndex = idx;
-      saveState();
-      let rolodexHtml = '';
-      if (totalVax === 0) {
-        rolodexHtml = `<div class="rolodex-empty"><i class="fa-solid fa-syringe" style="font-size:48px;display:block;color:var(--text3);"></i><div>No vaccines recorded.</div></div>`;
-      } else {
-        const vv = vax[idx];
-        rolodexHtml = `
-          <div class="rolodex-container">
-            <div class="rolodex-card">
-              <div class="index">${idx+1} / ${totalVax}</div>
-              <div class="name"><i class="fa-solid fa-syringe" style="color:var(--primary);"></i> ${vv.name}</div>
-              <div class="detail"><i class="fa-solid fa-calendar-day"></i> Given: ${vv.date}</div>
-              ${vv.nextDate ? `<div class="detail"><i class="fa-solid fa-clock"></i> Next due: ${vv.nextDate}</div>` : ''}
-              ${vv.notes ? `<div class="notes"><i class="fa-solid fa-pen"></i> ${vv.notes}</div>` : ''}
-            </div>
-            <div class="rolodex-controls">
-              <button onclick="rolodexPrev()" ${idx<=0?'disabled':''}><i class="fa-solid fa-chevron-left"></i> Prev</button>
-              <button onclick="rolodexNext()" ${idx>=totalVax-1?'disabled':''}>Next <i class="fa-solid fa-chevron-right"></i></button>
-              <button onclick="deleteCurrentVax()" style="background:#e05252;color:#fff;"><i class="fa-solid fa-trash"></i> Delete</button>
-            </div>
-          </div>
-        `;
-      }
-      const commonVax = ['Rabies','DHPP (Distemper/Parvo)','Bordetella','Lyme','Leptospirosis','Influenza','Kennel Cough','Other'];
-      const datalistOpts = commonVax.map(v => '<option value="'+v+'">').join('');
-      const vaccinesHtml = `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-syringe icon"></i> Vaccine Records</div>
-          ${rolodexHtml}
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
-            <div style="font-weight:700;font-size:14px;"><i class="fa-solid fa-plus"></i> Add New</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-syringe icon"></i> Vaccines</div>
+          ${renderVaccineRolodex()}
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
             <div class="grid-2">
-              <div class="input-group"><label><i class="fa-solid fa-tag"></i> Name</label><input type="text" id="vaccName" list="vaxDatalist" value="${state.vaccineForm.name}" oninput="updateVaxForm('name',this.value)" placeholder="e.g. Rabies" /></div>
-              <div class="input-group"><label><i class="fa-solid fa-calendar-day"></i> Date given</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaxForm('date',this.value)" /></div>
+              <div class="input-group"><label>Name</label><input type="text" id="vaccName" list="vaxDatalist" value="${state.vaccineForm.name}" oninput="updateVaxForm('name',this.value)" placeholder="e.g. Rabies" /></div>
+              <div class="input-group"><label>Date</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaxForm('date',this.value)" /></div>
             </div>
             <div class="grid-2">
-              <div class="input-group"><label><i class="fa-solid fa-clock"></i> Next due</label><input type="date" id="vaccNext" value="${state.vaccineForm.nextDate}" onchange="updateVaxForm('nextDate',this.value)" /></div>
-              <div class="input-group"><label><i class="fa-solid fa-pen"></i> Notes</label><input type="text" id="vaccNotes" value="${state.vaccineForm.notes}" onchange="updateVaxForm('notes',this.value)" placeholder="Clinic name" /></div>
+              <div class="input-group"><label>Next due</label><input type="date" id="vaccNext" value="${state.vaccineForm.nextDate}" onchange="updateVaxForm('nextDate',this.value)" /></div>
+              <div class="input-group"><label>Notes</label><input type="text" id="vaccNotes" value="${state.vaccineForm.notes}" onchange="updateVaxForm('notes',this.value)" placeholder="Clinic" /></div>
             </div>
-            <datalist id="vaxDatalist">${datalistOpts}</datalist>
-            <button class="w-full" onclick="addVax()"><i class="fa-solid fa-plus"></i> Add Vaccine</button>
+            <datalist id="vaxDatalist"><option value="Rabies"><option value="DHPP"><option value="Bordetella"><option value="Lyme"><option value="Leptospirosis"><option value="Influenza"></datalist>
+            <button class="w-full" onclick="addVax()"><i class="fa-solid fa-plus"></i> Add</button>
           </div>
         </div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-note-sticky icon"></i> Misc Notes</div><textarea rows="3" style="width:100%;" onchange="saveMisc(this.value)">${state.miscNotes}</textarea></div>
       `;
-
-      const miscHtml = `
-        <div class="card">
-          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-note-sticky icon"></i> Misc Notes</div>
-          <textarea rows="4" style="width:100%;" onchange="saveMisc(this.value)">${state.miscNotes}</textarea>
-          <div class="text-muted text-center mt-1"><i class="fa-solid fa-floppy-disk"></i> Auto-saved</div>
-        </div>
-      `;
-
-      const sections = [
-        { id: 'install', icon: 'fa-mobile-screen-button', label: 'Install as App', content: installHtml },
-        { id: 'inventory', icon: 'fa-warehouse', label: 'Freezer Inventory', content: `<div class="card">${invHtml}</div>` },
-        { id: 'usda', icon: 'fa-key', label: 'USDA API Key', content: usdaHtml },
-        { id: 'vet', icon: 'fa-hospital', label: 'Vet Information', content: vetHtml },
-        { id: 'vaccines', icon: 'fa-syringe', label: 'Vaccine Records', content: vaccinesHtml },
-        { id: 'misc', icon: 'fa-note-sticky', label: 'Misc Notes', content: miscHtml }
-      ];
-
-      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);"><i class="fa-solid fa-gear icon"></i> Utilities</div>`;
-      sections.forEach(s => {
-        const open = state.utreeOpen[s.id] || false;
-        html += `
-          <div class="accordion-item">
-            <div class="accordion-header" onclick="toggleTree('${s.id}')">
-              <span><i class="fa-solid ${s.icon}" style="color:var(--primary);width:26px;"></i> ${s.label}</span>
-              <span class="arrow ${open?'open':''}"><i class="fa-solid fa-chevron-down"></i></span>
-            </div>
-            <div class="accordion-body ${open?'open':''}">${s.content}</div>
-          </div>
-        `;
-      });
-      html += `</div>`;
       container.innerHTML = html;
     }
 
-    // ── Utility functions (unchanged) ──
-    function toggleTree(id) { state.utreeOpen[id] = !state.utreeOpen[id]; saveState(); renderUtilities(); }
-    function updateVet(field,val) { state.vetInfo[field] = val; saveState(); }
-    function saveMisc(val) { state.miscNotes = val; saveState(); }
-    function saveUSDAKey(val) { state.usdaKey = val.trim(); saveState(); }
-    function updateVaxForm(field,val) { state.vaccineForm[field] = val; saveState(); }
+    function renderVaccineRolodex() {
+      const vax = state.vaccines || [];
+      const total = vax.length;
+      let idx = state.vaccineRolodexIndex || 0;
+      if (idx >= total) idx = Math.max(0, total-1);
+      if (idx < 0) idx = 0;
+      state.vaccineRolodexIndex = idx;
+      if (total === 0) return '<div class="text-muted text-sm">No vaccines.</div>';
+      const v = vax[idx];
+      return `
+        <div class="rolodex-container">
+          <div class="rolodex-card"><div class="index">${idx+1}/${total}</div><div class="name">${v.name}</div><div class="detail">📅 ${v.date}</div>${v.nextDate ? `<div class="detail">⏰ ${v.nextDate}</div>` : ''}${v.notes ? `<div class="notes">📝 ${v.notes}</div>` : ''}</div>
+          <div class="rolodex-controls"><button onclick="rolodexPrev()" ${idx<=0?'disabled':''}>◀</button><button onclick="rolodexNext()" ${idx>=total-1?'disabled':''}>▶</button><button onclick="deleteCurrentVax()" style="background:#e05252;color:#fff;">✕</button></div>
+        </div>
+      `;
+    }
+
+    function updateVet(field,val) { state.vetInfo[field]=val; saveState(); }
+    function saveMisc(val) { state.miscNotes=val; saveState(); }
+    function saveUSDAKey(val) { state.usdaKey=val.trim(); saveState(); }
+    function updateVaxForm(field,val) { state.vaccineForm[field]=val; saveState(); }
     function addVax() {
       const name = state.vaccineForm.name.trim();
       const date = state.vaccineForm.date;
-      if (!name || !date) { alert('Please enter name and date.'); return; }
+      if (!name||!date) { alert('Enter name and date.'); return; }
       state.vaccines.push({ name, date, nextDate: state.vaccineForm.nextDate, notes: state.vaccineForm.notes.trim() });
-      state.vaccineForm = { name: '', date: '', nextDate: '', notes: '' };
+      state.vaccineForm = { name:'', date:'', nextDate:'', notes:'' };
       state.vaccineRolodexIndex = state.vaccines.length - 1;
       saveState(); renderUtilities();
     }
-    function rolodexPrev() { if (state.vaccineRolodexIndex > 0) { state.vaccineRolodexIndex--; saveState(); renderUtilities(); } }
-    function rolodexNext() { if (state.vaccineRolodexIndex < state.vaccines.length - 1) { state.vaccineRolodexIndex++; saveState(); renderUtilities(); } }
+    function rolodexPrev() { if (state.vaccineRolodexIndex>0){state.vaccineRolodexIndex--; saveState(); renderUtilities();} }
+    function rolodexNext() { if (state.vaccineRolodexIndex<state.vaccines.length-1){state.vaccineRolodexIndex++; saveState(); renderUtilities();} }
     function deleteCurrentVax() {
       const idx = state.vaccineRolodexIndex;
-      if (state.vaccines.length === 0) return;
-      if (!confirm('Delete "' + state.vaccines[idx].name + '"?')) return;
-      state.vaccines.splice(idx, 1);
-      if (state.vaccineRolodexIndex >= state.vaccines.length) state.vaccineRolodexIndex = Math.max(0, state.vaccines.length - 1);
+      if (state.vaccines.length===0) return;
+      if (!confirm('Delete "'+state.vaccines[idx].name+'"?')) return;
+      state.vaccines.splice(idx,1);
+      if (state.vaccineRolodexIndex>=state.vaccines.length) state.vaccineRolodexIndex=Math.max(0,state.vaccines.length-1);
       saveState(); renderUtilities();
     }
 
-    // ── Swap / Addins modals (unchanged) ──
+    // ── SWAP / ADDINS ──
     function openSwap(dateKey, slot) {
       const y=parseInt(dateKey.split('-')[0]), m=parseInt(dateKey.split('-')[1])-1, d=parseInt(dateKey.split('-')[2]);
       const meal = getMealForDate(y,m,d,slot);
@@ -1634,13 +1289,13 @@
       overlay.onclick = function(e) { if (e.target===overlay) closeModal(); };
       overlay.innerHTML = `
         <div class="modal" onclick="event.stopPropagation();">
-          <div class="modal-header"><span class="modal-title"><i class="fa-solid fa-arrows-rotate"></i> Swap Ingredients</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
-          <div style="margin-bottom:10px;"><div><strong>Protein:</strong> ${meal.protein}</div><div><strong>Starch:</strong> ${meal.starch}</div><div><strong>Veg:</strong> ${meal.veg}</div><div><strong>Organ:</strong> ${meal.organ||'None'}</div></div>
-          <div class="input-group"><label><i class="fa-solid fa-drumstick-bite"></i> New Protein</label><select onchange="applySwap('${key}','protein',this.value)"><option value="">Keep</option>${PROTEIN_OPTIONS.map(p => `<option value="${p}" ${swaps.protein===p?'selected':''}>${p}</option>`).join('')}</select></div>
-          <div class="input-group"><label><i class="fa-solid fa-bowl-food"></i> New Starch</label><select onchange="applySwap('${key}','starch',this.value)"><option value="">Keep</option>${STARCH_OPTIONS.map(s => `<option value="${s}" ${swaps.starch===s?'selected':''}>${s}</option>`).join('')}</select></div>
-          <div class="input-group"><label><i class="fa-solid fa-leaf"></i> New Vegetable</label><select onchange="applySwap('${key}','veg',this.value)"><option value="">Keep</option>${VEG_OPTIONS.map(v => `<option value="${v}" ${swaps.veg===v?'selected':''}>${v}</option>`).join('')}</select></div>
-          <div class="input-group"><label><i class="fa-solid fa-heart"></i> New Organ</label><select onchange="applySwap('${key}','organ',this.value)"><option value="">Keep</option>${ORGAN_OPTIONS.map(o => `<option value="${o}" ${swaps.organ===o?'selected':''}>${o}</option>`).join('')}<option value="__none" ${swaps.organ===null?'selected':''}>None</option></select></div>
-          <button class="secondary w-full" onclick="clearSwaps('${key}')"><i class="fa-solid fa-rotate-left"></i> Reset all swaps</button>
+          <div class="modal-header"><span class="modal-title">Swap</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+          <div style="margin-bottom:8px;"><div><strong>Protein:</strong> ${meal.protein}</div><div><strong>Starch:</strong> ${meal.starch}</div><div><strong>Veg:</strong> ${meal.veg}</div><div><strong>Organ:</strong> ${meal.organ||'None'}</div></div>
+          <div class="input-group"><label>Protein</label><select onchange="applySwap('${key}','protein',this.value)"><option value="">Keep</option>${PROTEIN_OPTIONS.map(p => `<option value="${p}" ${swaps.protein===p?'selected':''}>${p}</option>`).join('')}</select></div>
+          <div class="input-group"><label>Starch</label><select onchange="applySwap('${key}','starch',this.value)"><option value="">Keep</option>${STARCH_OPTIONS.map(s => `<option value="${s}" ${swaps.starch===s?'selected':''}>${s}</option>`).join('')}</select></div>
+          <div class="input-group"><label>Veg</label><select onchange="applySwap('${key}','veg',this.value)"><option value="">Keep</option>${VEG_OPTIONS.map(v => `<option value="${v}" ${swaps.veg===v?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="input-group"><label>Organ</label><select onchange="applySwap('${key}','organ',this.value)"><option value="">Keep</option>${ORGAN_OPTIONS.map(o => `<option value="${o}" ${swaps.organ===o?'selected':''}>${o}</option>`).join('')}<option value="__none" ${swaps.organ===null?'selected':''}>None</option></select></div>
+          <button class="secondary w-full" onclick="clearSwaps('${key}')">Reset</button>
         </div>
       `;
       document.body.appendChild(overlay);
@@ -1661,10 +1316,10 @@
       overlay.onclick = function(e) { if (e.target===overlay) closeModal(); };
       overlay.innerHTML = `
         <div class="modal" onclick="event.stopPropagation();">
-          <div class="modal-header"><span class="modal-title"><i class="fa-solid fa-plus"></i> Add Items</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
-          <div class="input-group"><label><i class="fa-solid fa-utensils"></i> Add ingredient (oz)</label><div style="display:flex;gap:8px;"><input type="text" id="addinName" placeholder="e.g. Blueberries" /><input type="number" id="addinAmount" placeholder="oz" step="0.25" style="width:80px;" /></div><button class="primary w-full mt-1" onclick="addAddin('${key}')"><i class="fa-solid fa-plus"></i> Add</button></div>
-          <div class="input-group"><label><i class="fa-solid fa-magnifying-glass"></i> Search USDA</label><div style="display:flex;gap:8px;"><input type="text" id="usdaSearch" placeholder="e.g. 'sweet potato'" /><button class="primary" onclick="searchUSDAForAddin('${key}')"><i class="fa-solid fa-search"></i> Search</button></div><div id="usdaResults" class="mt-1 text-sm"></div></div>
-          <div id="addinList" style="margin-top:10px;">${Object.keys(addins).map(name => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>${name} – ${addins[name]} oz</span><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="removeAddin('${key}','${name}')"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>
+          <div class="modal-header"><span class="modal-title">Add Items</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+          <div class="input-group"><label>Ingredient (oz)</label><div style="display:flex;gap:8px;"><input type="text" id="addinName" placeholder="e.g. Blueberries" /><input type="number" id="addinAmount" placeholder="oz" step="0.25" style="width:80px;" /></div><button class="primary w-full mt-1" onclick="addAddin('${key}')">Add</button></div>
+          <div class="input-group"><label>🔍 USDA</label><div style="display:flex;gap:8px;"><input type="text" id="usdaSearch" placeholder="e.g. 'sweet potato'" /><button class="primary" onclick="searchUSDAForAddin('${key}')">Search</button></div><div id="usdaResults" class="mt-1 text-sm"></div></div>
+          <div style="margin-top:10px;">${Object.keys(addins).map(name => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>${name} – ${addins[name]} oz</span><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="removeAddin('${key}','${name}')">✕</button></div>`).join('')}</div>
         </div>
       `;
       document.body.appendChild(overlay);
@@ -1716,10 +1371,61 @@
       if (state.addinsLog?.[key]) { delete state.addinsLog[key][name]; saveState(); openAddins(key.split('_')[0], key.split('_')[1]); }
     }
 
+    // ── USDA lookup ──
+    function searchUSDA(query, callback) {
+      if (!state.usdaKey) { callback({ error: 'No USDA API key.' }); return; }
+      fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key='+state.usdaKey+'&query='+encodeURIComponent(query)+'&pageSize=10')
+        .then(r => r.json()).then(data => { if (data.foods) callback(data.foods); else callback({ error: 'No results' }); })
+        .catch(err => callback({ error: 'Network error' }));
+    }
+    function getUSDAFoodDetails(fdcId, callback) {
+      if (!state.usdaKey) { callback({ error: 'No API key' }); return; }
+      fetch('https://api.nal.usda.gov/fdc/v1/food/'+fdcId+'?api_key='+state.usdaKey)
+        .then(r => r.json()).then(data => callback(data)).catch(err => callback({ error: 'Failed' }));
+    }
+    function parseUSDAFood(foodDetail) {
+      const nutMap = { 'Protein':'protein','Total lipid (fat)':'fat','Calcium, Ca':'calcium','Phosphorus, P':'phosphorus','Potassium, K':'potassium','Sodium, Na':'sodium','Chloride, Cl':'chloride','Magnesium, Mg':'magnesium','Iron, Fe':'iron','Copper, Cu':'copper','Zinc, Zn':'zinc','Selenium, Se':'selenium','Vitamin A, IU':'vitA','Vitamin D':'vitD','Vitamin E (alpha-tocopherol)':'vitE','Vitamin K (phylloquinone)':'vitK','Thiamin':'vitB1','Riboflavin':'vitB2','Niacin':'vitB3','Pantothenic acid':'vitB5','Vitamin B-6':'vitB6','Vitamin B-12':'vitB12','Folate, total':'folate','Choline, total':'choline','Manganese, Mn':'manganese','Iodine, I':'iodine','Omega-3':'omega3','Omega-6':'omega6' };
+      const per100g = {};
+      (foodDetail.foodNutrients || []).forEach(e => {
+        const name = e.nutrient?.name || e.nutrientName || '';
+        const value = e.amount || e.value || 0;
+        const unit = e.nutrient?.unitName || e.unitName || '';
+        for (const [usdaKey, ourKey] of Object.entries(nutMap)) {
+          if (name.includes(usdaKey) || usdaKey.includes(name)) {
+            if (unit === 'G') per100g[ourKey] = value * 1000;
+            else per100g[ourKey] = value;
+            break;
+          }
+        }
+      });
+      const factor = 28.3495 / 100;
+      const perOz = {};
+      NUTRIENT_KEYS.forEach(k => { perOz[k] = (per100g[k] || 0) * factor; });
+      perOz._name = foodDetail.description || 'USDA Food';
+      return perOz;
+    }
+
+    // ── Toggle functions ──
     function toggleFed(key) { state.fedLog[key] = !state.fedLog[key]; saveState(); renderAll(); }
-    function toggleProtein(p) { const idx = state.selectedProteins.indexOf(p); if (idx>=0) state.selectedProteins.splice(idx,1); else if (state.selectedProteins.length<6) state.selectedProteins.push(p); saveState(); renderPlan(); }
-    function toggleFav(cat,item) { const arr = state.favorites[cat]; const idx = arr.indexOf(item); if (idx>=0) arr.splice(idx,1); else arr.push(item); saveState(); renderPlan(); }
-    function rebuildRotation() { state.rotation = generateRotation(state.selectedProteins, state.favorites); saveState(); renderPlan(); alert('Rotation rebuilt!'); }
+    function toggleProtein(p) {
+      const idx = state.selectedProteins.indexOf(p);
+      if (idx>=0) state.selectedProteins.splice(idx,1);
+      else if (state.selectedProteins.length<6) state.selectedProteins.push(p);
+      saveState(); renderPlan();
+    }
+    function toggleFav(cat,item) {
+      const arr = state.favorites[cat];
+      const idx = arr.indexOf(item);
+      if (idx>=0) arr.splice(idx,1);
+      else arr.push(item);
+      saveState(); renderPlan();
+    }
+    function rebuildRotation() {
+      state.rotation = generateRotation(state.selectedProteins, state.favorites);
+      saveState();
+      renderPlan();
+      alert('Rotation rebuilt!');
+    }
     function toggleWalkHistory() { state.showAllWalks = !state.showAllWalks; saveState(); renderHome(); }
 
     // ── NAVIGATION ──
@@ -1731,8 +1437,8 @@
         case 'home': renderHome(); break;
         case 'plan': renderPlan(); break;
         case 'nutrition': renderNutrition(); break;
+        case 'history': renderHistory(); break;
         case 'profile': renderProfile(); break;
-        case 'tools': renderTools(); break;
         case 'utilities': renderUtilities(); break;
       }
       window.scrollTo(0,0);
@@ -1745,24 +1451,19 @@
       document.querySelectorAll('.bottom-nav button').forEach(btn => {
         btn.addEventListener('click', () => navigateTo(btn.dataset.page));
       });
-      // expose functions for inline onclick
+      // expose functions
       window.switchDog = switchDog; window.openAddDogModal = openAddDogModal; window.addDogFromModal = addDogFromModal; window.deleteDog = deleteDog; window.closeModal = closeModal;
       window.toggleFed = toggleFed; window.toggleProtein = toggleProtein; window.toggleFav = toggleFav; window.rebuildRotation = rebuildRotation;
       window.updateDog = updateDog; window.saveProfile = saveProfile; window.handlePhotoProf = handlePhotoProf;
       window.updateInventory = updateInventory; window.setInventoryMin = setInventoryMin;
-      window.startRR = startRR; window.resetRR = resetRR; window.saveRR = saveRR;
-      window.calcCalories = calcCalories; window.saveCalorieResult = saveCalorieResult;
-      window.calcChoc = calcChoc; window.saveChocResult = saveChocResult;
-      window.genFlea = genFlea; window.saveFleaResult = saveFleaResult;
-      window.calcTreats = calcTreats; window.saveTreatResult = saveTreatResult;
-      window.calcCost = calcCost; window.saveCostResult = saveCostResult;
-      window.openWalkerSetup = openWalkerSetup; window.enterWalkerMode = enterWalkerMode; window.exitWalkerMode = exitWalkerMode; window.saveWalkerNote = saveWalkerNote;
-      window.switchToolsTab = switchToolsTab;
-      window.startWalk = startWalk; window.stopWalk = stopWalk; window.deleteWalkLog = deleteWalkLog; window.toggleWalkHistory = toggleWalkHistory;
       window.openSwap = openSwap; window.applySwap = applySwap; window.clearSwaps = clearSwaps;
       window.openAddins = openAddins; window.searchUSDAForAddin = searchUSDAForAddin; window.importUSDA = importUSDA; window.addAddin = addAddin; window.removeAddin = removeAddin;
-      window.saveUSDAKey = saveUSDAKey; window.updateVet = updateVet; window.saveMisc = saveMisc; window.toggleTree = toggleTree;
+      window.saveUSDAKey = saveUSDAKey; window.updateVet = updateVet; window.saveMisc = saveMisc;
       window.updateVaxForm = updateVaxForm; window.addVax = addVax; window.rolodexPrev = rolodexPrev; window.rolodexNext = rolodexNext; window.deleteCurrentVax = deleteCurrentVax;
+      window.startWalk = startWalk; window.stopWalk = stopWalk; window.deleteWalkLog = deleteWalkLog; window.toggleWalkHistory = toggleWalkHistory; window.quickStartWalk = quickStartWalk;
+      window.openNutrientBreakdown = openNutrientBreakdown; window.closeBreakdownModal = closeBreakdownModal;
+      window.setHistoryView = setHistoryView; window.navHistory = navHistory; window.openHistoryDay = openHistoryDay;
+      window.toggleRotationWeek = toggleRotationWeek;
       window.navigateTo = navigateTo;
       navigateTo('home');
     }
