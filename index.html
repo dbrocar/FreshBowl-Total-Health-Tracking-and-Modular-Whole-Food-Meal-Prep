@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    /* ─── CSS ────────────────────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #f8f4ec;
@@ -63,15 +64,13 @@
     [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
     .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
-    /* ── HEADER (bigger) ── */
+    /* ── HEADER ── */
     .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 16px 14px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); text-align: center; }
     .header-title { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; line-height: 1.1; }
     .header-title small { font-size: 14px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; }
-    /* ── CONTROLS ROW (WALK + theme toggle) ── */
     .controls-row { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 0 6px; flex-wrap: wrap; }
     .walker-btn { background: var(--green-dim); border: 1px solid var(--green); border-radius: 10px; padding: 8px 20px; font-size: 16px; font-weight: 800; color: var(--green); display: flex; align-items: center; gap: 8px; }
     .walker-btn:active { transform: scale(0.95); }
-    /* ── DOG CHIPS ── */
     .dog-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 6px 0 12px; }
     .dog-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 6px 16px; font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text2); cursor: pointer; transition: all 0.2s; }
     .dog-chip.active { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
@@ -109,41 +108,30 @@
     .meal-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
     .meal-actions button { padding: 4px 12px; font-size: 12px; border-radius: var(--radius-full); background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
     .meal-actions button.primary { background: var(--primary); color: #0a0e1a; border: none; }
-    .walk-display { text-align: center; padding: 12px; background: var(--surface2); border-radius: var(--radius-sm); margin: 8px 0; }
-    .walk-time { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
-    .walk-dist { font-size: 16px; color: var(--text2); margin-top: 2px; font-weight: 600; }
-    .walk-points { font-size: 12px; color: var(--text3); }
-    .walk-map { width: 100%; height: 180px; border-radius: var(--radius-sm); overflow: hidden; margin-top: 8px; background: var(--surface2); position: relative; }
+    /* ── WALK DASHBOARD ── */
+    .walk-timer { font-size: 42px; font-weight: 900; text-align: center; color: var(--primary); letter-spacing: 2px; padding: 8px 0; font-variant-numeric: tabular-nums; }
+    .walk-stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin: 10px 0; }
+    .walk-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
+    .walk-stat .num { font-size: 22px; font-weight: 900; color: var(--text); line-height: 1.1; }
+    .walk-stat .lbl { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .walk-map { width: 100%; height: 200px; border-radius: var(--radius-sm); overflow: hidden; margin-top: 8px; background: var(--surface2); position: relative; }
     .walk-map .leaflet-container { width: 100%; height: 100%; }
-    .walk-history-item { border-bottom: 1px solid var(--border); padding: 6px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .walk-controls { display: flex; gap: 12px; margin-top: 12px; justify-content: center; }
+    .walk-controls button { flex: 1; padding: 12px; font-size: 16px; font-weight: 800; border-radius: var(--radius-sm); }
+    .walk-controls .start { background: var(--green); color: #fff; border: none; }
+    .walk-controls .start:active { transform: scale(0.95); }
+    .walk-controls .stop { background: #e05252; color: #fff; border: none; }
+    .walk-controls .stop:active { transform: scale(0.95); }
+    .walk-history-chart { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+    .walk-history-chart .chart-title { font-size: 14px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+    .bar-chart { display: flex; align-items: flex-end; height: 60px; gap: 4px; }
+    .bar-chart .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+    .bar-chart .bar { width: 100%; min-height: 4px; background: var(--primary); border-radius: 4px 4px 0 0; transition: height 0.3s; }
+    .bar-chart .bar-label { font-size: 9px; color: var(--text3); margin-top: 3px; font-weight: 600; }
+    .walk-history-list { margin-top: 8px; }
+    .walk-history-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
     .walk-history-item:last-child { border-bottom: none; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s; }
-    .modal { background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 20px 16px; animation: slideUp 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .modal-title { font-size: 18px; font-weight: 800; color: var(--primary); }
-    .modal-close { background: transparent; padding: 4px 8px; font-size: 24px; color: var(--text2); border: none; }
-    .input-group { margin-bottom: 10px; }
-    .input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 3px; }
-    .rotation-week { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px; }
-    .rotation-week-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; cursor: pointer; }
-    .rotation-week-title { font-weight: 800; color: var(--primary); font-size: 15px; }
-    .rotation-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; overflow: hidden; transition: max-height 0.3s ease; }
-    .rotation-days.collapsed { max-height: 0; padding: 0; margin: 0; }
-    .rotation-days.expanded { max-height: 2000px; }
-    .rotation-day { background: var(--surface); border-radius: 6px; padding: 4px 2px; text-align: center; font-size: 9px; border: 1px solid var(--border); }
-    .rotation-day.fish { border-color: var(--blue); background: var(--blue-dim); }
-    .rotation-day .am-pm { font-size: 8px; color: var(--text3); }
-    .donut-wrap { display: flex; align-items: center; gap: 14px; padding: 4px 0; }
-    .donut-legend { display: flex; flex-direction: column; gap: 3px; flex: 1; }
-    .donut-row { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-    .donut-swatch { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
-    .donut-label { flex: 1; color: var(--text2); font-weight: 600; }
-    .donut-val { color: var(--text); font-weight: 700; }
-    .ca-p-ratio { display: inline-block; padding: 4px 14px; border-radius: var(--radius-full); font-size: 14px; font-weight: 800; background: var(--primary-dim); color: var(--primary); margin-top: 4px; }
-    .ca-p-ratio.ok { background: var(--green-dim); color: var(--green); }
-    .ca-p-ratio.off { background: rgba(224,82,82,0.15); color: #e05252; }
+    /* ── HISTORY ── */
     .history-tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
     .history-tab { padding: 4px 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; }
     .history-tab.active { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
@@ -217,18 +205,20 @@
       .walker-btn { font-size: 14px; padding: 6px 14px; }
       .bottom-nav button { font-size: 9px; }
       .bottom-nav button .icon { font-size: 20px; }
+      .walk-stats { grid-template-columns: 1fr 1fr; }
+      .walk-timer { font-size: 32px; }
     }
   </style>
 </head>
 <body>
   <div id="errorBox" class="error-box"></div>
 
-  <!-- HEADER (big, only title + version) -->
+  <!-- HEADER -->
   <header class="header">
     <div class="header-title">FRESHBOWL <small>v.96</small></div>
   </header>
 
-  <!-- CONTROLS ROW (WALK + toggle) -->
+  <!-- CONTROLS ROW -->
   <div class="container">
     <div class="controls-row">
       <button class="walker-btn" onclick="quickStartWalk()"><i class="fa-solid fa-person-walking"></i> WALK</button>
@@ -240,11 +230,9 @@
     </div>
   </div>
 
-  <!-- DOG CHIPS (dashboard) -->
+  <!-- DOG CHIPS -->
   <div class="container">
-    <div class="dog-chips" id="dogChipsContainer">
-      <!-- rendered by JS -->
-    </div>
+    <div class="dog-chips" id="dogChipsContainer"></div>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -281,7 +269,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════
-    //  STATE
+    //  STATE (same as before)
     // ═══════════════════════════════════════════════════════════
 
     let state = {
@@ -320,7 +308,8 @@
       historyView: 'day',
       historyDate: new Date().toISOString().split('T')[0],
       historyMonth: new Date().getMonth(),
-      historyYear: new Date().getFullYear()
+      historyYear: new Date().getFullYear(),
+      strideLength: 2.5 // feet per step
     };
     let petPhoto = '';
 
@@ -331,7 +320,7 @@
     const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
     const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
 
-    // ── FOODS ──
+    // ── FOODS ── (full set)
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -365,7 +354,7 @@
       "Blueberries": mkN(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
     };
 
-    // ── AAFCO ──
+    // ── AAFCO ── (unchanged)
     const AAFCO = [
       { k:'protein', label:'Protein', unit:'g', min:45, max:999 },
       { k:'fat', label:'Fat', unit:'g', min:13.8, max:55 },
@@ -398,7 +387,7 @@
     ];
     const NUTRIENT_KEYS = AAFCO.map(a => a.k);
 
-    // ── Helpers ──
+    // ── Helpers ── (unchanged)
     function getActiveDog() { return state.dogs.find(d => d.id === state.activeDogId) || state.dogs[0]; }
     function calcMER(dog) { const kg = (dog.weight || 65) / 2.2046; return 70 * Math.pow(kg, 0.75) * (dog.activity || 1.6); }
     function dateKey(y,m,d) { return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
@@ -509,7 +498,7 @@
       return 'ok';
     }
 
-    // ── Rotation Engine ──
+    // ── Rotation Engine ── (unchanged)
     function generateRotation(proteins, favs) {
       const mains = proteins.filter(p => !p.includes('Sardine') && !p.includes('Salmon'));
       const fish = proteins.filter(p => p.includes('Sardine') || p.includes('Salmon'));
@@ -576,7 +565,7 @@
       return result;
     }
 
-    // ── Walk helpers ──
+    // ── Walk helpers (enhanced) ──
     let walkInterval = null, walkStartTime = null, walkCoords = [];
     let walkMapInstance = null;
 
@@ -587,15 +576,16 @@
         return;
       }
       if (typeof L === 'undefined') {
-        document.getElementById(containerId).innerHTML = walkRouteToSvg(coords, 400, 180);
+        document.getElementById(containerId).innerHTML = walkRouteToSvg(coords, 400, 200);
         return;
       }
       const mapDiv = document.getElementById(containerId);
       if (!mapDiv) return;
       mapDiv.innerHTML = '';
       const map = L.map(mapDiv, { zoomControl: false, attributionControl: true }).setView([coords[0].lat, coords[0].lng], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
+      // Use CartoDB Voyager for a Google‑like look
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; CartoDB',
         maxZoom: 18,
       }).addTo(map);
       const latlngs = coords.map(c => [c.lat, c.lng]);
@@ -647,7 +637,7 @@
     }
     function deleteWalkLog(idx) { state.walkLogs.splice(idx,1); saveState(); renderAll(); }
 
-    // ── Storage ──
+    // ── Storage ── (unchanged)
     function saveState() {
       try { localStorage.setItem('fb_state', JSON.stringify(state)); } catch(e) {}
       try { if (petPhoto) localStorage.setItem('fb_photo', petPhoto); else localStorage.removeItem('fb_photo'); } catch(e) {}
@@ -689,7 +679,7 @@
       }
     }
 
-    // ── Render dog chips ──
+    // ── Dog chips render ──
     function renderDogChips() {
       const container = document.getElementById('dogChipsContainer');
       if (!container) return;
@@ -701,7 +691,7 @@
       container.innerHTML = html;
     }
 
-    // ── RENDER: HOME ──
+    // ── RENDER: HOME ── (with new walk tracker)
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -730,20 +720,48 @@
       items.forEach(it => { if (it.count < it.min) warnings.push(`${it.label} (${it.count}/${it.min})`); });
       let warnHtml = warnings.length ? `<div class="inventory-warning"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Batch soon:</strong> ${warnings.join(', ')}</div>` : '';
 
-      // Walk tracker
+      // ── Walk tracker ──
       const walkActive = (walkStartTime !== null && walkInterval !== null);
       const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
       const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
       const currentDist = walkActive ? calcDist(walkCoords)*0.621371 : (latestWalk ? latestWalk.dist : 0);
       const currentTime = walkActive ? Math.floor((Date.now()-walkStartTime)/1000) : (latestWalk ? (latestWalk.mins*60+(latestWalk.secs||0)) : 0);
-      const cMins = Math.floor(currentTime/60), cSecs = Math.floor(currentTime%60);
-      let historyHtml = '';
-      if (state.walkLogs.length > 0) {
-        const display = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0,2);
-        historyHtml = display.map((w,i) => `<div class="walk-history-item"><span>${w.date} · ${w.mins}m ${w.secs||0}s · ${w.dist.toFixed(2)} mi</span><button class="secondary" style="padding:2px 10px;font-size:12px;" onclick="deleteWalkLog(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
-        if (!state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">See More</button>`;
-        else if (state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">Show Less</button>`;
-      } else { historyHtml = '<div class="text-muted text-sm">No walks saved.</div>'; }
+      const currentMins = Math.floor(currentTime / 60);
+      const currentSecs = currentTime % 60;
+      const hours = Math.floor(currentMins / 60);
+      const mins = currentMins % 60;
+      const timeStr = walkActive ? 
+        `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(currentSecs).padStart(2,'0')}` :
+        (latestWalk ? `${String(latestWalk.mins).padStart(2,'0')}:${String(latestWalk.secs||0).padStart(2,'0')}` : '00:00:00');
+
+      // Steps (estimate)
+      const strideFt = state.strideLength || 2.5;
+      const steps = currentDist > 0 ? Math.round(currentDist * 5280 / strideFt) : 0;
+      const pace = currentDist > 0 ? (currentTime / 60) / currentDist : 0; // min per mile
+
+      // Bar chart for last 7 days
+      const last7 = [];
+      for (let i = 0; i < 7; i++) {
+        const dt = new Date(today);
+        dt.setDate(dt.getDate() - i);
+        const ds = dateKey(dt.getFullYear(), dt.getMonth(), dt.getDate());
+        const walk = state.walkLogs.find(w => w.date === ds);
+        const dist = walk ? walk.dist : 0;
+        last7.push({ date: ds, label: dt.toLocaleDateString('en-US', {weekday:'short'}), dist });
+      }
+      last7.reverse(); // oldest to newest
+      const maxDist = Math.max(...last7.map(w => w.dist), 0.01);
+      let chartBars = last7.map(w => {
+        const pct = (w.dist / maxDist) * 100;
+        return `<div class="bar-wrap"><div class="bar" style="height:${Math.max(pct, 4)}%;"></div><div class="bar-label">${w.label}</div></div>`;
+      }).join('');
+
+      let walkHistoryHtml = state.walkLogs.slice(0, 5).map((w, i) => {
+        const ds = w.date;
+        const d = new Date(ds + 'T00:00:00');
+        const label = d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        return `<div class="walk-history-item"><span>${label} · ${w.dist.toFixed(2)} mi · ${w.mins}m ${w.secs||0}s</span><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(${i})">✕</button></div>`;
+      }).join('');
 
       const mapId = 'walkMapContainer';
       setTimeout(() => {
@@ -771,19 +789,25 @@
 
         <div class="card">
           <div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Walk Tracker</div>
-          <div class="walk-display">
-            <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
-            <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
-            <div class="walk-points">${currentCoords.length} GPS points</div>
+          <div class="walk-timer">${timeStr}</div>
+          <div class="walk-stats">
+            <div class="walk-stat"><div class="num">${steps.toLocaleString()}</div><div class="lbl">Steps</div></div>
+            <div class="walk-stat"><div class="num">${currentDist.toFixed(2)}</div><div class="lbl">Miles</div></div>
+            <div class="walk-stat"><div class="num">${walkActive ? `${Math.floor(currentTime/60)}m ${currentSecs}s` : (latestWalk ? `${latestWalk.mins}m ${latestWalk.secs||0}s` : '0m 0s')}</div><div class="lbl">Time</div></div>
+            <div class="walk-stat"><div class="num">${currentDist > 0 ? (pace > 0 ? pace.toFixed(1) : '0.0') : '—'}</div><div class="lbl">Pace (min/mi)</div></div>
           </div>
           <div class="walk-map" id="${mapId}">${currentCoords.length > 0 ? 'Loading map...' : 'Start a walk to see the map'}</div>
-          <div class="grid-2" style="margin-top:8px;">
-            <button class="primary" onclick="startWalk()"><i class="fa-solid fa-play"></i> ${walkActive ? 'Recording...' : 'Start'}</button>
-            <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}><i class="fa-solid fa-stop"></i> Stop</button>
+          <div class="walk-controls">
+            <button class="start" onclick="startWalk()" ${walkActive?'disabled':''}><i class="fa-solid fa-play"></i> Start</button>
+            <button class="stop" onclick="stopWalk()" ${!walkActive?'disabled':''}><i class="fa-solid fa-stop"></i> Stop</button>
           </div>
-          <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
-            <div style="font-weight:700;font-size:14px;margin-bottom:4px;"><i class="fa-solid fa-clock-rotate-left"></i> Recent</div>
-            ${historyHtml}
+          <div class="walk-history-chart">
+            <div class="chart-title"><i class="fa-solid fa-chart-bar"></i> Last 7 Days</div>
+            <div class="bar-chart">${chartBars}</div>
+          </div>
+          <div class="walk-history-list">
+            <div style="font-weight:700;font-size:14px;margin-top:6px;">Recent Walks</div>
+            ${walkHistoryHtml || '<div class="text-muted text-sm">No walks saved.</div>'}
           </div>
         </div>
 
@@ -798,7 +822,7 @@
       `;
     }
 
-    // ── RENDER: PLAN ──
+    // ── RENDER: PLAN ── (unchanged)
     function renderPlan() {
       const container = document.getElementById('planContent');
       let protHtml = PROTEIN_OPTIONS.map(p => {
@@ -867,7 +891,7 @@
       renderPlan();
     }
 
-    // ── RENDER: NUTRITION ──
+    // ── RENDER: NUTRITION ── (unchanged)
     function renderNutrition() {
       const container = document.getElementById('nutritionContent');
       const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
@@ -937,7 +961,7 @@
       `;
     }
 
-    // ── Nutrient breakdown modal ──
+    // ── Nutrient breakdown modal ── (unchanged)
     function openNutrientBreakdown(key, sourcesMap, label) {
       const total = Object.values(sourcesMap).reduce((a,b) => a+b, 0);
       if (total === 0) { alert('No contributing foods for this nutrient.'); return; }
@@ -965,7 +989,7 @@
     }
     function closeBreakdownModal() { const el = document.getElementById('breakdownModal'); if (el) el.remove(); }
 
-    // ── RENDER: HISTORY ──
+    // ── RENDER: HISTORY ── (unchanged)
     function renderHistory() {
       const container = document.getElementById('historyContent');
       const view = state.historyView || 'day';
@@ -1076,7 +1100,7 @@
       navigateTo('history');
     }
 
-    // ── RENDER: PROFILE ──
+    // ── RENDER: PROFILE ── (unchanged)
     function renderProfile() {
       const dog = getActiveDog();
       if (!dog) { document.getElementById('profileContent').innerHTML = '<div class="card"><div class="text-muted">No dogs.</div></div>'; return; }
@@ -1158,7 +1182,7 @@
     }
     function saveProfile() { alert('Profile updated!'); }
 
-    // ── DOG SWITCH / ADD / DELETE ──
+    // ── DOG SWITCH / ADD / DELETE ── (unchanged)
     function switchDog(id) {
       state.activeDogId = id;
       saveState();
@@ -1206,7 +1230,7 @@
     }
     function closeModal() { const m = document.querySelector('.modal-overlay'); if (m) m.remove(); }
 
-    // ── INVENTORY ──
+    // ── INVENTORY ── (unchanged)
     function updateInventory(item, delta) {
       if (!state.inventory[item]) return;
       state.inventory[item].count += delta;
@@ -1219,7 +1243,7 @@
       saveState();
     }
 
-    // ── UTILITIES ──
+    // ── UTILITIES ── (with stride length setting)
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
       const inv = state.inventory;
@@ -1245,6 +1269,10 @@
 
       const html = `
         <div class="card"><div class="card-title"><i class="fa-solid fa-warehouse icon"></i> Freezer Inventory</div>${invHtml}</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-ruler icon"></i> Walk Settings</div>
+          <div class="input-group"><label>Stride Length (feet per step)</label><input type="number" step="0.1" value="${state.strideLength || 2.5}" onchange="updateStrideLength(this.value)" /></div>
+          <div class="text-xs text-muted">Used to estimate steps from distance. Default: 2.5 ft (average for medium dogs).</div>
+        </div>
         <div class="card"><div class="card-title"><i class="fa-solid fa-key icon"></i> USDA API Key</div><input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" /><div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div></div>
         <div class="card"><div class="card-title"><i class="fa-solid fa-hospital icon"></i> Vet Info</div>
           <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-user-doctor"></i></span><input type="text" value="${state.vetInfo.name}" placeholder="Vet name" onchange="updateVet('name',this.value)" /></div>
@@ -1272,6 +1300,11 @@
         <div class="card"><div class="card-title"><i class="fa-solid fa-note-sticky icon"></i> Misc Notes</div><textarea rows="3" style="width:100%;" onchange="saveMisc(this.value)">${state.miscNotes}</textarea></div>
       `;
       container.innerHTML = html;
+    }
+
+    function updateStrideLength(val) {
+      const v = parseFloat(val);
+      if (v > 0) { state.strideLength = v; saveState(); }
     }
 
     function renderVaccineRolodex() {
@@ -1315,7 +1348,7 @@
       saveState(); renderUtilities();
     }
 
-    // ── SWAP / ADDINS ──
+    // ── SWAP / ADDINS ── (unchanged)
     function openSwap(dateKey, slot) {
       const y=parseInt(dateKey.split('-')[0]), m=parseInt(dateKey.split('-')[1])-1, d=parseInt(dateKey.split('-')[2]);
       const meal = getMealForDate(y,m,d,slot);
@@ -1364,149 +1397,4 @@
     function searchUSDAForAddin(key) {
       const query = document.getElementById('usdaSearch').value.trim();
       if (!query) return alert('Enter a food name.');
-      const res = document.getElementById('usdaResults');
-      res.innerHTML = 'Searching...';
-      searchUSDA(query, (data) => {
-        if (data.error) { res.innerHTML = data.error; return; }
-        if (!data.length) { res.innerHTML = 'No results.'; return; }
-        res.innerHTML = data.map(f => `<div style="padding:4px;cursor:pointer;border-bottom:1px solid var(--border);" onclick="importUSDA('${f.fdcId}','${key}')">${f.description}</div>`).join('');
-      });
-    }
-    function importUSDA(fdcId, key) {
-      const res = document.getElementById('usdaResults');
-      res.innerHTML = 'Loading...';
-      getUSDAFoodDetails(fdcId, (detail) => {
-        if (detail.error) { res.innerHTML = detail.error; return; }
-        const perOz = parseUSDAFood(detail);
-        const name = perOz._name || 'USDA Food';
-        const nutrientObj = {};
-        NUTRIENT_KEYS.forEach(k => { nutrientObj[k] = perOz[k] || 0; });
-        FOODS[name] = nutrientObj;
-        state.customFoods[name] = nutrientObj;
-        saveState();
-        const addins = state.addinsLog?.[key] || {};
-        addins[name] = (addins[name] || 0) + 0.5;
-        if (!state.addinsLog) state.addinsLog = {};
-        state.addinsLog[key] = addins;
-        saveState();
-        res.innerHTML = '✅ Added "'+name+'" (0.5 oz).';
-        openAddins(key.split('_')[0], key.split('_')[1]);
-      });
-    }
-    function addAddin(key) {
-      const name = document.getElementById('addinName').value.trim();
-      const amount = parseFloat(document.getElementById('addinAmount').value);
-      if (!name || !amount) return alert('Enter name and amount.');
-      if (!FOODS[name] && !confirm('"'+name+'" not in database. Continue?')) return;
-      if (!state.addinsLog) state.addinsLog = {};
-      if (!state.addinsLog[key]) state.addinsLog[key] = {};
-      state.addinsLog[key][name] = (state.addinsLog[key][name] || 0) + amount;
-      saveState();
-      openAddins(key.split('_')[0], key.split('_')[1]);
-    }
-    function removeAddin(key, name) {
-      if (state.addinsLog?.[key]) { delete state.addinsLog[key][name]; saveState(); openAddins(key.split('_')[0], key.split('_')[1]); }
-    }
-
-    // ── USDA lookup ──
-    function searchUSDA(query, callback) {
-      if (!state.usdaKey) { callback({ error: 'No USDA API key.' }); return; }
-      fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key='+state.usdaKey+'&query='+encodeURIComponent(query)+'&pageSize=10')
-        .then(r => r.json()).then(data => { if (data.foods) callback(data.foods); else callback({ error: 'No results' }); })
-        .catch(err => callback({ error: 'Network error' }));
-    }
-    function getUSDAFoodDetails(fdcId, callback) {
-      if (!state.usdaKey) { callback({ error: 'No API key' }); return; }
-      fetch('https://api.nal.usda.gov/fdc/v1/food/'+fdcId+'?api_key='+state.usdaKey)
-        .then(r => r.json()).then(data => callback(data)).catch(err => callback({ error: 'Failed' }));
-    }
-    function parseUSDAFood(foodDetail) {
-      const nutMap = { 'Protein':'protein','Total lipid (fat)':'fat','Calcium, Ca':'calcium','Phosphorus, P':'phosphorus','Potassium, K':'potassium','Sodium, Na':'sodium','Chloride, Cl':'chloride','Magnesium, Mg':'magnesium','Iron, Fe':'iron','Copper, Cu':'copper','Zinc, Zn':'zinc','Selenium, Se':'selenium','Vitamin A, IU':'vitA','Vitamin D':'vitD','Vitamin E (alpha-tocopherol)':'vitE','Vitamin K (phylloquinone)':'vitK','Thiamin':'vitB1','Riboflavin':'vitB2','Niacin':'vitB3','Pantothenic acid':'vitB5','Vitamin B-6':'vitB6','Vitamin B-12':'vitB12','Folate, total':'folate','Choline, total':'choline','Manganese, Mn':'manganese','Iodine, I':'iodine','Omega-3':'omega3','Omega-6':'omega6' };
-      const per100g = {};
-      (foodDetail.foodNutrients || []).forEach(e => {
-        const name = e.nutrient?.name || e.nutrientName || '';
-        const value = e.amount || e.value || 0;
-        const unit = e.nutrient?.unitName || e.unitName || '';
-        for (const [usdaKey, ourKey] of Object.entries(nutMap)) {
-          if (name.includes(usdaKey) || usdaKey.includes(name)) {
-            if (unit === 'G') per100g[ourKey] = value * 1000;
-            else per100g[ourKey] = value;
-            break;
-          }
-        }
-      });
-      const factor = 28.3495 / 100;
-      const perOz = {};
-      NUTRIENT_KEYS.forEach(k => { perOz[k] = (per100g[k] || 0) * factor; });
-      perOz._name = foodDetail.description || 'USDA Food';
-      return perOz;
-    }
-
-    // ── Toggle functions ──
-    function toggleFed(key) { state.fedLog[key] = !state.fedLog[key]; saveState(); renderAll(); }
-    function toggleProtein(p) {
-      const idx = state.selectedProteins.indexOf(p);
-      if (idx>=0) state.selectedProteins.splice(idx,1);
-      else if (state.selectedProteins.length<6) state.selectedProteins.push(p);
-      saveState(); renderPlan();
-    }
-    function toggleFav(cat,item) {
-      const arr = state.favorites[cat];
-      const idx = arr.indexOf(item);
-      if (idx>=0) arr.splice(idx,1);
-      else arr.push(item);
-      saveState(); renderPlan();
-    }
-    function rebuildRotation() {
-      state.rotation = generateRotation(state.selectedProteins, state.favorites);
-      saveState();
-      renderPlan();
-      alert('Rotation rebuilt!');
-    }
-    function toggleWalkHistory() { state.showAllWalks = !state.showAllWalks; saveState(); renderHome(); }
-
-    // ── NAVIGATION ──
-    function navigateTo(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page-'+page).classList.add('active');
-      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
-      switch(page) {
-        case 'home': renderHome(); break;
-        case 'plan': renderPlan(); break;
-        case 'nutrition': renderNutrition(); break;
-        case 'history': renderHistory(); break;
-        case 'profile': renderProfile(); break;
-        case 'utilities': renderUtilities(); break;
-      }
-      window.scrollTo(0,0);
-    }
-
-    // ── INIT ──
-    function init() {
-      loadState();
-      document.getElementById('themeTrack').addEventListener('click', toggleTheme);
-      document.querySelectorAll('.bottom-nav button').forEach(btn => {
-        btn.addEventListener('click', () => navigateTo(btn.dataset.page));
-      });
-      // expose functions
-      window.switchDog = switchDog; window.openAddDogModal = openAddDogModal; window.addDogFromModal = addDogFromModal; window.deleteDog = deleteDog; window.closeModal = closeModal;
-      window.toggleFed = toggleFed; window.toggleProtein = toggleProtein; window.toggleFav = toggleFav; window.rebuildRotation = rebuildRotation;
-      window.updateDog = updateDog; window.saveProfile = saveProfile; window.handlePhotoProf = handlePhotoProf;
-      window.updateInventory = updateInventory; window.setInventoryMin = setInventoryMin;
-      window.openSwap = openSwap; window.applySwap = applySwap; window.clearSwaps = clearSwaps;
-      window.openAddins = openAddins; window.searchUSDAForAddin = searchUSDAForAddin; window.importUSDA = importUSDA; window.addAddin = addAddin; window.removeAddin = removeAddin;
-      window.saveUSDAKey = saveUSDAKey; window.updateVet = updateVet; window.saveMisc = saveMisc;
-      window.updateVaxForm = updateVaxForm; window.addVax = addVax; window.rolodexPrev = rolodexPrev; window.rolodexNext = rolodexNext; window.deleteCurrentVax = deleteCurrentVax;
-      window.startWalk = startWalk; window.stopWalk = stopWalk; window.deleteWalkLog = deleteWalkLog; window.toggleWalkHistory = toggleWalkHistory; window.quickStartWalk = quickStartWalk;
-      window.openNutrientBreakdown = openNutrientBreakdown; window.closeBreakdownModal = closeBreakdownModal;
-      window.setHistoryView = setHistoryView; window.navHistory = navHistory; window.openHistoryDay = openHistoryDay;
-      window.toggleRotationWeek = toggleRotationWeek;
-      window.navigateTo = navigateTo;
-      renderDogChips();
-      navigateTo('home');
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
-</body>
-</html>
+      const
