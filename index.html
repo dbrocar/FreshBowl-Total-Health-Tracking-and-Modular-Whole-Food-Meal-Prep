@@ -63,14 +63,21 @@
     [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
     .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
-    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
-    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-    .header-title { font-size: 17px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.3px; line-height: 1.2; }
-    .header-title small { font-size: 10px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; }
-    .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .walker-btn { background: var(--green-dim); border: 1px solid var(--green); border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 800; color: var(--green); display: flex; align-items: center; gap: 4px; }
+    /* ── HEADER (bigger) ── */
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 16px 14px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); text-align: center; }
+    .header-title { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; line-height: 1.1; }
+    .header-title small { font-size: 14px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; }
+    /* ── CONTROLS ROW (WALK + theme toggle) ── */
+    .controls-row { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 0 6px; flex-wrap: wrap; }
+    .walker-btn { background: var(--green-dim); border: 1px solid var(--green); border-radius: 10px; padding: 8px 20px; font-size: 16px; font-weight: 800; color: var(--green); display: flex; align-items: center; gap: 8px; }
     .walker-btn:active { transform: scale(0.95); }
+    /* ── DOG CHIPS ── */
+    .dog-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 6px 0 12px; }
+    .dog-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 6px 16px; font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+    .dog-chip.active { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
+    .dog-chip.add { border-style: dashed; background: transparent; }
+    .dog-chip:active { transform: scale(0.95); }
+    /* ── BOTTOM NAV ── */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
     .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 1px; transition: color var(--transition); border: none; }
     .bottom-nav button .icon { font-size: 22px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
@@ -89,11 +96,6 @@
     .badge.red { background: rgba(224,82,82,0.15); color: #e05252; }
     .badge.orange { background: rgba(230,150,50,0.15); color: #d98c2a; }
     .badge.blue { background: var(--blue-dim); color: var(--blue); }
-    .dog-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
-    .dog-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-full); padding: 6px 14px; font-family: var(--font); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; transition: all 0.2s; }
-    .dog-chip.active { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
-    .dog-chip.add { border-style: dashed; background: transparent; }
-    .dog-chip:active { transform: scale(0.95); }
     .inventory-warning { background: rgba(224,82,82,0.08); border-left: 4px solid #e05252; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 14px; color: var(--text2); margin-bottom: 6px; }
     .inventory-warning strong { color: #e05252; }
     .meal-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--border); }
@@ -181,11 +183,38 @@
     .protein-pick-item input { width: 16px; height: 16px; accent-color: var(--primary); flex-shrink: 0; cursor: pointer; }
     .protein-pick-item .name { font-size: 14px; flex: 1; }
     .protein-pick-item .tag { font-size: 11px; color: var(--text3); }
+    .vet-field-row { display: grid; grid-template-columns: 34px 1fr; gap: 8px; margin-bottom: 6px; align-items: center; }
+    .vet-field-label { font-size: 14px; font-weight: 600; color: var(--text2); text-align: center; }
+    .rolodex-container { min-height: 140px; }
+    .rolodex-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; position: relative; }
+    .rolodex-card .name { font-size: 17px; font-weight: 800; color: var(--primary); }
+    .rolodex-card .detail { font-size: 14px; color: var(--text2); margin-top: 2px; }
+    .rolodex-card .notes { font-size: 13px; color: var(--text3); margin-top: 4px; font-style: italic; }
+    .rolodex-card .index { position: absolute; top: 8px; right: 12px; font-size: 12px; color: var(--text3); font-weight: 700; }
+    .rolodex-controls { display: flex; justify-content: center; gap: 12px; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+    .rolodex-controls button { padding: 6px 16px; border-radius: var(--radius-full); font-size: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+    .rolodex-controls button:hover { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
+    .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+    .profile-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
+    .profile-stat .val { font-size: 22px; font-weight: 900; color: var(--primary); }
+    .profile-stat .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; font-weight: 600; }
+    .nutrient-breakdown-list { margin-top: 6px; }
+    .nutrient-breakdown-list .item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .nutrient-breakdown-list .item .pct { font-weight: 700; color: var(--primary); }
+    .badge-aafco { background: var(--green-dim); color: var(--green); font-weight: 800; padding: 4px 14px; border-radius: var(--radius-full); font-size: 12px; display: inline-block; margin-left: 8px; }
+    .inventory-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .inventory-row:last-child { border-bottom: none; }
+    .inventory-row .label { font-weight: 600; font-size: 15px; }
+    .inventory-row .count { display: flex; align-items: center; gap: 8px; }
+    .inventory-row .count button { padding: 2px 10px; font-size: 18px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 30px; }
+    .inventory-row .count button:hover { background: var(--primary); border-color: var(--primary); }
+    .inventory-row .count .num { font-weight: 800; min-width: 24px; text-align: center; font-size: 16px; }
     @media (max-width: 480px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
-      .header-title { font-size: 14px; }
-      .walker-btn { font-size: 10px; padding: 3px 8px; }
+      .header-title { font-size: 26px; }
+      .header-title small { font-size: 12px; }
+      .walker-btn { font-size: 14px; padding: 6px 14px; }
       .bottom-nav button { font-size: 9px; }
       .bottom-nav button .icon { font-size: 20px; }
     }
@@ -194,22 +223,31 @@
 <body>
   <div id="errorBox" class="error-box"></div>
 
+  <!-- HEADER (big, only title + version) -->
   <header class="header">
-    <div class="header-row">
-      <div class="header-left">
-        <button class="walker-btn" onclick="quickStartWalk()"><i class="fa-solid fa-person-walking"></i> WALK</button>
-        <div class="header-title">FRESHBOWL <small>Total Health Tracking &amp; Modular Whole-Food Meal Prep For Your Dog.</small></div>
-      </div>
-      <div class="header-right">
-        <div class="toggle-switch">
-          <span class="label">☀️</span>
-          <div class="track" id="themeTrack"><div class="thumb"></div></div>
-          <span class="label">🌙</span>
-        </div>
-      </div>
-    </div>
+    <div class="header-title">FRESHBOWL <small>v.96</small></div>
   </header>
 
+  <!-- CONTROLS ROW (WALK + toggle) -->
+  <div class="container">
+    <div class="controls-row">
+      <button class="walker-btn" onclick="quickStartWalk()"><i class="fa-solid fa-person-walking"></i> WALK</button>
+      <div class="toggle-switch">
+        <span class="label">☀️</span>
+        <div class="track" id="themeTrack"><div class="thumb"></div></div>
+        <span class="label">🌙</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOG CHIPS (dashboard) -->
+  <div class="container">
+    <div class="dog-chips" id="dogChipsContainer">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
   <main class="container">
     <section id="page-home" class="page active"><div id="homeContent"></div></section>
     <section id="page-plan" class="page"><div id="planContent"></div></section>
@@ -293,7 +331,7 @@
     const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
     const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
 
-    // ── FOODS ── (shortened for brevity, full in actual)
+    // ── FOODS ──
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -651,6 +689,18 @@
       }
     }
 
+    // ── Render dog chips ──
+    function renderDogChips() {
+      const container = document.getElementById('dogChipsContainer');
+      if (!container) return;
+      let html = state.dogs.map(dg => {
+        const active = dg.id === state.activeDogId ? 'active' : '';
+        return `<button class="dog-chip ${active}" onclick="switchDog('${dg.id}')">${dg.name}</button>`;
+      }).join('');
+      html += `<button class="dog-chip add" onclick="openAddDogModal()">+ Add</button>`;
+      container.innerHTML = html;
+    }
+
     // ── RENDER: HOME ──
     function renderHome() {
       const dog = getActiveDog();
@@ -666,14 +716,7 @@
       const total = nutResult.totals;
       const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
 
-      // Dog chips
-      let chipsHtml = state.dogs.map(dg => {
-        const active = dg.id === state.activeDogId ? 'active' : '';
-        return `<button class="dog-chip ${active}" onclick="switchDog('${dg.id}')">${dg.name}</button>`;
-      }).join('');
-      chipsHtml += `<button class="dog-chip add" onclick="openAddDogModal()">+ Add</button>`;
-
-      // Inventory warnings (only show if below min)
+      // Inventory warnings
       const inv = state.inventory;
       const warnings = [];
       const items = [
@@ -710,8 +753,6 @@
 
       const container = document.getElementById('homeContent');
       container.innerHTML = `
-        <div class="dog-chips">${chipsHtml}</div>
-
         ${warnHtml}
 
         <div class="card">
@@ -760,7 +801,6 @@
     // ── RENDER: PLAN ──
     function renderPlan() {
       const container = document.getElementById('planContent');
-      // Protein picker
       let protHtml = PROTEIN_OPTIONS.map(p => {
         const checked = state.selectedProteins.includes(p);
         const isFish = p.includes('Sardine') || p.includes('Salmon');
@@ -772,13 +812,11 @@
         </label>`;
       }).join('');
 
-      // Favorites
       let favHtml = (arr,cat) => arr.map(v => {
         const on = state.favorites[cat].includes(v);
         return `<button class="${on?'primary':'secondary'}" style="padding:4px 12px;font-size:13px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' ★':''}</button>`;
       }).join('');
 
-      // Rotation (collapsible)
       let rotationHtml = '';
       for (let w=1; w<=4; w++) {
         const wd = state.rotation[w] || {};
@@ -823,7 +861,6 @@
     }
 
     let _rotOpen = {};
-
     function toggleRotationWeek(w) {
       _rotOpen[w] = !_rotOpen[w];
       state._rotOpen = _rotOpen;
@@ -859,7 +896,6 @@
         donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="800">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
       } else { donutHtml = '<div class="text-muted text-center"><i class="fa-solid fa-circle-exclamation"></i> No meals logged today.</div>'; }
 
-      // Ca:P ratio
       const ca = total.calcium || 0;
       const ph = total.phosphorus || 0;
       const caP = ph > 0 ? ca / ph : 0;
@@ -1126,6 +1162,7 @@
     function switchDog(id) {
       state.activeDogId = id;
       saveState();
+      renderDogChips();
       renderAll();
     }
     function openAddDogModal() {
@@ -1158,14 +1195,14 @@
       const id = 'dog' + Date.now();
       state.dogs.push({ id, name, weight, activity: parseFloat(parts[0]), activityLabel: parts[1] || 'Moderate' });
       state.activeDogId = id;
-      saveState(); closeModal(); renderAll();
+      saveState(); closeModal(); renderDogChips(); renderAll();
     }
     function deleteDog(dogId) {
       if (state.dogs.length <= 1) { alert('You need at least one dog.'); return; }
       if (!confirm('Remove this dog?')) return;
       state.dogs = state.dogs.filter(d => d.id !== dogId);
       if (state.activeDogId === dogId) state.activeDogId = state.dogs[0].id;
-      saveState(); renderAll();
+      saveState(); renderDogChips(); renderAll();
     }
     function closeModal() { const m = document.querySelector('.modal-overlay'); if (m) m.remove(); }
 
@@ -1465,6 +1502,7 @@
       window.setHistoryView = setHistoryView; window.navHistory = navHistory; window.openHistoryDay = openHistoryDay;
       window.toggleRotationWeek = toggleRotationWeek;
       window.navigateTo = navigateTo;
+      renderDogChips();
       navigateTo('home');
     }
 
