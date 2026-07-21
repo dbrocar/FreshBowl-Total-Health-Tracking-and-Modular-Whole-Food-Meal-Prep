@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>FRESHBOWL — Total Health</title>
+  <meta name="theme-color" content="#f5f5f7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
@@ -19,7 +22,7 @@
       --primary-dim: rgba(245,200,66,0.15);
       --shadow: 0 2px 12px rgba(0,0,0,0.06);
       --radius: 16px; --radius-sm: 10px; --radius-full: 9999px;
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --transition: 0.2s ease;
     }
     [data-theme="dark"] {
@@ -30,22 +33,25 @@
       --text: #ffffff;
       --text2: #a0b4c8;
       --text3: #6a7f9a;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
     html { font-size: 16px; }
     body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; padding-bottom: 80px; transition: background var(--transition), color var(--transition); }
-    input, select, textarea { font-family: var(--font); background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-sm); padding: 10px 14px; width: 100%; font-size: 14px; outline: none; }
+    a, button { font-family: var(--font); cursor: pointer; }
+    input, select, textarea { font-family: var(--font); background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-sm); padding: 10px 14px; width: 100%; font-size: 14px; outline: none; transition: border var(--transition); }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
     button { background: var(--primary); color: #0a0e1a; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-weight: 600; font-size: 14px; transition: all var(--transition); }
     button:hover { background: var(--primary-dark); transform: scale(0.98); }
     button:active { transform: scale(0.95); }
     button.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
     button.secondary:hover { background: var(--border); }
-    button:disabled { opacity: 0.5; transform: none !important; pointer-events: none; }
+    button:disabled { opacity: 0.5; pointer-events: none; }
     .toggle-switch { display: flex; align-items: center; gap: 6px; }
     .toggle-switch .track { position: relative; width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
     .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
     [data-theme="dark"] .toggle-switch .track { background: var(--primary); }
     [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
+    .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
     .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; }
     .header-title { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; }
@@ -73,11 +79,18 @@
     .dog-switcher .btn:hover { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
     .dog-switcher .add-btn { background: var(--primary); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #0a0e1a; font-weight: 700; }
     .dog-switcher .add-btn:hover { background: var(--primary-dark); }
-    .dog-count { font-size: 12px; color: var(--text3); text-align: center; margin-top: 2px; }
     .dog-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; overflow: hidden; cursor: pointer; }
     .dog-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .dog-avatar input[type="file"] { display: none; }
     .dog-stats { font-size: 13px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
+    .inventory-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .inventory-row:last-child { border-bottom: none; }
+    .inventory-row .label { font-weight: 500; font-size: 14px; }
+    .inventory-row .count { display: flex; align-items: center; gap: 10px; }
+    .inventory-row .count button { padding: 2px 10px; font-size: 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 32px; }
+    .inventory-row .count button:hover { background: var(--primary); border-color: var(--primary); }
+    .inventory-row .count .num { font-weight: 700; min-width: 28px; text-align: center; }
+    .inventory-row .warning { font-size: 11px; color: #ff453a; font-weight: 600; margin-left: 8px; }
     .meal-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--border); }
     .meal-card.fed { border-left-color: #34c759; background: rgba(52,199,89,0.06); }
     .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
@@ -141,8 +154,6 @@
     .rolodex-controls { display: flex; justify-content: center; gap: 16px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
     .rolodex-controls button { padding: 8px 20px; border-radius: var(--radius-full); font-size: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
     .rolodex-controls button:hover { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
-    .rolodex-empty { text-align: center; padding: 30px 0; color: var(--text3); }
-    .rolodex-empty .big { font-size: 48px; display: block; margin-bottom: 12px; }
     .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
     .profile-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
     .profile-stat .val { font-size: 22px; font-weight: 800; color: var(--primary); }
@@ -158,14 +169,24 @@
     .mt-2 { margin-top: 8px; }
     .mt-3 { margin-top: 12px; }
     .w-full { width: 100%; }
-    .gap-1 { gap: 4px; }
-    .flex-wrap { flex-wrap: wrap; }
-    .flex { display: flex; }
+    .tools-tab-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .tools-tab { padding: 6px 14px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; }
+    .tools-tab.active { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
+    .tools-tab:hover { background: var(--primary-dim); }
+    .save-prompt { background: var(--primary-dim); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .save-prompt .text { font-size: 13px; font-weight: 500; color: var(--text2); }
+    .save-prompt button { padding: 4px 14px; font-size: 12px; border-radius: var(--radius-full); }
+    .rr-counter { text-align: center; padding: 20px; }
+    .rr-counter .big { font-size: 48px; font-weight: 800; color: var(--primary); }
+    .rr-counter .label { font-size: 14px; color: var(--text2); margin-top: 4px; }
+    .walker-view { padding: 16px; }
+    .walker-view .note { font-size: 14px; color: var(--text2); margin-top: 8px; }
     @media (max-width: 480px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
       .vet-field-row { grid-template-columns: 1fr; }
       .profile-stats-grid { grid-template-columns: 1fr 1fr; }
+      .tools-tab-row { justify-content: center; }
     }
   </style>
 </head>
@@ -174,9 +195,10 @@
 
   <header class="header">
     <div>
-      <div class="header-title">FRESHBOWL <small>Total Health Tracking</small></div>
+      <div class="header-title">FRESHBOWL <small>v.96</small></div>
     </div>
     <div class="header-actions">
+      <button onclick="openWalkerSetup()" style="background:rgba(46,125,82,0.10);border:1px solid rgba(46,125,82,0.20);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;color:#2e7d52;">🐕 Walker</button>
       <div class="toggle-switch">
         <span class="label">☀️</span>
         <div class="track" id="themeTrack"><div class="thumb"></div></div>
@@ -190,6 +212,7 @@
     <section id="page-plan" class="page"><div id="planContent"></div></section>
     <section id="page-nutrition" class="page"><div id="nutritionContent"></div></section>
     <section id="page-profile" class="page"><div id="profileContent"></div></section>
+    <section id="page-tools" class="page"><div id="toolsContent"></div></section>
     <section id="page-utilities" class="page"><div id="utilitiesContent"></div></section>
   </main>
 
@@ -198,19 +221,17 @@
     <button data-page="plan"><span class="icon">📋</span>Plan</button>
     <button data-page="nutrition"><span class="icon">📊</span>Nutrition</button>
     <button data-page="profile"><span class="icon">🐾</span>Profile</button>
-    <button data-page="utilities"><span class="icon">🧰</span>Utilities</button>
+    <button data-page="tools"><span class="icon">🛠️</span>Tools</button>
+    <button data-page="utilities"><span class="icon">🧰</span>Utils</button>
   </nav>
 
   <div id="modalRoot"></div>
 
   <script>
-    // ---- ERROR CATCHER ----
+    // ── Error catcher ──
     window.onerror = function(msg, url, line, col, error) {
       const el = document.getElementById('errorBox');
-      if (el) {
-        el.textContent = '❌ ' + msg + '\nLine: ' + line + (error ? '\n' + error.stack : '');
-        el.className = 'error-box show';
-      }
+      if (el) { el.textContent = '❌ ' + msg + '\nLine: ' + line + (error ? '\n' + error.stack : ''); el.className = 'error-box show'; }
       return true;
     };
     window.addEventListener('unhandledrejection', function(e) {
@@ -218,7 +239,10 @@
       if (el) { el.textContent = '❌ Unhandled Promise: ' + e.reason; el.className = 'error-box show'; }
     });
 
-    // ===== STATE =====
+    // ═══════════════════════════════════════════════════════════════════════
+    //  STATE
+    // ═══════════════════════════════════════════════════════════════════════
+
     let state = {
       dogs: [{ id: 'dog1', name: 'Bella', weight: 65, activity: 1.6, activityLabel: 'Moderate (neutered)' }],
       activeDogId: 'dog1',
@@ -236,16 +260,35 @@
       customFoods: {},
       calcResults: {},
       showAllWalks: false,
-      utreeOpen: { calculators: true, vet: false, vaccines: false, misc: false },
+      utreeOpen: { install: true, usda: false, vet: false, vaccines: false, misc: false },
       vetInfo: { name: '', clinic: '', phone: '', email: '', address: '', notes: '' },
       vaccines: [],
       miscNotes: '',
       vaccineForm: { name: '', date: '', nextDate: '', notes: '' },
-      vaccineRolodexIndex: 0
+      vaccineRolodexIndex: 0,
+      toolsTab: 'walk',
+      // Inventory
+      inventory: {
+        proteinBags: { count: 1, min: 4 },
+        organCubes: { count: -24, min: 6 },
+        vegBags: { count: -16, min: 4 },
+        liquidCubes: { count: -38, min: 6 },
+        herbCubes: { count: -7, min: 6 },
+        starch: { count: 0, min: 0 } // fridge, no min
+      },
+      rrHistory: [],
+      walkerMode: false
     };
     let petPhoto = '';
 
-    // ===== FOOD DATABASE =====
+    // ── Constants ──
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const PROTEIN_OPTIONS = ['Beef (85/15)','Ground Turkey','Ground Chicken','Pork Loin','Lamb','Veal','Bison','Duck','Sardines (canned)','Salmon (canned)'];
+    const VEG_OPTIONS = ['Green Beans','Zucchini','Bell Peppers','Carrots','Peas','Spinach','Romaine Lettuce'];
+    const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
+    const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
+
+    // ── FOODS Database (abbreviated – full from original) ──
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -279,7 +322,7 @@
       "Blueberries": mkN(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
     };
 
-    // ===== AAFCO =====
+    // ── AAFCO ──
     const AAFCO = [
       { k:'protein', label:'Protein', unit:'g', min:45, max:999 },
       { k:'fat', label:'Fat', unit:'g', min:13.8, max:55 },
@@ -312,14 +355,7 @@
     ];
     const NUTRIENT_KEYS = AAFCO.map(a => a.k);
 
-    // ===== CONSTANTS =====
-    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const PROTEIN_OPTIONS = ['Beef (85/15)','Ground Turkey','Ground Chicken','Pork Loin','Lamb','Veal','Bison','Duck','Sardines (canned)','Salmon (canned)'];
-    const VEG_OPTIONS = ['Green Beans','Zucchini','Bell Peppers','Carrots','Peas','Spinach','Romaine Lettuce'];
-    const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
-    const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
-
-    // ===== HELPERS =====
+    // ── Helpers ──
     function getActiveDog() { return state.dogs.find(d => d.id === state.activeDogId) || state.dogs[0]; }
     function calcMER(dog) { const kg = (dog.weight || 65) / 2.2046; return 70 * Math.pow(kg, 0.75) * (dog.activity || 1.6); }
     function dateKey(y,m,d) { return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
@@ -341,31 +377,57 @@
     }
     function isFish(p) { return p && (p.includes('Sardine') || p.includes('Salmon')); }
 
-    // ===== STORAGE =====
-    function saveState() {
-      try { localStorage.setItem('fb_state', JSON.stringify(state)); } catch(e) {}
-      try { if (petPhoto) localStorage.setItem('fb_photo', petPhoto); else localStorage.removeItem('fb_photo'); } catch(e) {}
+    // ── Nutrition Engine ──
+    function zeroNutrients() { const o = {}; NUTRIENT_KEYS.forEach(k => o[k] = 0); return o; }
+    function addFood(total, food, oz) {
+      if (!food || !oz) return;
+      NUTRIENT_KEYS.forEach(k => { if (food[k]) total[k] += food[k] * oz; });
     }
-    function loadState() {
-      try {
-        const saved = localStorage.getItem('fb_state');
-        if (saved) { const parsed = JSON.parse(saved); Object.assign(state, parsed); }
-        const photo = localStorage.getItem('fb_photo');
-        if (photo) petPhoto = photo;
-      } catch(e) {}
-      if (!state.rotation || !Object.keys(state.rotation).length) {
-        state.rotation = generateRotation(state.selectedProteins, state.favorites);
+    function calcMealNutrition(y,m,d,slot) {
+      const meal = getEffectiveMeal(y,m,d,slot);
+      if (!meal) return zeroNutrients();
+      const key = dateKey(y,m,d) + '_' + slot;
+      const total = zeroNutrients();
+      addFood(total, FOODS[meal.protein], 8);
+      addFood(total, FOODS[meal.starch], 2.5);
+      addFood(total, FOODS[meal.veg], 2.5);
+      if (meal.organ) addFood(total, FOODS[meal.organ], 0.5);
+      const supps = state.suppChecks?.[key] || {};
+      if (supps.eggshell !== false) { total.calcium += 800; }
+      if (supps.salt !== false) { total.sodium += 115; total.chloride += 175; total.iodine += 0.10; }
+      if (supps.herbcube !== false) { total.vitE += 3.4; total.vitA += 10; total.vitK += 4; }
+      if (supps.broth !== false) { const b = FOODS[meal.protein]; if (b) addFood(total, b, 0.75*0.08); }
+      const addins = state.addinsLog?.[key] || {};
+      Object.keys(addins).forEach(name => {
+        const f = FOODS[name]; if (f) addFood(total, f, addins[name]);
+      });
+      return total;
+    }
+    function calcNutritionForDateRange(startDate, endDate) {
+      const total = zeroNutrients(); let mealCount = 0;
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
+        const key = dateKey(y,m,d);
+        for (const slot of ['am','pm']) {
+          const logKey = key + '_' + slot;
+          if (state.fedLog[logKey]) {
+            const nut = calcMealNutrition(y,m,d,slot);
+            NUTRIENT_KEYS.forEach(k => total[k] += nut[k]);
+            mealCount++;
+          }
+        }
+        cur.setDate(cur.getDate() + 1);
       }
-      applyTheme();
-      saveState();
+      return { total, mealCount };
     }
-    function applyTheme() {
-      const dark = state.theme === 'dark';
-      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    function getAAFCOStatus(value, target) {
+      if (value < target.min) return 'low';
+      if (target.max < 9999 && value > target.max) return 'high';
+      return 'ok';
     }
-    function toggleTheme() { state.theme = state.theme === 'dark' ? 'light' : 'dark'; applyTheme(); saveState(); }
 
-    // ===== ROTATION ENGINE =====
+    // ── Rotation Engine ──
     function generateRotation(proteins, favs) {
       const mains = proteins.filter(p => !p.includes('Sardine') && !p.includes('Salmon'));
       const fish = proteins.filter(p => p.includes('Sardine') || p.includes('Salmon'));
@@ -411,8 +473,7 @@
           Sat: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Zucchini', organ:'Beef Liver' }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
         },
       };
-      const result = {};
-      let idx = 0;
+      const result = {}; let idx = 0;
       for (let w = 1; w <= 4; w++) {
         result[w] = {};
         for (const day of DAYS) {
@@ -433,58 +494,7 @@
       return result;
     }
 
-    // ===== NUTRITION ENGINE =====
-    function zeroNutrients() { const o = {}; NUTRIENT_KEYS.forEach(k => o[k] = 0); return o; }
-    function addFood(total, food, oz) {
-      if (!food || !oz) return;
-      NUTRIENT_KEYS.forEach(k => { if (food[k]) total[k] += food[k] * oz; });
-    }
-    function calcMealNutrition(y,m,d,slot) {
-      const meal = getEffectiveMeal(y,m,d,slot);
-      if (!meal) return zeroNutrients();
-      const key = dateKey(y,m,d) + '_' + slot;
-      const total = zeroNutrients();
-      addFood(total, FOODS[meal.protein], 8);
-      addFood(total, FOODS[meal.starch], 2.5);
-      addFood(total, FOODS[meal.veg], 2.5);
-      if (meal.organ) addFood(total, FOODS[meal.organ], 0.5);
-      const supps = state.suppChecks?.[key] || {};
-      if (supps.eggshell !== false) { total.calcium += 800; }
-      if (supps.salt !== false) { total.sodium += 115; total.chloride += 175; total.iodine += 0.10; }
-      if (supps.herbcube !== false) { total.vitE += 3.4; total.vitA += 10; total.vitK += 4; }
-      if (supps.broth !== false) { const b = FOODS[meal.protein]; if (b) addFood(total, b, 0.75*0.08); }
-      const addins = state.addinsLog?.[key] || {};
-      Object.keys(addins).forEach(name => {
-        const f = FOODS[name]; if (f) addFood(total, f, addins[name]);
-      });
-      return total;
-    }
-    function calcNutritionForDateRange(startDate, endDate) {
-      const total = zeroNutrients();
-      let mealCount = 0;
-      let cur = new Date(startDate);
-      while (cur <= endDate) {
-        const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
-        const key = dateKey(y,m,d);
-        for (const slot of ['am','pm']) {
-          const logKey = key + '_' + slot;
-          if (state.fedLog[logKey]) {
-            const nut = calcMealNutrition(y,m,d,slot);
-            NUTRIENT_KEYS.forEach(k => total[k] += nut[k]);
-            mealCount++;
-          }
-        }
-        cur.setDate(cur.getDate() + 1);
-      }
-      return { total, mealCount };
-    }
-    function getAAFCOStatus(value, target) {
-      if (value < target.min) return 'low';
-      if (target.max < 9999 && value > target.max) return 'high';
-      return 'ok';
-    }
-
-    // ===== USDA =====
+    // ── USDA ──
     function searchUSDA(query, callback) {
       if (!state.usdaKey) { callback({ error: 'No USDA API key.' }); return; }
       fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key='+state.usdaKey+'&query='+encodeURIComponent(query)+'&pageSize=10')
@@ -518,7 +528,7 @@
       return perOz;
     }
 
-    // ===== WALK TRACKER =====
+    // ── Walk helpers ──
     let walkInterval = null, walkStartTime = null, walkCoords = [];
     function walkRouteToSvg(coords, w, h) {
       if (!coords || coords.length === 0) return '';
@@ -528,16 +538,15 @@
       const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
       const pad = 12, latRange = maxLat - minLat || 0.001, lngRange = maxLng - minLng || 0.001;
       const pts = coords.map(c => ({ x: pad + (c.lng - minLng) / lngRange * (width - 2*pad), y: height - pad - (c.lat - minLat) / latRange * (height - 2*pad) }));
-      const d = pts.map((p,i) => (i===0?'M':'L') + p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
       return '<svg viewBox="0 0 '+width+' '+height+'"><rect width="'+width+'" height="'+height+'" fill="var(--surface2)" rx="6"/><polyline points="'+pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'" stroke="var(--primary)" stroke-width="2.5" fill="none"/><circle cx="'+pts[0].x+'" cy="'+pts[0].y+'" r="4" fill="var(--primary)"/><circle cx="'+pts[pts.length-1].x+'" cy="'+pts[pts.length-1].y+'" r="4" fill="#ff453a"/></svg>';
     }
     function calcDist(coords) { let total=0; for (let i=1;i<coords.length;i++){ const a=coords[i-1],b=coords[i]; const dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180; const h=Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2; total += 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)); } return total; }
     function startWalk() {
       if (!navigator.geolocation) return alert('GPS not available.');
       walkStartTime = Date.now(); walkCoords = [];
-      navigator.geolocation.watchPosition(pos => { walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude }); renderHome(); }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
-      walkInterval = setInterval(renderHome, 1000);
-      renderHome();
+      navigator.geolocation.watchPosition(pos => { walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude }); renderAll(); }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
+      walkInterval = setInterval(renderAll, 1000);
+      renderAll();
     }
     function stopWalk() {
       if (walkInterval) clearInterval(walkInterval); walkInterval = null;
@@ -548,57 +557,108 @@
         state.walkLogs.unshift({ date: todayKey(), mins, secs, dist, coords: walkCoords.slice() });
         if (state.walkLogs.length > 50) state.walkLogs.length = 50;
         saveState(); walkStartTime = null; walkCoords = [];
-        renderHome();
+        renderAll();
         alert('Walk saved! '+mins+'m '+secs+'s, '+dist.toFixed(2)+' miles');
       }
     }
-    function deleteWalkLog(idx) { state.walkLogs.splice(idx,1); saveState(); renderHome(); }
+    function deleteWalkLog(idx) { state.walkLogs.splice(idx,1); saveState(); renderAll(); }
 
-    // ===== RENDER: HOME =====
+    // ── Storage ──
+    function saveState() {
+      try { localStorage.setItem('fb_state', JSON.stringify(state)); } catch(e) {}
+      try { if (petPhoto) localStorage.setItem('fb_photo', petPhoto); else localStorage.removeItem('fb_photo'); } catch(e) {}
+    }
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('fb_state');
+        if (saved) { const parsed = JSON.parse(saved); Object.assign(state, parsed); }
+        const photo = localStorage.getItem('fb_photo');
+        if (photo) petPhoto = photo;
+      } catch(e) {}
+      if (!state.rotation || !Object.keys(state.rotation).length) {
+        state.rotation = generateRotation(state.selectedProteins, state.favorites);
+      }
+      if (!state.inventory) {
+        state.inventory = { proteinBags:{count:1,min:4}, organCubes:{count:-24,min:6}, vegBags:{count:-16,min:4}, liquidCubes:{count:-38,min:6}, herbCubes:{count:-7,min:6}, starch:{count:0,min:0} };
+      }
+      applyTheme();
+      saveState();
+    }
+    function applyTheme() {
+      const dark = state.theme === 'dark';
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    }
+    function toggleTheme() { state.theme = state.theme === 'dark' ? 'light' : 'dark'; applyTheme(); saveState(); }
+
+    // ── Render all pages ──
+    function renderAll() {
+      const activePage = document.querySelector('.page.active');
+      if (activePage) {
+        const id = activePage.id.replace('page-','');
+        switch(id) {
+          case 'home': renderHome(); break;
+          case 'plan': renderPlan(); break;
+          case 'nutrition': renderNutrition(); break;
+          case 'profile': renderProfile(); break;
+          case 'tools': renderTools(); break;
+          case 'utilities': renderUtilities(); break;
+        }
+      }
+    }
+
+    // ── RENDER: HOME ──
     function renderHome() {
       const dog = getActiveDog();
-      const total = state.dogs.length;
-      const idx = state.dogs.findIndex(d => d.id === state.activeDogId);
-      const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
+      const today = new Date();
+      const y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
       const key = dateKey(y,m,d);
       const amKey = key + '_am', pmKey = key + '_pm';
       const amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
-      const amMeal = getEffectiveMeal(y,m,d,'am'), pmMeal = getEffectiveMeal(y,m,d,'pm');
-      const walkActive = (walkStartTime !== null && walkInterval !== null);
-      const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
-      const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
-      const currentDist = walkActive ? calcDist(walkCoords)*0.621371 : (latestWalk ? latestWalk.dist : 0);
-      const currentTime = walkActive ? Math.floor((Date.now()-walkStartTime)/1000) : (latestWalk ? (latestWalk.mins*60+(latestWalk.secs||0)) : 0);
-      const cMins = Math.floor(currentTime/60), cSecs = Math.floor(currentTime%60);
-      let historyHtml = '';
-      if (state.walkLogs.length > 0) {
-        const display = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0,2);
-        historyHtml = display.map((w,i) => `<div class="walk-history-item"><div><span>${w.date}</span> <span class="text-muted">${w.mins}m ${w.secs||0}s</span> <span class="text-muted">${w.dist.toFixed(2)} mi</span></div><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(${i})">✕</button></div>`).join('');
-        if (!state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">See More</button>`;
-        else if (state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">Show Less</button>`;
-      } else { historyHtml = '<div class="text-muted text-sm">No walks saved.</div>'; }
-
-      // Quick stats
+      const amMeal = getEffectiveMeal(y,m,d,'am');
+      const pmMeal = getEffectiveMeal(y,m,d,'pm');
       const start = new Date(y,m,d), end = new Date(y,m,d);
-      const nutRes = calcNutritionForDateRange(start, end);
-      const totalNut = nutRes.total;
-      let metCount = 0; AAFCO.forEach(t => { if (getAAFCOStatus(totalNut[t.k]||0, t) === 'ok') metCount++; });
+      const nutResult = calcNutritionForDateRange(start, end);
+      const total = nutResult.total;
+      const metCount = AAFCO.filter(t => getAAFCOStatus(total[t.k]||0, t) === 'ok').length;
+
+      // Inventory status
+      const inv = state.inventory;
+      const invItems = [
+        { id:'proteinBags', label:'Protein bags', count:inv.proteinBags.count, min:inv.proteinBags.min },
+        { id:'organCubes', label:'Organ cubes', count:inv.organCubes.count, min:inv.organCubes.min },
+        { id:'vegBags', label:'Vegetable bags', count:inv.vegBags.count, min:inv.vegBags.min },
+        { id:'liquidCubes', label:'Liquid cubes', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+        { id:'herbCubes', label:'Herb cubes', count:inv.herbCubes.count, min:inv.herbCubes.min },
+        { id:'starch', label:'Starch (fridge)', count:inv.starch.count, min:inv.starch.min },
+      ];
+      let invHtml = invItems.map(item => {
+        const ok = item.count >= item.min;
+        const status = ok ? '🟢' : '🔴';
+        return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid var(--border);"><span>${status} ${item.label}</span><span><strong>${item.count}</strong> ${item.min > 0 ? 'min '+item.min : ''} ${!ok ? '⚠️ batch soon' : ''}</span></div>`;
+      }).join('');
 
       const container = document.getElementById('homeContent');
       container.innerHTML = `
         <div class="card">
           <div style="text-align:center;font-size:13px;color:var(--text3);font-weight:500;">ACTIVE DOG</div>
           <div class="dog-switcher">
-            <button class="btn" onclick="switchDog(-1)" ${total<=1?'disabled':''}>‹</button>
+            <button class="btn" onclick="switchDog(-1)" ${state.dogs.length<=1?'disabled':''}>‹</button>
             <div style="text-align:center;">
-              <div class="name">${dog ? dog.name : 'No dogs'}</div>
-              <div class="dog-count">${total} dog${total>1?'s':''} · ${idx+1} of ${total}</div>
+              <div class="name">${dog.name}</div>
+              <div class="dog-count">${state.dogs.length} dog${state.dogs.length>1?'s':''}</div>
             </div>
-            <button class="btn" onclick="switchDog(1)" ${total<=1?'disabled':''}>›</button>
+            <button class="btn" onclick="switchDog(1)" ${state.dogs.length<=1?'disabled':''}>›</button>
             <button class="add-btn" onclick="openAddDogModal()">+</button>
           </div>
-          ${dog ? `<div style="text-align:center;margin-top:4px;font-size:13px;color:var(--text2);">⚖️ ${dog.weight} lb · 🔥 ${Math.round(calcMER(dog))} kcal/day</div>` : ''}
+          <div style="text-align:center;margin-top:4px;font-size:13px;color:var(--text2);">⚖️ ${dog.weight} lb · 🔥 ${Math.round(calcMER(dog))} kcal/day</div>
         </div>
+
+        <div class="card">
+          <div class="card-title"><span class="icon">🥩</span> Freezer Inventory</div>
+          ${invHtml}
+          <button class="secondary w-full mt-2" onclick="navigateTo('utilities')">Manage Inventory →</button>
+        </div>
+
         <div class="card">
           <div class="card-title"><span class="icon">🍽️</span> Today's Meals</div>
           <div class="meal-card ${amFed?'fed':''}">
@@ -612,23 +672,12 @@
             <div class="meal-actions"><button class="primary" onclick="toggleFed(\'${pmKey}\')">${pmFed?'Undo':'Mark Fed'}</button><button onclick="openSwap(\'${key}\',\'pm\')">🔄 Swap</button><button onclick="openAddins(\'${key}\',\'pm\')">➕ Add</button></div>
           </div>
         </div>
+
         <div class="card">
           <div class="card-title"><span class="icon">🚶</span> Walk Tracker</div>
-          <div class="walk-display">
-            <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
-            <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
-            <div class="walk-points">${currentCoords.length} GPS points</div>
-          </div>
-          ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
-          <div class="grid-2" style="margin-top:8px;">
-            <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
-            <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}>⏹ Stop & Save</button>
-          </div>
-          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
-            <div style="font-weight:600;font-size:14px;margin-bottom:6px;">Recent Walks</div>
-            ${historyHtml}
-          </div>
+          ${renderWalkTracker()}
         </div>
+
         <div class="card">
           <div class="card-title"><span class="icon">📊</span> Quick Stats</div>
           <div class="grid-3">
@@ -639,9 +688,121 @@
         </div>
       `;
     }
-    function toggleWalkHistory() { state.showAllWalks = !state.showAllWalks; saveState(); renderHome(); }
 
-    // ===== RENDER: PROFILE =====
+    function renderWalkTracker() {
+      const walkActive = (walkStartTime !== null && walkInterval !== null);
+      const latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
+      const currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
+      const currentDist = walkActive ? calcDist(walkCoords)*0.621371 : (latestWalk ? latestWalk.dist : 0);
+      const currentTime = walkActive ? Math.floor((Date.now()-walkStartTime)/1000) : (latestWalk ? (latestWalk.mins*60+(latestWalk.secs||0)) : 0);
+      const cMins = Math.floor(currentTime/60), cSecs = Math.floor(currentTime%60);
+      let historyHtml = '';
+      if (state.walkLogs.length > 0) {
+        const display = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0,2);
+        historyHtml = display.map((w,i) => `<div class="walk-history-item"><div><span>${w.date}</span> <span class="text-muted">${w.mins}m ${w.secs||0}s</span> <span class="text-muted">${w.dist.toFixed(2)} mi</span></div><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(${i})">✕</button></div>`).join('');
+        if (!state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">See More</button>`;
+        else if (state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">Show Less</button>`;
+      } else { historyHtml = '<div class="text-muted text-sm">No walks saved.</div>'; }
+      return `
+        <div class="walk-display">
+          <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
+          <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
+          <div class="walk-points">${currentCoords.length} GPS points</div>
+        </div>
+        ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
+        <div class="grid-2" style="margin-top:8px;">
+          <button class="primary" onclick="startWalk()">${walkActive ? '▶️ Recording...' : '▶️ Start Walk'}</button>
+          <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}>⏹ Stop & Save</button>
+        </div>
+        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+          <div style="font-weight:600;font-size:14px;margin-bottom:6px;">Recent Walks</div>
+          ${historyHtml}
+        </div>
+      `;
+    }
+
+    // ── RENDER: PLAN ──
+    function renderPlan() {
+      const container = document.getElementById('planContent');
+      let protHtml = PROTEIN_OPTIONS.map(p => {
+        const checked = state.selectedProteins.includes(p);
+        const isFish = p.includes('Sardine') || p.includes('Salmon');
+        const display = p.replace(' (canned)','').replace(' (85/15)','');
+        return `<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;">
+          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" style="accent-color:var(--primary);width:16px;height:16px;" />
+          <span>${display}</span>${isFish?' <span style="font-size:10px;color:var(--text3);">🐟</span>':''}
+        </label>`;
+      }).join('');
+      let favHtml = (arr,cat) => arr.map(v => {
+        const on = state.favorites[cat].includes(v);
+        return `<button class="${on?'primary':'secondary'}" style="padding:4px 12px;font-size:12px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' ★':''}</button>`;
+      }).join('');
+      let rotationHtml = '';
+      for (let w=1; w<=4; w++) {
+        const wd = state.rotation[w] || {};
+        rotationHtml += `<div class="rotation-week"><div class="rotation-week-header"><span class="rotation-week-title">Week ${w}</span></div><div class="rotation-days">`;
+        DAYS.forEach(day => {
+          const d = wd[day];
+          if (!d) { rotationHtml += `<div class="rotation-day"><div>${day.slice(0,2)}</div><div>—</div></div>`; return; }
+          rotationHtml += `<div class="rotation-day ${isFish(d.am.protein)?'fish':''}"><div>${day.slice(0,2)}</div><div>${d.am.protein.replace(' (canned)','').replace(' (85/15)','')}</div><div style="font-size:8px;">${d.pm.protein.replace(' (canned)','').replace(' (85/15)','')}</div></div>`;
+        });
+        rotationHtml += `</div></div>`;
+      }
+      container.innerHTML = `
+        <div class="card"><div class="card-title"><span class="icon">🍗</span> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()">🔄 Rebuild Rotation</button></div>
+        <div class="card"><div class="card-title"><span class="icon">⭐</span> Favorites</div>
+          <div style="margin-bottom:8px;"><label class="text-muted text-sm">Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
+          <div style="margin-bottom:8px;"><label class="text-muted text-sm">Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
+          <div><label class="text-muted text-sm">Organs</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(ORGAN_OPTIONS,'organs')}</div></div>
+          <button class="primary w-full mt-2" onclick="rebuildRotation()">🔄 Update with Favorites</button>
+        </div>
+        <div class="card"><div class="card-title"><span class="icon">📅</span> 4‑Week Rotation</div>${rotationHtml}</div>
+      `;
+    }
+
+    // ── RENDER: NUTRITION ──
+    function renderNutrition() {
+      const container = document.getElementById('nutritionContent');
+      const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
+      const start = new Date(y,m,d), end = new Date(y,m,d);
+      const result = calcNutritionForDateRange(start, end);
+      const total = result.total;
+      const mealCount = result.mealCount;
+      const protein = total.protein||0, fat = total.fat||0, carbs = total.carbs||0, moisture = total.moisture||0, ash = total.ash||0;
+      const macroTotal = protein + fat + carbs + moisture + ash || 1;
+      const slices = [{label:'Protein',val:protein,color:'#f5c842'},{label:'Fat',val:fat,color:'#e8b830'},{label:'Carbs',val:carbs,color:'#c9a030'},{label:'Moisture',val:moisture,color:'#8a7a40'},{label:'Ash',val:ash,color:'#5a4a30'}].filter(s=>s.val>0.01);
+      let donutHtml='';
+      if (slices.length) {
+        const cx=60,cy=60,r=50,ir=30; let cum=-Math.PI/2; let paths='';
+        slices.forEach(s => {
+          const angle=(s.val/macroTotal)*2*Math.PI;
+          const x1=cx+r*Math.cos(cum), y1=cy+r*Math.sin(cum);
+          const x2=cx+r*Math.cos(cum+angle), y2=cy+r*Math.sin(cum+angle);
+          const xi1=cx+ir*Math.cos(cum), yi1=cy+ir*Math.sin(cum);
+          const xi2=cx+ir*Math.cos(cum+angle), yi2=cy+ir*Math.sin(cum+angle);
+          const large=angle>Math.PI?1:0;
+          paths += `<path d="M${xi1.toFixed(1)} ${yi1.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} L${xi2.toFixed(1)} ${yi2.toFixed(1)} A${ir} ${ir} 0 ${large} 0 ${xi1.toFixed(1)} ${yi1.toFixed(1)} Z" fill="${s.color}" />`;
+          cum+=angle;
+        });
+        donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="700">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
+      } else { donutHtml = '<div class="text-muted text-center">No meals logged today.</div>'; }
+      let metCount=0, nutrientHtml='';
+      AAFCO.forEach(target => {
+        const value = total[target.k] || 0;
+        const status = getAAFCOStatus(value, target);
+        if (status==='ok') metCount++;
+        const pct = target.max<9999 ? Math.min((value/target.max)*100,100) : Math.min((value/(target.min*1.5))*100,100);
+        const color = status==='ok' ? '#34c759' : (status==='low' ? '#ff9f0a' : '#ff453a');
+        const label = status==='ok' ? 'OK' : (status==='low' ? 'LOW' : 'HIGH');
+        nutrientHtml += `<div class="nutrient-item"><div class="flex-between"><span>${target.label}</span><span>${value.toFixed(1)} ${target.unit} <span class="badge ${status==='ok'?'green':(status==='low'?'orange':'red')}">${label}</span></span></div><div class="bar"><div class="fill" style="width:${pct}%;background:${color};"></div></div><div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit}</div></div>`;
+      });
+      container.innerHTML = `
+        <div class="card"><div class="card-title"><span class="icon">📊</span> Today's Nutrition</div><div class="flex-between"><span class="text-muted">Meals logged: ${mealCount}</span><span class="text-muted">AAFCO met: ${metCount}/${AAFCO.length}</span></div>${donutHtml}</div>
+        <div class="card"><div class="card-title"><span class="icon">🎯</span> AAFCO Tracking</div>${nutrientHtml}</div>
+      `;
+    }
+
+    // ── RENDER: PROFILE ──
     function renderProfile() {
       const dog = getActiveDog();
       if (!dog) { document.getElementById('profileContent').innerHTML = '<div class="card"><div class="text-muted">No dogs.</div></div>'; return; }
@@ -723,12 +884,12 @@
     }
     function saveProfile() { alert('Profile updated!'); }
 
-    // ===== DOG SWITCHER / ADD / DELETE =====
+    // ── DOG SWITCHER ──
     function switchDog(dir) {
       const idx = state.dogs.findIndex(d => d.id === state.activeDogId);
       const newIdx = (idx + dir + state.dogs.length) % state.dogs.length;
       state.activeDogId = state.dogs[newIdx].id;
-      saveState(); renderHome(); renderProfile();
+      saveState(); renderAll();
     }
     function openAddDogModal() {
       const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
@@ -760,148 +921,429 @@
       const id = 'dog' + Date.now();
       state.dogs.push({ id, name, weight, activity: parseFloat(parts[0]), activityLabel: parts[1] || 'Moderate' });
       state.activeDogId = id;
-      saveState(); closeModal(); renderHome(); renderProfile();
+      saveState(); closeModal(); renderAll();
     }
     function deleteDog(dogId) {
       if (state.dogs.length <= 1) { alert('You need at least one dog.'); return; }
       if (!confirm('Remove this dog?')) return;
       state.dogs = state.dogs.filter(d => d.id !== dogId);
       if (state.activeDogId === dogId) state.activeDogId = state.dogs[0].id;
-      saveState(); renderHome(); renderProfile();
+      saveState(); renderAll();
     }
     function closeModal() { const m = document.querySelector('.modal-overlay'); if (m) m.remove(); }
 
-    // ===== RENDER: PLAN =====
-    function renderPlan() {
-      const container = document.getElementById('planContent');
-      let protHtml = PROTEIN_OPTIONS.map(p => {
-        const checked = state.selectedProteins.includes(p);
-        const isFish = p.includes('Sardine') || p.includes('Salmon');
-        const display = p.replace(' (canned)','').replace(' (85/15)','');
-        return `<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;">
-          <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" style="accent-color:var(--primary);width:16px;height:16px;" />
-          <span>${display}</span>${isFish?' <span style="font-size:10px;color:var(--text3);">🐟</span>':''}
-        </label>`;
-      }).join('');
-      let favHtml = (arr,cat) => arr.map(v => {
-        const on = state.favorites[cat].includes(v);
-        return `<button class="${on?'primary':'secondary'}" style="padding:4px 12px;font-size:12px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' ★':''}</button>`;
-      }).join('');
-      let rotationHtml = '';
-      for (let w=1; w<=4; w++) {
-        const wd = state.rotation[w] || {};
-        rotationHtml += `<div class="rotation-week"><div class="rotation-week-header"><span class="rotation-week-title">Week ${w}</span></div><div class="rotation-days">`;
-        DAYS.forEach(day => {
-          const d = wd[day];
-          if (!d) { rotationHtml += `<div class="rotation-day"><div>${day.slice(0,2)}</div><div>—</div></div>`; return; }
-          rotationHtml += `<div class="rotation-day ${isFish(d.am.protein)?'fish':''}"><div>${day.slice(0,2)}</div><div>${d.am.protein.replace(' (canned)','').replace(' (85/15)','')}</div><div style="font-size:8px;">${d.pm.protein.replace(' (canned)','').replace(' (85/15)','')}</div></div>`;
-        });
-        rotationHtml += `</div></div>`;
-      }
-      container.innerHTML = `
-        <div class="card"><div class="card-title"><span class="icon">🍗</span> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()">🔄 Rebuild Rotation</button></div>
-        <div class="card"><div class="card-title"><span class="icon">⭐</span> Favorites</div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm">Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm">Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
-          <div><label class="text-muted text-sm">Organs</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(ORGAN_OPTIONS,'organs')}</div></div>
-          <button class="primary w-full mt-2" onclick="rebuildRotation()">🔄 Update with Favorites</button>
-        </div>
-        <div class="card"><div class="card-title"><span class="icon">📅</span> 4‑Week Rotation</div>${rotationHtml}</div>
-      `;
+    // ── INVENTORY MANAGEMENT ──
+    function updateInventory(item, delta) {
+      if (!state.inventory[item]) return;
+      state.inventory[item].count += delta;
+      saveState();
+      renderAll();
     }
-    function toggleProtein(p) { const idx = state.selectedProteins.indexOf(p); if (idx>=0) state.selectedProteins.splice(idx,1); else if (state.selectedProteins.length<6) state.selectedProteins.push(p); saveState(); renderPlan(); }
-    function toggleFav(cat,item) { const arr = state.favorites[cat]; const idx = arr.indexOf(item); if (idx>=0) arr.splice(idx,1); else arr.push(item); saveState(); renderPlan(); }
-    function rebuildRotation() { state.rotation = generateRotation(state.selectedProteins, state.favorites); saveState(); renderPlan(); alert('Rotation rebuilt!'); }
+    function setInventoryMin(item, val) {
+      if (!state.inventory[item]) return;
+      state.inventory[item].min = parseInt(val) || 0;
+      saveState();
+      renderAll();
+    }
 
-    // ===== RENDER: NUTRITION =====
-    function renderNutrition() {
-      const container = document.getElementById('nutritionContent');
-      const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
-      const start = new Date(y,m,d), end = new Date(y,m,d);
-      const result = calcNutritionForDateRange(start, end);
-      const total = result.total;
-      const mealCount = result.mealCount;
-      const protein = total.protein||0, fat = total.fat||0, carbs = total.carbs||0, moisture = total.moisture||0, ash = total.ash||0;
-      const macroTotal = protein + fat + carbs + moisture + ash || 1;
-      const slices = [{label:'Protein',val:protein,color:'#f5c842'},{label:'Fat',val:fat,color:'#e8b830'},{label:'Carbs',val:carbs,color:'#c9a030'},{label:'Moisture',val:moisture,color:'#8a7a40'},{label:'Ash',val:ash,color:'#5a4a30'}].filter(s=>s.val>0.01);
-      let donutHtml='';
-      if (slices.length) {
-        const cx=60,cy=60,r=50,ir=30; let cum=-Math.PI/2; let paths='';
-        slices.forEach(s => {
-          const angle=(s.val/macroTotal)*2*Math.PI;
-          const x1=cx+r*Math.cos(cum), y1=cy+r*Math.sin(cum);
-          const x2=cx+r*Math.cos(cum+angle), y2=cy+r*Math.sin(cum+angle);
-          const xi1=cx+ir*Math.cos(cum), yi1=cy+ir*Math.sin(cum);
-          const xi2=cx+ir*Math.cos(cum+angle), yi2=cy+ir*Math.sin(cum+angle);
-          const large=angle>Math.PI?1:0;
-          paths += `<path d="M${xi1.toFixed(1)} ${yi1.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} L${xi2.toFixed(1)} ${yi2.toFixed(1)} A${ir} ${ir} 0 ${large} 0 ${xi1.toFixed(1)} ${yi1.toFixed(1)} Z" fill="${s.color}" />`;
-          cum+=angle;
-        });
-        donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="700">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
-      } else { donutHtml = '<div class="text-muted text-center">No meals logged today.</div>'; }
-      let metCount=0, nutrientHtml='';
-      AAFCO.forEach(target => {
-        const value = total[target.k] || 0;
-        const status = getAAFCOStatus(value, target);
-        if (status==='ok') metCount++;
-        const pct = target.max<9999 ? Math.min((value/target.max)*100,100) : Math.min((value/(target.min*1.5))*100,100);
-        const color = status==='ok' ? '#34c759' : (status==='low' ? '#ff9f0a' : '#ff453a');
-        const label = status==='ok' ? 'OK' : (status==='low' ? 'LOW' : 'HIGH');
-        nutrientHtml += `<div class="nutrient-item"><div class="flex-between"><span>${target.label}</span><span>${value.toFixed(1)} ${target.unit} <span class="badge ${status==='ok'?'green':(status==='low'?'orange':'red')}">${label}</span></span></div><div class="bar"><div class="fill" style="width:${pct}%;background:${color};"></div></div><div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit}</div></div>`;
+    // ── TOOLS (Health Tools with tabs) ──
+    function renderTools() {
+      if (state.walkerMode) { renderWalkerView(); return; }
+      const dog = getActiveDog();
+      const dname = dog ? dog.name : 'your dog';
+      const tabs = [
+        { id: 'walk', lbl: '🚶 Walks' },
+        { id: 'rr', lbl: '💨 RR' },
+        { id: 'cal', lbl: '🍽️ Calories' },
+        { id: 'choc', lbl: '🍫 Chocolate' },
+        { id: 'flea', lbl: '🐛 Flea' },
+        { id: 'treat', lbl: '🍬 Treats' },
+        { id: 'cost', lbl: '💰 Cost' }
+      ];
+      let html = `<div class="card" style="padding:12px 14px;margin-bottom:12px;">
+        <div style="font-weight:800;font-size:18px;color:var(--primary);">🛠️ Health Tools</div>
+        <div style="font-size:13px;color:var(--text2);">Vet-inspired calculators for ${dname}. Results save to profile.</div>
+      </div>`;
+      html += `<div class="tools-tab-row">`;
+      tabs.forEach(t => {
+        const active = state.toolsTab === t.id ? 'active' : '';
+        html += `<button class="tools-tab ${active}" onclick="switchToolsTab('${t.id}')">${t.lbl}</button>`;
       });
-      container.innerHTML = `
-        <div class="card"><div class="card-title"><span class="icon">📊</span> Today's Nutrition</div><div class="flex-between"><span class="text-muted">Meals logged: ${mealCount}</span><span class="text-muted">AAFCO met: ${metCount}/${AAFCO.length}</span></div>${donutHtml}</div>
-        <div class="card"><div class="card-title"><span class="icon">🎯</span> AAFCO Tracking</div>${nutrientHtml}</div>
-      `;
+      html += `</div>`;
+      html += `<div id="toolsPanel">${getToolsPanel()}</div>`;
+      document.getElementById('toolsContent').innerHTML = html;
     }
 
-    // ===== RENDER: UTILITIES (with Rolodex) =====
+    function switchToolsTab(id) {
+      state.toolsTab = id;
+      saveState();
+      renderTools();
+    }
+
+    function getToolsPanel() {
+      const dog = getActiveDog();
+      const dname = dog ? dog.name : 'your dog';
+      switch(state.toolsTab) {
+        case 'walk': return getWalkTools();
+        case 'rr': return getRRTools(dname);
+        case 'cal': return getCalorieTools(dname);
+        case 'choc': return getChocolateTools(dname);
+        case 'flea': return getFleaTools(dname);
+        case 'treat': return getTreatTools(dname);
+        case 'cost': return getCostTools(dname);
+        default: return '<div class="text-muted">Select a tool.</div>';
+      }
+    }
+
+    function getWalkTools() {
+      return `<div class="card">${renderWalkTracker()}</div>`;
+    }
+
+    // RR (Resting Respiratory Rate)
+    let rrTimer = null, rrCount = 0, rrRunning = false, rrSeconds = 0;
+    function getRRTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💨 Resting Respiratory Rate</div>
+          <div class="rr-counter">
+            <div class="big">${rrCount}</div>
+            <div class="label">breaths ${rrRunning ? 'counting...' : 'counted'}</div>
+            <div class="text-muted text-sm">${rrRunning ? rrSeconds+'s' : 'Press start to count breaths for 60s'}</div>
+          </div>
+          <div class="grid-2">
+            <button class="primary" onclick="startRR()" ${rrRunning?'disabled':''}>▶️ Start 60s</button>
+            <button class="secondary" onclick="resetRR()" ${!rrRunning?'disabled':''}>⏹ Stop</button>
+          </div>
+          <button class="secondary w-full mt-2" onclick="saveRR('${dname}')" ${rrCount===0?'disabled':''}>💾 Save ${rrCount} breaths to ${dname}'s profile</button>
+          <div id="rrResult" class="mt-2 text-muted"></div>
+          <div class="text-xs text-muted mt-2">Normal: 10-30 breaths/min. Count each rise/fall of chest.</div>
+        </div>
+      `;
+    }
+    function startRR() {
+      if (rrRunning) return;
+      rrRunning = true; rrCount = 0; rrSeconds = 0;
+      rrTimer = setInterval(() => { rrSeconds++; if (rrSeconds >= 60) { stopRR(); } }, 1000);
+      document.addEventListener('click', countBreath);
+      document.addEventListener('keydown', countBreath);
+      renderTools();
+    }
+    function countBreath(e) {
+      if (rrRunning) { rrCount++; }
+    }
+    function stopRR() {
+      rrRunning = false;
+      if (rrTimer) { clearInterval(rrTimer); rrTimer = null; }
+      document.removeEventListener('click', countBreath);
+      document.removeEventListener('keydown', countBreath);
+      renderTools();
+    }
+    function resetRR() {
+      stopRR(); rrCount = 0; rrSeconds = 0;
+      renderTools();
+    }
+    function saveRR(dname) {
+      if (rrCount === 0) return alert('Count some breaths first.');
+      state.calcResults.rr = { breaths: rrCount, date: todayKey() };
+      if (!state.rrHistory) state.rrHistory = [];
+      state.rrHistory.push({ date: todayKey(), breaths: rrCount });
+      saveState();
+      document.getElementById('rrResult').innerHTML = '✅ Saved '+rrCount+' breaths/min to '+dname+'\'s profile.';
+      renderHome();
+    }
+
+    // Calories
+    function getCalorieTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🍽️ Calories Per Meal</div>
+          <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="calW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label>Meals</label><select id="calM"><option value="2">2</option><option value="3">3</option></select></div></div>
+          <div class="input-group"><label>Activity</label><select id="calA"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div>
+          <button class="primary w-full" onclick="calcCalories()">Calculate</button>
+          <div id="calRes" class="mt-2 text-muted"></div>
+          <div class="save-prompt"><span class="text">Save to ${dname}'s profile?</span><button class="primary" onclick="saveCalorieResult('${dname}')">💾 Save</button></div>
+        </div>
+      `;
+    }
+    function calcCalories() {
+      const w=parseFloat(document.getElementById('calW').value)||25;
+      const m=parseInt(document.getElementById('calM').value)||2;
+      const a=parseFloat(document.getElementById('calA').value)||1.6;
+      const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*a; const oz=mer/42;
+      state._calResult = { rer, mer, oz, ozPerMeal: oz/m };
+      document.getElementById('calRes').innerHTML = 'RER: '+Math.round(rer)+' kcal · MER: '+Math.round(mer)+' kcal · ~'+oz.toFixed(1)+' oz/day ('+(oz/m).toFixed(1)+' oz/meal)';
+    }
+    function saveCalorieResult(dname) {
+      if (!state._calResult) return alert('Calculate first.');
+      state.calcResults.calories = state._calResult;
+      saveState();
+      alert('Saved to '+dname+'\'s profile!');
+      renderHome();
+    }
+
+    // Chocolate
+    function getChocolateTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🍫 Chocolate Toxicity</div>
+          <div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="chocW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label>Amount (g)</label><input type="number" id="chocAmt" value="50" /></div></div>
+          <div class="input-group"><label>Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div>
+          <button class="primary w-full" onclick="calcChoc()">Calculate</button>
+          <div id="chocRes" class="mt-2 text-muted"></div>
+          <div class="save-prompt"><span class="text">Save to ${dname}'s profile?</span><button class="primary" onclick="saveChocResult('${dname}')">💾 Save</button></div>
+        </div>
+      `;
+    }
+    function calcChoc() {
+      const w=parseFloat(document.getElementById('chocW').value)||25;
+      const amt=parseFloat(document.getElementById('chocAmt').value)||0;
+      const type=parseInt(document.getElementById('chocType').value)||150;
+      if (amt<=0) return alert('Enter amount.');
+      const dose=(amt*(type/1000)/w)*1000;
+      let risk='Low', color='#34c759';
+      if (dose>200){risk='Extreme – emergency!';color='#ff453a';}
+      else if (dose>100){risk='High – call vet';color='#ff9f0a';}
+      else if (dose>40){risk='Moderate – watch';color='#ff9f0a';}
+      state._chocResult = { dose, risk };
+      document.getElementById('chocRes').innerHTML = '<div style="color:'+color+';font-weight:700;">'+risk+'</div><div>Dose: '+dose.toFixed(1)+' mg/kg</div>';
+    }
+    function saveChocResult(dname) {
+      if (!state._chocResult) return alert('Calculate first.');
+      state.calcResults.chocolate = state._chocResult;
+      saveState();
+      alert('Saved to '+dname+'\'s profile!');
+      renderHome();
+    }
+
+    // Flea
+    function getFleaTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🐛 Flea/Tick Schedule</div>
+          <div class="grid-2"><div class="input-group"><label>Last dose</label><input type="date" id="fleaDate" /></div><div class="input-group"><label>Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div></div>
+          <button class="primary w-full" onclick="genFlea()">Generate</button>
+          <div id="fleaRes" class="mt-2 text-muted"></div>
+          <div class="save-prompt"><span class="text">Save to ${dname}'s profile?</span><button class="primary" onclick="saveFleaResult('${dname}')">💾 Save</button></div>
+        </div>
+      `;
+    }
+    function genFlea() {
+      const date=document.getElementById('fleaDate').value; const freq=parseInt(document.getElementById('fleaFreq').value)||30;
+      if (!date) return alert('Select a date.');
+      const d=new Date(date+'T00:00:00'); const dates=[];
+      for (let i=0;i<6;i++){d.setDate(d.getDate()+freq);dates.push(d.toISOString().split('T')[0]);}
+      state._fleaResult = { last: date, freq, nextDates: dates };
+      document.getElementById('fleaRes').innerHTML = '<strong>Next due:</strong><br>'+dates.join(' · ');
+    }
+    function saveFleaResult(dname) {
+      if (!state._fleaResult) return alert('Generate schedule first.');
+      state.calcResults.flea = state._fleaResult;
+      saveState();
+      alert('Saved to '+dname+'\'s profile!');
+      renderHome();
+    }
+
+    // Treats
+    function getTreatTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🍬 Treat Allowance (10%)</div>
+          <div class="input-group"><label>Weight (kg)</label><input type="number" id="treatW" value="${getActiveDog().weight / 2.2046 || 25}" /></div>
+          <button class="primary w-full" onclick="calcTreats()">Calculate</button>
+          <div id="treatRes" class="mt-2 text-muted"></div>
+          <div class="save-prompt"><span class="text">Save to ${dname}'s profile?</span><button class="primary" onclick="saveTreatResult('${dname}')">💾 Save</button></div>
+        </div>
+      `;
+    }
+    function calcTreats() {
+      const w=parseFloat(document.getElementById('treatW').value)||25;
+      const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*1.6; const budget=mer*0.10;
+      state._treatResult = { budget };
+      document.getElementById('treatRes').innerHTML = '10% budget: <strong>'+Math.round(budget)+'</strong> kcal/day (~'+Math.round(budget/5)+' baby carrots)';
+    }
+    function saveTreatResult(dname) {
+      if (!state._treatResult) return alert('Calculate first.');
+      state.calcResults.treats = state._treatResult;
+      saveState();
+      alert('Saved to '+dname+'\'s profile!');
+      renderHome();
+    }
+
+    // Cost
+    function getCostTools(dname) {
+      return `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💰 True Cost Per Day</div>
+          <div class="grid-2"><div class="input-group"><label>Price ($)</label><input type="number" id="costP" value="45" /></div><div class="input-group"><label>Bag (kg)</label><input type="number" id="costB" value="15" /></div></div>
+          <div class="input-group"><label>Daily portion (g)</label><input type="number" id="costPort" value="300" /></div>
+          <button class="primary w-full" onclick="calcCost()">Calculate</button>
+          <div id="costRes" class="mt-2 text-muted"></div>
+          <div class="save-prompt"><span class="text">Save to ${dname}'s profile?</span><button class="primary" onclick="saveCostResult('${dname}')">💾 Save</button></div>
+        </div>
+      `;
+    }
+    function calcCost() {
+      const price=parseFloat(document.getElementById('costP').value)||0;
+      const bag=parseFloat(document.getElementById('costB').value)||0;
+      const portion=parseFloat(document.getElementById('costPort').value)||0;
+      if (!price||!bag||!portion) return alert('Fill all fields.');
+      const days=(bag*1000)/portion; const cpd=price/days;
+      state._costResult = { cpd, days };
+      document.getElementById('costRes').innerHTML = 'Bag lasts ~'+days.toFixed(1)+' days<br><strong>$'+cpd.toFixed(2)+'</strong> per day ($'+(cpd*30).toFixed(2)+'/mo)';
+    }
+    function saveCostResult(dname) {
+      if (!state._costResult) return alert('Calculate first.');
+      state.calcResults.cost = state._costResult;
+      saveState();
+      alert('Saved to '+dname+'\'s profile!');
+      renderHome();
+    }
+
+    // ── WALKER ACCESS ──
+    function openWalkerSetup() {
+      if (state.walkerMode) {
+        state.walkerMode = false;
+        saveState();
+        renderTools();
+        return;
+      }
+      const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+      overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
+      overlay.innerHTML = `
+        <div class="modal" onclick="event.stopPropagation();">
+          <div class="modal-header"><span style="font-weight:700;">🐕 Walker Access</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+          <div class="input-group"><label>Enter PIN</label><input type="password" id="walkerPinInput" placeholder="default: 1234" /></div>
+          <button class="primary w-full" onclick="enterWalkerMode()">Enter Walker Mode</button>
+          <div class="text-xs text-muted mt-2">Walker mode shows only the walk tracker and notes.</div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+    function enterWalkerMode() {
+      const pin = document.getElementById('walkerPinInput').value.trim();
+      if (pin === state.walkerPin) {
+        state.walkerMode = true;
+        saveState();
+        closeModal();
+        renderTools();
+        navigateTo('tools');
+      } else {
+        alert('Incorrect PIN. Default is 1234.');
+      }
+    }
+    function renderWalkerView() {
+      const container = document.getElementById('toolsContent');
+      container.innerHTML = `
+        <div class="walker-view">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-weight:700;font-size:18px;color:var(--primary);">🐕 Walker Mode</span>
+              <button class="secondary" onclick="exitWalkerMode()">Exit</button>
+            </div>
+            <div class="text-muted text-sm mt-1">Tracking walks for ${getActiveDog().name}</div>
+          </div>
+          <div class="card">${renderWalkTracker()}</div>
+          <div class="card">
+            <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">📝 Walker Notes</div>
+            <textarea rows="3" style="width:100%;" onchange="saveWalkerNote(this.value)" placeholder="Notes about the walk...">${state.walkerNote || ''}</textarea>
+            <div class="text-xs text-muted mt-1">Auto-saved</div>
+          </div>
+        </div>
+      `;
+    }
+    function exitWalkerMode() {
+      state.walkerMode = false;
+      saveState();
+      renderTools();
+    }
+    function saveWalkerNote(val) {
+      state.walkerNote = val;
+      saveState();
+    }
+
+    // ── RENDER: UTILITIES ──
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
-      const calculatorsHtml = `
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🔑 USDA API Key</div><input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" /><div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💧 Water</div><div class="input-group"><label>Weight (lb)</label><input type="number" id="waterW" value="${getActiveDog().weight||65}" /></div><button onclick="calcWater()">Calculate</button><div id="waterRes" class="mt-2 text-muted"></div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🧮 Calories</div><div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="calW" value="25" /></div><div class="input-group"><label>Meals</label><select id="calM"><option value="2">2</option><option value="3">3</option></select></div></div><div class="input-group"><label>Activity</label><select id="calA"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div><button onclick="calcCal()">Calculate</button><div id="calRes" class="mt-2 text-muted"></div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🐛 Flea/Tick</div><div class="grid-2"><div class="input-group"><label>Last dose</label><input type="date" id="fleaDate" /></div><div class="input-group"><label>Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div></div><button onclick="genFlea()">Generate</button><div id="fleaRes" class="mt-2 text-muted"></div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🍫 Chocolate</div><div class="grid-2"><div class="input-group"><label>Weight (kg)</label><input type="number" id="chocW" value="25" /></div><div class="input-group"><label>Amount (g)</label><input type="number" id="chocAmt" value="50" /></div></div><div class="input-group"><label>Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div><button onclick="calcChoc()">Calculate</button><div id="chocRes" class="mt-2 text-muted"></div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🍬 Treat Allowance</div><div class="input-group"><label>Weight (kg)</label><input type="number" id="treatW" value="25" /></div><button onclick="calcTreats()">Calculate</button><div id="treatRes" class="mt-2 text-muted"></div></div>
-        <div class="card"><div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💰 Cost</div><div class="grid-2"><div class="input-group"><label>Price ($)</label><input type="number" id="costP" value="45" /></div><div class="input-group"><label>Bag (kg)</label><input type="number" id="costB" value="15" /></div></div><div class="input-group"><label>Daily portion (g)</label><input type="number" id="costPort" value="300" /></div><button onclick="calcCost()">Calculate</button><div id="costRes" class="mt-2 text-muted"></div></div>
-      `;
+      // Inventory section
+      const inv = state.inventory;
+      const invItems = [
+        { id:'proteinBags', label:'Protein bags', count:inv.proteinBags.count, min:inv.proteinBags.min },
+        { id:'organCubes', label:'Organ cubes', count:inv.organCubes.count, min:inv.organCubes.min },
+        { id:'vegBags', label:'Vegetable bags', count:inv.vegBags.count, min:inv.vegBags.min },
+        { id:'liquidCubes', label:'Liquid cubes', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+        { id:'herbCubes', label:'Herb cubes', count:inv.herbCubes.count, min:inv.herbCubes.min },
+        { id:'starch', label:'Starch (fridge)', count:inv.starch.count, min:inv.starch.min },
+      ];
+      let invHtml = invItems.map(item => `
+        <div class="inventory-row">
+          <span class="label">${item.label}</span>
+          <div class="count">
+            <button onclick="updateInventory('${item.id}', -1)">−</button>
+            <span class="num">${item.count}</span>
+            <button onclick="updateInventory('${item.id}', 1)">+</button>
+            <input type="number" value="${item.min}" style="width:50px;padding:4px;font-size:12px;" onchange="setInventoryMin('${item.id}', this.value)" title="min" />
+          </div>
+        </div>
+      `).join('');
 
-      const vetHtml = `
+      // Install section
+      const installHtml = `
         <div class="card">
-          <div class="vet-field-row"><span class="vet-field-label">Vet name</span><input type="text" value="${state.vetInfo.name}" onchange="updateVet('name',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label">Clinic</span><input type="text" value="${state.vetInfo.clinic}" onchange="updateVet('clinic',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label">Phone</span><input type="text" value="${state.vetInfo.phone}" onchange="updateVet('phone',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label">Email</span><input type="text" value="${state.vetInfo.email}" onchange="updateVet('email',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label">Address</span><input type="text" value="${state.vetInfo.address}" onchange="updateVet('address',this.value)" /></div>
-          <div class="vet-field-row"><span class="vet-field-label">Notes</span><input type="text" value="${state.vetInfo.notes}" onchange="updateVet('notes',this.value)" /></div>
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">📱 Install as an App</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.6;">
+            FRESHBOWL can live on your home screen like a native app — full screen, its own icon.<br><br>
+            <strong>iPhone/iPad:</strong> Share → <strong>Add to Home Screen</strong>.<br>
+            <strong>Android/Chrome:</strong> browser menu → <strong>Install app</strong>.<br><br>
+            Data stays on this device. Keep periodic exports as backup.
+          </div>
         </div>
       `;
 
-      // ---- VACCINE ROLODEX ----
-      const vaccines = state.vaccines || [];
-      const totalVax = vaccines.length;
+      // USDA
+      const usdaHtml = `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🔑 USDA API Key</div>
+          <input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" />
+          <div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div>
+        </div>
+      `;
+
+      // Vet
+      const v = state.vetInfo;
+      const vetHtml = `
+        <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">🏥 Vet Information</div>
+          <div class="vet-field-row"><span class="vet-field-label">Vet name</span><input type="text" value="${v.name}" onchange="updateVet('name',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Clinic</span><input type="text" value="${v.clinic}" onchange="updateVet('clinic',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Phone</span><input type="text" value="${v.phone}" onchange="updateVet('phone',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Email</span><input type="text" value="${v.email}" onchange="updateVet('email',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Address</span><input type="text" value="${v.address}" onchange="updateVet('address',this.value)" /></div>
+          <div class="vet-field-row"><span class="vet-field-label">Notes</span><input type="text" value="${v.notes}" onchange="updateVet('notes',this.value)" /></div>
+        </div>
+      `;
+
+      // Vaccines
+      const vax = state.vaccines || [];
+      const totalVax = vax.length;
       let idx = state.vaccineRolodexIndex || 0;
       if (idx >= totalVax) idx = Math.max(0, totalVax - 1);
       if (idx < 0) idx = 0;
       state.vaccineRolodexIndex = idx;
       saveState();
-
       let rolodexHtml = '';
       if (totalVax === 0) {
-        rolodexHtml = `<div class="rolodex-empty"><span class="big">💉</span><div>No vaccines recorded.</div><div style="font-size:13px;color:var(--text3);">Add one below.</div></div>`;
+        rolodexHtml = `<div class="rolodex-empty"><span class="big">💉</span><div>No vaccines recorded.</div></div>`;
       } else {
-        const v = vaccines[idx];
+        const vv = vax[idx];
         rolodexHtml = `
           <div class="rolodex-container">
             <div class="rolodex-card">
               <div class="index">${idx+1} / ${totalVax}</div>
-              <div class="name">${v.name}</div>
-              <div class="detail">📅 Given: ${v.date}</div>
-              ${v.nextDate ? `<div class="detail">⏰ Next due: ${v.nextDate}</div>` : ''}
-              ${v.notes ? `<div class="notes">📝 ${v.notes}</div>` : ''}
+              <div class="name">${vv.name}</div>
+              <div class="detail">📅 Given: ${vv.date}</div>
+              ${vv.nextDate ? `<div class="detail">⏰ Next due: ${vv.nextDate}</div>` : ''}
+              ${vv.notes ? `<div class="notes">📝 ${vv.notes}</div>` : ''}
             </div>
             <div class="rolodex-controls">
               <button onclick="rolodexPrev()" ${idx<=0?'disabled':''}>◀ Prev</button>
@@ -911,16 +1353,14 @@
           </div>
         `;
       }
-
       const commonVax = ['Rabies','DHPP (Distemper/Parvo)','Bordetella','Lyme','Leptospirosis','Influenza','Kennel Cough','Other'];
       const datalistOpts = commonVax.map(v => '<option value="'+v+'">').join('');
-
       const vaccinesHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💉 Vaccine Records — Rolodex</div>
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">💉 Vaccine Records</div>
           ${rolodexHtml}
-          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-            <div style="font-weight:600;font-size:13px;margin-bottom:6px;">Add New</div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+            <div style="font-weight:600;font-size:13px;">Add New</div>
             <div class="grid-2">
               <div class="input-group"><label>Name</label><input type="text" id="vaccName" list="vaxDatalist" value="${state.vaccineForm.name}" oninput="updateVaxForm('name',this.value)" placeholder="e.g. Rabies" /></div>
               <div class="input-group"><label>Date given</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaxForm('date',this.value)" /></div>
@@ -935,21 +1375,25 @@
         </div>
       `;
 
+      // Misc
       const miscHtml = `
         <div class="card">
+          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);">📝 Misc Notes</div>
           <textarea rows="4" style="width:100%;" onchange="saveMisc(this.value)">${state.miscNotes}</textarea>
           <div class="text-muted text-center mt-1">Auto-saved</div>
         </div>
       `;
 
       const sections = [
-        { id: 'calculators', icon: '🧮', label: 'Calculators', content: calculatorsHtml },
+        { id: 'install', icon: '📱', label: 'Install as App', content: installHtml },
+        { id: 'inventory', icon: '🥩', label: 'Freezer Inventory', content: `<div class="card">${invHtml}</div>` },
+        { id: 'usda', icon: '🔑', label: 'USDA API Key', content: usdaHtml },
         { id: 'vet', icon: '🏥', label: 'Vet Information', content: vetHtml },
         { id: 'vaccines', icon: '💉', label: 'Vaccine Records', content: vaccinesHtml },
         { id: 'misc', icon: '📝', label: 'Misc Notes', content: miscHtml }
       ];
 
-      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);">🌳 Utilities</div>`;
+      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);">🧰 Utilities</div>`;
       sections.forEach(s => {
         const open = state.utreeOpen[s.id] || false;
         html += `
@@ -966,29 +1410,11 @@
       container.innerHTML = html;
     }
 
-    // ---- UTILITIES FUNCTIONS ----
+    // ── UTILITY FUNCTIONS ──
     function toggleTree(id) { state.utreeOpen[id] = !state.utreeOpen[id]; saveState(); renderUtilities(); }
     function updateVet(field,val) { state.vetInfo[field] = val; saveState(); }
     function saveMisc(val) { state.miscNotes = val; saveState(); }
     function saveUSDAKey(val) { state.usdaKey = val.trim(); saveState(); }
-    function calcWater() { const w=parseFloat(document.getElementById('waterW').value); if(!w)return; const oz=w, ml=oz*29.5735; document.getElementById('waterRes').innerHTML='<strong>'+oz.toFixed(0)+' oz</strong> ('+Math.round(ml)+' ml) per day'; }
-    function calcCal() { const w=parseFloat(document.getElementById('calW').value)||25; const m=parseInt(document.getElementById('calM').value)||2; const a=parseFloat(document.getElementById('calA').value)||1.6; const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*a; const oz=mer/42; document.getElementById('calRes').innerHTML='RER: '+Math.round(rer)+' kcal · MER: '+Math.round(mer)+' kcal · ~'+oz.toFixed(1)+' oz/day ('+(oz/m).toFixed(1)+' oz/meal)'; }
-    function genFlea() { const date=document.getElementById('fleaDate').value; const freq=parseInt(document.getElementById('fleaFreq').value)||30; if(!date)return; const d=new Date(date+'T00:00:00'); const dates=[]; for(let i=0;i<6;i++){d.setDate(d.getDate()+freq);dates.push(d.toISOString().split('T')[0]);} document.getElementById('fleaRes').innerHTML='<strong>Next due:</strong><br>'+dates.join(' · '); }
-    function calcChoc() { const w=parseFloat(document.getElementById('chocW').value)||25; const amt=parseFloat(document.getElementById('chocAmt').value)||0; const type=parseInt(document.getElementById('chocType').value)||150; if(amt<=0)return; const dose=(amt*(type/1000)/w)*1000; let risk='Low',color='#34c759'; if(dose>200){risk='Extreme – emergency!';color='#ff453a';}else if(dose>100){risk='High – call vet';color='#ff9f0a';}else if(dose>40){risk='Moderate – watch';color='#ff9f0a';} document.getElementById('chocRes').innerHTML='<div style="color:'+color+';font-weight:700;">'+risk+'</div><div>Dose: '+dose.toFixed(1)+' mg/kg</div>'; }
-    function calcTreats() { const w=parseFloat(document.getElementById('treatW').value)||25; const kg=w; const rer=70*Math.pow(kg,0.75); const mer=rer*1.6; const budget=mer*0.10; document.getElementById('treatRes').innerHTML='10% budget: <strong>'+Math.round(budget)+'</strong> kcal/day (~'+Math.round(budget/5)+' baby carrots)'; }
-    function calcCost() { const price=parseFloat(document.getElementById('costP').value)||0; const bag=parseFloat(document.getElementById('costB').value)||0; const portion=parseFloat(document.getElementById('costPort').value)||0; if(!price||!bag||!portion)return; const days=(bag*1000)/portion; const cpd=price/days; document.getElementById('costRes').innerHTML='Bag lasts ~'+days.toFixed(1)+' days<br><strong>$'+cpd.toFixed(2)+'</strong> per day ($'+(cpd*30).toFixed(2)+'/mo)'; }
-
-    // ---- VACCINE ROLODEX CONTROLS ----
-    function rolodexPrev() { if (state.vaccineRolodexIndex > 0) { state.vaccineRolodexIndex--; saveState(); renderUtilities(); } }
-    function rolodexNext() { if (state.vaccineRolodexIndex < state.vaccines.length - 1) { state.vaccineRolodexIndex++; saveState(); renderUtilities(); } }
-    function deleteCurrentVax() {
-      const idx = state.vaccineRolodexIndex;
-      if (state.vaccines.length === 0) return;
-      if (!confirm('Delete "' + state.vaccines[idx].name + '"?')) return;
-      state.vaccines.splice(idx, 1);
-      if (state.vaccineRolodexIndex >= state.vaccines.length) state.vaccineRolodexIndex = Math.max(0, state.vaccines.length - 1);
-      saveState(); renderUtilities();
-    }
     function updateVaxForm(field,val) { state.vaccineForm[field] = val; saveState(); }
     function addVax() {
       const name = state.vaccineForm.name.trim();
@@ -999,8 +1425,18 @@
       state.vaccineRolodexIndex = state.vaccines.length - 1;
       saveState(); renderUtilities();
     }
+    function rolodexPrev() { if (state.vaccineRolodexIndex > 0) { state.vaccineRolodexIndex--; saveState(); renderUtilities(); } }
+    function rolodexNext() { if (state.vaccineRolodexIndex < state.vaccines.length - 1) { state.vaccineRolodexIndex++; saveState(); renderUtilities(); } }
+    function deleteCurrentVax() {
+      const idx = state.vaccineRolodexIndex;
+      if (state.vaccines.length === 0) return;
+      if (!confirm('Delete "' + state.vaccines[idx].name + '"?')) return;
+      state.vaccines.splice(idx, 1);
+      if (state.vaccineRolodexIndex >= state.vaccines.length) state.vaccineRolodexIndex = Math.max(0, state.vaccines.length - 1);
+      saveState(); renderUtilities();
+    }
 
-    // ===== SWAP / ADDINS MODALS =====
+    // ── SWAP / ADDINS MODALS (simplified from original) ──
     function openSwap(dateKey, slot) {
       const y=parseInt(dateKey.split('-')[0]), m=parseInt(dateKey.split('-')[1])-1, d=parseInt(dateKey.split('-')[2]);
       const meal = getMealForDate(y,m,d,slot);
@@ -1093,9 +1529,13 @@
       if (state.addinsLog?.[key]) { delete state.addinsLog[key][name]; saveState(); openAddins(key.split('_')[0], key.split('_')[1]); }
     }
 
-    function toggleFed(key) { state.fedLog[key] = !state.fedLog[key]; saveState(); renderHome(); if (document.getElementById('page-nutrition').classList.contains('active')) renderNutrition(); }
+    function toggleFed(key) { state.fedLog[key] = !state.fedLog[key]; saveState(); renderAll(); }
+    function toggleProtein(p) { const idx = state.selectedProteins.indexOf(p); if (idx>=0) state.selectedProteins.splice(idx,1); else if (state.selectedProteins.length<6) state.selectedProteins.push(p); saveState(); renderPlan(); }
+    function toggleFav(cat,item) { const arr = state.favorites[cat]; const idx = arr.indexOf(item); if (idx>=0) arr.splice(idx,1); else arr.push(item); saveState(); renderPlan(); }
+    function rebuildRotation() { state.rotation = generateRotation(state.selectedProteins, state.favorites); saveState(); renderPlan(); alert('Rotation rebuilt!'); }
+    function toggleWalkHistory() { state.showAllWalks = !state.showAllWalks; saveState(); renderHome(); }
 
-    // ===== NAVIGATION =====
+    // ── NAVIGATION ──
     function navigateTo(page) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-'+page).classList.add('active');
@@ -1105,36 +1545,42 @@
         case 'plan': renderPlan(); break;
         case 'nutrition': renderNutrition(); break;
         case 'profile': renderProfile(); break;
+        case 'tools': renderTools(); break;
         case 'utilities': renderUtilities(); break;
       }
       window.scrollTo(0,0);
     }
 
-    // ===== THEME =====
-    document.getElementById('themeTrack').addEventListener('click', toggleTheme);
-
-    // ===== INIT =====
+    // ── INIT ──
     function init() {
       loadState();
+      document.getElementById('themeTrack').addEventListener('click', toggleTheme);
       document.querySelectorAll('.bottom-nav button').forEach(btn => {
         btn.addEventListener('click', () => navigateTo(btn.dataset.page));
       });
-      // expose all functions for inline onclick
+      // expose functions for inline onclick
       window.switchDog = switchDog; window.openAddDogModal = openAddDogModal; window.addDogFromModal = addDogFromModal; window.deleteDog = deleteDog; window.closeModal = closeModal;
       window.toggleFed = toggleFed; window.toggleProtein = toggleProtein; window.toggleFav = toggleFav; window.rebuildRotation = rebuildRotation;
       window.updateDog = updateDog; window.saveProfile = saveProfile; window.handlePhotoProf = handlePhotoProf;
-      window.rolodexPrev = rolodexPrev; window.rolodexNext = rolodexNext; window.deleteCurrentVax = deleteCurrentVax;
-      window.updateVaxForm = updateVaxForm; window.addVax = addVax;
+      window.updateInventory = updateInventory; window.setInventoryMin = setInventoryMin;
+      window.startRR = startRR; window.resetRR = resetRR; window.saveRR = saveRR;
+      window.calcCalories = calcCalories; window.saveCalorieResult = saveCalorieResult;
+      window.calcChoc = calcChoc; window.saveChocResult = saveChocResult;
+      window.genFlea = genFlea; window.saveFleaResult = saveFleaResult;
+      window.calcTreats = calcTreats; window.saveTreatResult = saveTreatResult;
+      window.calcCost = calcCost; window.saveCostResult = saveCostResult;
+      window.openWalkerSetup = openWalkerSetup; window.enterWalkerMode = enterWalkerMode; window.exitWalkerMode = exitWalkerMode; window.saveWalkerNote = saveWalkerNote;
+      window.switchToolsTab = switchToolsTab;
+      window.startWalk = startWalk; window.stopWalk = stopWalk; window.deleteWalkLog = deleteWalkLog; window.toggleWalkHistory = toggleWalkHistory;
       window.openSwap = openSwap; window.applySwap = applySwap; window.clearSwaps = clearSwaps;
       window.openAddins = openAddins; window.searchUSDAForAddin = searchUSDAForAddin; window.importUSDA = importUSDA; window.addAddin = addAddin; window.removeAddin = removeAddin;
-      window.saveUSDAKey = saveUSDAKey; window.calcWater = calcWater; window.calcCal = calcCal; window.genFlea = genFlea; window.calcChoc = calcChoc; window.calcTreats = calcTreats; window.calcCost = calcCost;
-      window.updateVet = updateVet; window.saveMisc = saveMisc; window.toggleTree = toggleTree;
-      window.startWalk = startWalk; window.stopWalk = stopWalk; window.deleteWalkLog = deleteWalkLog; window.toggleWalkHistory = toggleWalkHistory;
+      window.saveUSDAKey = saveUSDAKey; window.updateVet = updateVet; window.saveMisc = saveMisc; window.toggleTree = toggleTree;
+      window.updateVaxForm = updateVaxForm; window.addVax = addVax; window.rolodexPrev = rolodexPrev; window.rolodexNext = rolodexNext; window.deleteCurrentVax = deleteCurrentVax;
       window.navigateTo = navigateTo;
       navigateTo('home');
     }
 
-    init();
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
