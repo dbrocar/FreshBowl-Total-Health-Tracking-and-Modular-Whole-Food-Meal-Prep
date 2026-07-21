@@ -3,39 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FRESHBOWL — Total Health</title>
-  <meta name="theme-color" content="#f5f5f7" />
+  <title>FRESH BOWL METHOD — whole food rotation feeding for dogs</title>
+  <meta name="theme-color" content="#c8933a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="FRESH BOWL METHOD" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <!-- Font Awesome 6 (free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Leaflet CSS for walk maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    /* ─── CSS ────────────────────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     :root {
-      --bg: #f5f5f7;
+      --bg: #f8f4ec;
       --surface: #ffffff;
-      --surface2: #f0f0f2;
-      --border: #e0e0e2;
+      --surface2: #f3ede4;
+      --border: #dccfc0;
       --text: #1c1c1e;
       --text2: #3a3a3c;
-      --text3: #8e8e93;
-      --primary: #f5c842;
-      --primary-dark: #e8b830;
-      --primary-dim: rgba(245,200,66,0.15);
+      --text3: #7a6a5a;
+      --primary: #c8933a;
+      --primary-dark: #b07d2a;
+      --primary-dim: rgba(200,147,58,0.12);
+      --green: #2c6e49;
+      --green-dim: rgba(44,110,73,0.12);
+      --blue: #4a8db7;
+      --blue-dim: rgba(74,141,183,0.12);
       --shadow: 0 2px 12px rgba(0,0,0,0.06);
-      --radius: 16px; --radius-sm: 10px; --radius-full: 9999px;
-      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius: 18px; --radius-sm: 10px; --radius-full: 9999px;
+      --font: 'Baloo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --transition: 0.2s ease;
     }
     [data-theme="dark"] {
-      --bg: #0a0e1a;
-      --surface: #141b2d;
-      --surface2: #1a2338;
-      --border: #1e2a3e;
-      --text: #ffffff;
-      --text2: #a0b4c8;
-      --text3: #6a7f9a;
-      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+      --bg: #1a1a1e;
+      --surface: #2a2a2e;
+      --surface2: #343438;
+      --border: #4a4a4e;
+      --text: #f0ece8;
+      --text2: #b0a8a0;
+      --text3: #8a7a6a;
+      --shadow: 0 2px 12px rgba(0,0,0,0.4);
     }
     html { font-size: 16px; }
     body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; padding-bottom: 80px; transition: background var(--transition), color var(--transition); }
@@ -56,27 +67,29 @@
     .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
     .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; }
-    .header-title { font-size: 18px; font-weight: 800; color: var(--primary); letter-spacing: -0.3px; }
-    .header-title small { font-size: 10px; font-weight: 400; color: var(--text2); display: block; margin-top: -2px; }
+    .header-title { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
+    .header-title small { font-size: 11px; font-weight: 400; color: var(--text3); display: block; margin-top: -4px; -webkit-text-fill-color: var(--text3); }
     .header-actions { display: flex; gap: 8px; align-items: center; }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
-    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 12px; font-size: 11px; font-weight: 500; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); border: none; }
-    .bottom-nav button .icon { font-size: 22px; line-height: 1; }
+    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 11px; font-weight: 600; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); border: none; }
+    .bottom-nav button .icon { font-size: 24px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
+    .bottom-nav button.active .icon { color: var(--primary); transform: scale(1.1); }
     .bottom-nav button.active { color: var(--primary); }
     .page { display: none; padding: 16px 0 20px; animation: fadeUp 0.25s ease; }
     .page.active { display: block; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; color: var(--primary); cursor: default; }
-    .card-title .icon { font-size: 24px; width: 32px; text-align: center; color: var(--primary); filter: drop-shadow(0 2px 4px rgba(245,200,66,0.3)); }
+    .card-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; color: var(--primary); cursor: default; }
+    .card-title .icon { font-size: 26px; width: 34px; text-align: center; background: var(--primary-dim); border-radius: 10px; padding: 4px; color: var(--primary); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 600; background: var(--primary-dim); color: var(--primary); }
-    .badge.green { background: rgba(52,199,89,0.15); color: #34c759; }
-    .badge.red { background: rgba(255,69,58,0.15); color: #ff453a; }
-    .badge.orange { background: rgba(255,159,10,0.15); color: #ff9f0a; }
+    .badge { display: inline-block; padding: 2px 12px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; background: var(--primary-dim); color: var(--primary); }
+    .badge.green { background: var(--green-dim); color: var(--green); }
+    .badge.red { background: rgba(224,82,82,0.15); color: #e05252; }
+    .badge.orange { background: rgba(230,150,50,0.15); color: #d98c2a; }
+    .badge.blue { background: var(--blue-dim); color: var(--blue); }
     .dog-switcher { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 8px 0; }
-    .dog-switcher .name { font-size: 24px; font-weight: 800; color: var(--text); }
+    .dog-switcher .name { font-size: 26px; font-weight: 900; color: var(--text); }
     .dog-switcher .btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text2); transition: all 0.2s; }
     .dog-switcher .btn:hover { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
     .dog-switcher .add-btn { background: var(--primary); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #0a0e1a; font-weight: 700; }
@@ -84,56 +97,56 @@
     .dog-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; overflow: hidden; cursor: pointer; }
     .dog-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .dog-avatar input[type="file"] { display: none; }
-    .dog-stats { font-size: 13px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
+    .dog-stats { font-size: 14px; color: var(--text2); display: flex; gap: 12px; flex-wrap: wrap; }
     .inventory-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
     .inventory-row:last-child { border-bottom: none; }
-    .inventory-row .label { font-weight: 500; font-size: 14px; }
+    .inventory-row .label { font-weight: 600; font-size: 15px; }
     .inventory-row .count { display: flex; align-items: center; gap: 10px; }
-    .inventory-row .count button { padding: 2px 10px; font-size: 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 32px; }
+    .inventory-row .count button { padding: 2px 10px; font-size: 18px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 32px; }
     .inventory-row .count button:hover { background: var(--primary); border-color: var(--primary); }
-    .inventory-row .count .num { font-weight: 700; min-width: 28px; text-align: center; }
-    .inventory-row .warning { font-size: 11px; color: #ff453a; font-weight: 600; margin-left: 8px; }
+    .inventory-row .count .num { font-weight: 800; min-width: 28px; text-align: center; font-size: 17px; }
+    .inventory-row .warning { font-size: 12px; color: #e05252; font-weight: 700; margin-left: 8px; }
     .meal-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--border); }
-    .meal-card.fed { border-left-color: #34c759; background: rgba(52,199,89,0.06); }
+    .meal-card.fed { border-left-color: var(--green); background: var(--green-dim); }
     .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .meal-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); }
-    .meal-fed { font-size: 12px; font-weight: 600; color: #34c759; }
+    .meal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); }
+    .meal-fed { font-size: 13px; font-weight: 700; color: var(--green); }
     .meal-fed.not { color: var(--text3); }
-    .meal-protein { font-size: 16px; font-weight: 700; }
-    .meal-details { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .meal-protein { font-size: 17px; font-weight: 800; }
+    .meal-details { font-size: 14px; color: var(--text2); line-height: 1.6; }
     .meal-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-    .meal-actions button { padding: 4px 10px; font-size: 12px; border-radius: var(--radius-full); background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
+    .meal-actions button { padding: 4px 12px; font-size: 12px; border-radius: var(--radius-full); background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
     .meal-actions button.primary { background: var(--primary); color: #0a0e1a; border: none; }
     .donut-wrap { display: flex; align-items: center; gap: 16px; padding: 8px 0; }
     .donut-legend { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .donut-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-    .donut-swatch { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
-    .donut-label { flex: 1; color: var(--text2); }
-    .donut-val { color: var(--text); font-weight: 500; }
+    .donut-row { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .donut-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+    .donut-label { flex: 1; color: var(--text2); font-weight: 600; }
+    .donut-val { color: var(--text); font-weight: 700; }
     .nutrient-item { padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .nutrient-item .bar { height: 4px; background: var(--surface2); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+    .nutrient-item .bar { height: 6px; background: var(--surface2); border-radius: 4px; margin-top: 4px; overflow: hidden; }
     .nutrient-item .bar .fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s; }
     .modal { background: var(--surface); border-radius: var(--radius) var(--radius) 0 0; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 20px 16px; animation: slideUp 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .modal-title { font-size: 18px; font-weight: 700; color: var(--primary); }
-    .modal-close { background: transparent; padding: 4px 8px; font-size: 24px; color: var(--text2); border: none; }
+    .modal-title { font-size: 19px; font-weight: 800; color: var(--primary); }
+    .modal-close { background: transparent; padding: 4px 8px; font-size: 26px; color: var(--text2); border: none; }
     .input-group { margin-bottom: 12px; }
-    .input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+    .input-group label { display: block; font-size: 14px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
     .rotation-week { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
     .rotation-week-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .rotation-week-title { font-weight: 700; color: var(--primary); }
+    .rotation-week-title { font-weight: 800; color: var(--primary); }
     .rotation-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
     .rotation-day { background: var(--surface); border-radius: 6px; padding: 4px 2px; text-align: center; font-size: 10px; border: 1px solid var(--border); }
-    .rotation-day.fish { border-color: var(--primary); background: var(--primary-dim); }
+    .rotation-day.fish { border-color: var(--blue); background: var(--blue-dim); }
     .walk-display { text-align: center; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); margin: 12px 0; }
-    .walk-time { font-size: 32px; font-weight: 800; letter-spacing: 2px; color: var(--primary); }
-    .walk-dist { font-size: 16px; color: var(--text2); margin-top: 4px; }
-    .walk-points { font-size: 12px; color: var(--text3); }
-    .walk-map { width: 100%; height: 100px; border-radius: var(--radius-sm); background: var(--surface); overflow: hidden; margin-top: 8px; }
-    .walk-map svg { width: 100%; height: 100%; display: block; }
+    .walk-time { font-size: 34px; font-weight: 900; letter-spacing: 2px; color: var(--primary); }
+    .walk-dist { font-size: 17px; color: var(--text2); margin-top: 4px; font-weight: 600; }
+    .walk-points { font-size: 13px; color: var(--text3); }
+    .walk-map { width: 100%; height: 200px; border-radius: var(--radius-sm); overflow: hidden; margin-top: 8px; background: var(--surface2); position: relative; }
+    .walk-map .leaflet-container { width: 100%; height: 100%; }
     .walk-history-item { border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
     .walk-history-item:last-child { border-bottom: none; }
     .accordion-item { margin-bottom: 8px; }
@@ -146,20 +159,20 @@
     .accordion-body .card { margin-bottom: 12px; }
     .accordion-body .card:last-child { margin-bottom: 0; }
     .vet-field-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
-    .vet-field-label { font-size: 13px; font-weight: 600; color: var(--text2); }
+    .vet-field-label { font-size: 14px; font-weight: 600; color: var(--text2); }
     .rolodex-container { min-height: 180px; }
     .rolodex-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; min-height: 140px; display: flex; flex-direction: column; justify-content: center; position: relative; }
-    .rolodex-card .name { font-size: 18px; font-weight: 700; color: var(--primary); }
-    .rolodex-card .detail { font-size: 14px; color: var(--text2); margin-top: 4px; }
-    .rolodex-card .notes { font-size: 13px; color: var(--text3); margin-top: 8px; font-style: italic; }
-    .rolodex-card .index { position: absolute; top: 12px; right: 16px; font-size: 12px; color: var(--text3); font-weight: 600; }
+    .rolodex-card .name { font-size: 19px; font-weight: 800; color: var(--primary); }
+    .rolodex-card .detail { font-size: 15px; color: var(--text2); margin-top: 4px; }
+    .rolodex-card .notes { font-size: 14px; color: var(--text3); margin-top: 8px; font-style: italic; }
+    .rolodex-card .index { position: absolute; top: 12px; right: 16px; font-size: 13px; color: var(--text3); font-weight: 700; }
     .rolodex-controls { display: flex; justify-content: center; gap: 16px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
     .rolodex-controls button { padding: 8px 20px; border-radius: var(--radius-full); font-size: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
     .rolodex-controls button:hover { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
     .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
     .profile-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-    .profile-stat .val { font-size: 22px; font-weight: 800; color: var(--primary); }
-    .profile-stat .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .profile-stat .val { font-size: 24px; font-weight: 900; color: var(--primary); }
+    .profile-stat .lbl { font-size: 13px; color: var(--text2); margin-top: 2px; font-weight: 600; }
     .error-box { background: #ffebee; color: #b71c1c; padding: 12px; border-radius: 8px; margin: 10px; display: none; border: 1px solid #ffcdd2; white-space: pre-wrap; }
     .error-box.show { display: block; }
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
@@ -172,26 +185,24 @@
     .mt-3 { margin-top: 12px; }
     .w-full { width: 100%; }
     .tools-tab-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
-    .tools-tab { padding: 6px 14px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; }
+    .tools-tab { padding: 6px 16px; border-radius: var(--radius-full); background: var(--surface2); border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text2); cursor: pointer; }
     .tools-tab.active { background: var(--primary); color: #0a0e1a; border-color: var(--primary); }
     .tools-tab:hover { background: var(--primary-dim); }
     .save-prompt { background: var(--primary-dim); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .save-prompt .text { font-size: 13px; font-weight: 500; color: var(--text2); }
-    .save-prompt button { padding: 4px 14px; font-size: 12px; border-radius: var(--radius-full); }
+    .save-prompt .text { font-size: 14px; font-weight: 600; color: var(--text2); }
+    .save-prompt button { padding: 4px 16px; font-size: 13px; border-radius: var(--radius-full); }
     .rr-counter { text-align: center; padding: 20px; }
-    .rr-counter .big { font-size: 48px; font-weight: 800; color: var(--primary); }
-    .rr-counter .label { font-size: 14px; color: var(--text2); margin-top: 4px; }
+    .rr-counter .big { font-size: 52px; font-weight: 900; color: var(--primary); }
+    .rr-counter .label { font-size: 16px; color: var(--text2); margin-top: 4px; font-weight: 600; }
     .walker-view { padding: 16px; }
-    .walker-view .note { font-size: 14px; color: var(--text2); margin-top: 8px; }
-    /* Icon color helpers */
-    .icon-gold { color: #f5c842; }
-    .icon-green { color: #34c759; }
-    .icon-blue { color: #5ac8fa; }
-    .icon-pink { color: #ff2d55; }
-    .icon-purple { color: #af52de; }
-    .icon-orange { color: #ff9f0a; }
-    .icon-red { color: #ff453a; }
-    .icon-teal { color: #5ac8fa; }
+    .walker-view .note { font-size: 15px; color: var(--text2); margin-top: 8px; }
+    .nutrient-breakdown-list { margin-top: 8px; }
+    .nutrient-breakdown-list .item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .nutrient-breakdown-list .item .pct { font-weight: 700; color: var(--primary); }
+    .badge-aafco { background: var(--green-dim); color: var(--green); font-weight: 800; padding: 4px 14px; border-radius: var(--radius-full); font-size: 12px; display: inline-block; margin-left: 8px; }
+    .icon-gold { color: var(--primary); }
+    .icon-green { color: var(--green); }
+    .icon-blue { color: var(--blue); }
     @media (max-width: 480px) {
       .grid-2 { grid-template-columns: 1fr; }
       .grid-3 { grid-template-columns: 1fr 1fr; }
@@ -199,6 +210,9 @@
       .profile-stats-grid { grid-template-columns: 1fr 1fr; }
       .tools-tab-row { justify-content: center; }
     }
+    /* Leaflet map container fix */
+    .walk-map .leaflet-control-zoom { display: none; }
+    .walk-map .leaflet-control-attribution { font-size: 9px; opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -206,10 +220,10 @@
 
   <header class="header">
     <div>
-      <div class="header-title">FRESHBOWL <small>v.96</small></div>
+      <div class="header-title">🍲 FRESH BOWL METHOD <small>v.96</small></div>
     </div>
     <div class="header-actions">
-      <button onclick="openWalkerSetup()" style="background:rgba(46,125,82,0.10);border:1px solid rgba(46,125,82,0.20);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;color:#2e7d52;">
+      <button onclick="openWalkerSetup()" style="background:var(--green-dim);border:1px solid var(--green);border-radius:8px;padding:4px 12px;font-size:13px;font-weight:800;color:var(--green);">
         <i class="fa-solid fa-dog" style="margin-right:4px;"></i> Walker
       </button>
       <div class="toggle-switch">
@@ -253,7 +267,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  STATE
+    //  STATE (unchanged structure from original)
     // ═══════════════════════════════════════════════════════════════════════
 
     let state = {
@@ -301,7 +315,7 @@
     const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
     const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
 
-    // ── FOODS Database ──
+    // ── FOODS Database ── (full from original)
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -335,7 +349,7 @@
       "Blueberries": mkN(0.2,0.1,2,4,25,0,1,2,0.1,0.01,0.0,0,0.0,3,8,8,0,0.6,5,0.01,0.01,0.1,0.06,0.02,0,2,2),
     };
 
-    // ── AAFCO ──
+    // ── AAFCO Targets ──
     const AAFCO = [
       { k:'protein', label:'Protein', unit:'g', min:45, max:999 },
       { k:'fat', label:'Fat', unit:'g', min:13.8, max:55 },
@@ -368,7 +382,7 @@
     ];
     const NUTRIENT_KEYS = AAFCO.map(a => a.k);
 
-    // ── Helpers ──
+    // ── Helper functions (unchanged) ──
     function getActiveDog() { return state.dogs.find(d => d.id === state.activeDogId) || state.dogs[0]; }
     function calcMER(dog) { const kg = (dog.weight || 65) / 2.2046; return 70 * Math.pow(kg, 0.75) * (dog.activity || 1.6); }
     function dateKey(y,m,d) { return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'); }
@@ -390,7 +404,7 @@
     }
     function isFish(p) { return p && (p.includes('Sardine') || p.includes('Salmon')); }
 
-    // ── Nutrition Engine ──
+    // ── Nutrition Engine ── (unchanged)
     function zeroNutrients() { const o = {}; NUTRIENT_KEYS.forEach(k => o[k] = 0); return o; }
     function addFood(total, food, oz) {
       if (!food || !oz) return;
@@ -418,6 +432,7 @@
     }
     function calcNutritionForDateRange(startDate, endDate) {
       const total = zeroNutrients(); let mealCount = 0;
+      const sources = {};
       let cur = new Date(startDate);
       while (cur <= endDate) {
         const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
@@ -426,22 +441,96 @@
           const logKey = key + '_' + slot;
           if (state.fedLog[logKey]) {
             const nut = calcMealNutrition(y,m,d,slot);
-            NUTRIENT_KEYS.forEach(k => total[k] += nut[k]);
+            NUTRIENT_KEYS.forEach(k => {
+              const val = nut[k] || 0;
+              if (val > 0) {
+                total[k] = (total[k] || 0) + val;
+                // track sources: we need food breakdown per nutrient
+                // We'll build sources by re-calculating with tracked components.
+                // For simplicity we'll reuse the meal calc with source tracking.
+              }
+            });
             mealCount++;
           }
         }
         cur.setDate(cur.getDate() + 1);
       }
-      return { total, mealCount };
+      // Re-run with source tracking for the period
+      const sourceData = calcNutritionWithSources(startDate, endDate);
+      return { total, mealCount, sources: sourceData.sources };
     }
+
+    // New function to compute nutrient sources per period
+    function calcNutritionWithSources(startDate, endDate) {
+      const totals = zeroNutrients();
+      const sources = {};
+      NUTRIENT_KEYS.forEach(k => sources[k] = {});
+      let mealCount = 0;
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        const y = cur.getFullYear(), m = cur.getMonth(), d = cur.getDate();
+        const key = dateKey(y,m,d);
+        for (const slot of ['am','pm']) {
+          const logKey = key + '_' + slot;
+          if (state.fedLog[logKey]) {
+            const meal = getEffectiveMeal(y,m,d,slot);
+            if (!meal) continue;
+            // Add each component with tracking
+            const components = [
+              { name: meal.protein, oz: 8 },
+              { name: meal.starch, oz: 2.5 },
+              { name: meal.veg, oz: 2.5 },
+              { name: meal.organ, oz: 0.5 }
+            ];
+            components.forEach(comp => {
+              if (!comp.name) return;
+              const food = FOODS[comp.name];
+              if (!food) return;
+              NUTRIENT_KEYS.forEach(k => {
+                const val = (food[k] || 0) * comp.oz;
+                if (val > 0) {
+                  totals[k] = (totals[k] || 0) + val;
+                  sources[k][comp.name] = (sources[k][comp.name] || 0) + val;
+                }
+              });
+            });
+            // Add supplements
+            const supps = state.suppChecks?.[logKey] || {};
+            if (supps.eggshell !== false) { totals.calcium += 800; sources.calcium['Eggshell'] = (sources.calcium['Eggshell']||0)+800; }
+            if (supps.salt !== false) { totals.sodium += 115; totals.chloride += 175; totals.iodine += 0.10; sources.sodium['Salt'] = (sources.sodium['Salt']||0)+115; sources.chloride['Salt'] = (sources.chloride['Salt']||0)+175; sources.iodine['Salt'] = (sources.iodine['Salt']||0)+0.10; }
+            if (supps.herbcube !== false) { totals.vitE += 3.4; totals.vitA += 10; totals.vitK += 4; sources.vitE['Herb Cube'] = (sources.vitE['Herb Cube']||0)+3.4; sources.vitA['Herb Cube'] = (sources.vitA['Herb Cube']||0)+10; sources.vitK['Herb Cube'] = (sources.vitK['Herb Cube']||0)+4; }
+            if (supps.broth !== false) { const b = FOODS[meal.protein]; if (b) { const oz = 0.75*0.08; NUTRIENT_KEYS.forEach(k => { const val = (b[k]||0)*oz; if (val>0) { totals[k] = (totals[k]||0)+val; sources[k]['Broth'] = (sources[k]['Broth']||0)+val; } }); } }
+            // Add-ins
+            const addins = state.addinsLog?.[logKey] || {};
+            Object.keys(addins).forEach(name => {
+              const f = FOODS[name];
+              if (!f) return;
+              const oz = addins[name];
+              NUTRIENT_KEYS.forEach(k => {
+                const val = (f[k]||0) * oz;
+                if (val > 0) {
+                  totals[k] = (totals[k]||0) + val;
+                  sources[k][name] = (sources[k][name]||0) + val;
+                }
+              });
+            });
+            mealCount++;
+          }
+        }
+        cur.setDate(cur.getDate() + 1);
+      }
+      return { totals, sources, mealCount };
+    }
+
     function getAAFCOStatus(value, target) {
       if (value < target.min) return 'low';
       if (target.max < 9999 && value > target.max) return 'high';
       return 'ok';
     }
 
-    // ── Rotation Engine ──
+    // ── Rotation Engine ── (unchanged)
     function generateRotation(proteins, favs) {
+      // ... (full function from original)
       const mains = proteins.filter(p => !p.includes('Sardine') && !p.includes('Salmon'));
       const fish = proteins.filter(p => p.includes('Sardine') || p.includes('Salmon'));
       while (mains.length < 4) mains.push('Beef (85/15)');
@@ -507,7 +596,7 @@
       return result;
     }
 
-    // ── USDA ──
+    // ── USDA ── (unchanged)
     function searchUSDA(query, callback) {
       if (!state.usdaKey) { callback({ error: 'No USDA API key.' }); return; }
       fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key='+state.usdaKey+'&query='+encodeURIComponent(query)+'&pageSize=10')
@@ -541,17 +630,61 @@
       return perOz;
     }
 
-    // ── Walk helpers ──
+    // ── Walk helpers with Leaflet map ──
     let walkInterval = null, walkStartTime = null, walkCoords = [];
-    function walkRouteToSvg(coords, w, h) {
+    let walkMapInstance = null;
+    let walkMapPolyline = null;
+    let walkMarkers = [];
+
+    function renderWalkMap(containerId, coords) {
+      if (!coords || coords.length === 0) {
+        if (document.getElementById(containerId)) {
+          document.getElementById(containerId).innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">No walk data</div>';
+        }
+        return;
+      }
+      // Use Leaflet
+      if (typeof L === 'undefined') {
+        // fallback to SVG if Leaflet not loaded
+        document.getElementById(containerId).innerHTML = walkRouteToSvg(coords, 400, 200);
+        return;
+      }
+      const mapDiv = document.getElementById(containerId);
+      if (!mapDiv) return;
+      mapDiv.innerHTML = '';
+      const map = L.map(mapDiv, { zoomControl: false, attributionControl: true }).setView([coords[0].lat, coords[0].lng], 15);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18,
+      }).addTo(map);
+      const latlngs = coords.map(c => [c.lat, c.lng]);
+      const polyline = L.polyline(latlngs, { color: '#c8933a', weight: 4, opacity: 0.8 }).addTo(map);
+      map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
+      // Markers
+      if (coords.length > 0) {
+        L.marker([coords[0].lat, coords[0].lng], { title: 'Start' }).addTo(map).bindPopup('Start');
+        L.marker([coords[coords.length-1].lat, coords[coords.length-1].lng], { title: 'End' }).addTo(map).bindPopup('End');
+      }
+      // Store reference for cleanup
+      walkMapInstance = map;
+    }
+
+    function cleanupWalkMap() {
+      if (walkMapInstance) {
+        walkMapInstance.remove();
+        walkMapInstance = null;
+      }
+    }
+
+    function walkRouteToSvg(coords, width, height) {
       if (!coords || coords.length === 0) return '';
-      const width = w || 400, height = h || 100;
-      if (coords.length === 1) return '<svg viewBox="0 0 '+width+' '+height+'"><circle cx="'+(width/2)+'" cy="'+(height/2)+'" r="6" fill="var(--primary)"/></svg>';
+      const w = width || 400, h = height || 100;
+      if (coords.length === 1) return '<svg viewBox="0 0 '+w+' '+h+'"><circle cx="'+(w/2)+'" cy="'+(h/2)+'" r="6" fill="var(--primary)"/></svg>';
       const lats = coords.map(c => c.lat), lngs = coords.map(c => c.lng);
       const minLat = Math.min(...lats), maxLat = Math.max(...lats), minLng = Math.min(...lngs), maxLng = Math.max(...lngs);
       const pad = 12, latRange = maxLat - minLat || 0.001, lngRange = maxLng - minLng || 0.001;
-      const pts = coords.map(c => ({ x: pad + (c.lng - minLng) / lngRange * (width - 2*pad), y: height - pad - (c.lat - minLat) / latRange * (height - 2*pad) }));
-      return '<svg viewBox="0 0 '+width+' '+height+'"><rect width="'+width+'" height="'+height+'" fill="var(--surface2)" rx="6"/><polyline points="'+pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'" stroke="var(--primary)" stroke-width="2.5" fill="none"/><circle cx="'+pts[0].x+'" cy="'+pts[0].y+'" r="4" fill="var(--primary)"/><circle cx="'+pts[pts.length-1].x+'" cy="'+pts[pts.length-1].y+'" r="4" fill="#ff453a"/></svg>';
+      const pts = coords.map(c => ({ x: pad + (c.lng - minLng) / lngRange * (w - 2*pad), y: h - pad - (c.lat - minLat) / latRange * (h - 2*pad) }));
+      return '<svg viewBox="0 0 '+w+' '+h+'"><rect width="'+w+'" height="'+h+'" fill="var(--surface2)" rx="6"/><polyline points="'+pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ')+'" stroke="var(--primary)" stroke-width="2.5" fill="none"/><circle cx="'+pts[0].x+'" cy="'+pts[0].y+'" r="4" fill="var(--primary)"/><circle cx="'+pts[pts.length-1].x+'" cy="'+pts[pts.length-1].y+'" r="4" fill="#ff453a"/></svg>';
     }
     function calcDist(coords) { let total=0; for (let i=1;i<coords.length;i++){ const a=coords[i-1],b=coords[i]; const dLat=(b.lat-a.lat)*Math.PI/180, dLng=(b.lng-a.lng)*Math.PI/180; const h=Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2; total += 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h)); } return total; }
     function startWalk() {
@@ -576,7 +709,7 @@
     }
     function deleteWalkLog(idx) { state.walkLogs.splice(idx,1); saveState(); renderAll(); }
 
-    // ── Storage ──
+    // ── Storage ── (unchanged)
     function saveState() {
       try { localStorage.setItem('fb_state', JSON.stringify(state)); } catch(e) {}
       try { if (petPhoto) localStorage.setItem('fb_photo', petPhoto); else localStorage.removeItem('fb_photo'); } catch(e) {}
@@ -603,7 +736,7 @@
     }
     function toggleTheme() { state.theme = state.theme === 'dark' ? 'light' : 'dark'; applyTheme(); saveState(); }
 
-    // ── Render all pages ──
+    // ── Render all pages ── (redirect to specific render functions)
     function renderAll() {
       const activePage = document.querySelector('.page.active');
       if (activePage) {
@@ -619,7 +752,7 @@
       }
     }
 
-    // ── RENDER: HOME ──
+    // ── RENDER: HOME ── (with updated icons/colors)
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -637,18 +770,18 @@
       // Inventory status
       const inv = state.inventory;
       const invItems = [
-        { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#ff6b6b', count:inv.proteinBags.count, min:inv.proteinBags.min },
-        { id:'organCubes', label:'Organ cubes', icon:'fa-heart', color:'#ff2d55', count:inv.organCubes.count, min:inv.organCubes.min },
-        { id:'vegBags', label:'Vegetable bags', icon:'fa-leaf', color:'#34c759', count:inv.vegBags.count, min:inv.vegBags.min },
-        { id:'liquidCubes', label:'Liquid cubes', icon:'fa-droplet', color:'#5ac8fa', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
-        { id:'herbCubes', label:'Herb cubes', icon:'fa-seedling', color:'#30b0c0', count:inv.herbCubes.count, min:inv.herbCubes.min },
-        { id:'starch', label:'Starch (fridge)', icon:'fa-bowl-food', color:'#ff9f0a', count:inv.starch.count, min:inv.starch.min },
+        { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#e05252', count:inv.proteinBags.count, min:inv.proteinBags.min },
+        { id:'organCubes', label:'Organ cubes', icon:'fa-heart', color:'#d98c2a', count:inv.organCubes.count, min:inv.organCubes.min },
+        { id:'vegBags', label:'Vegetable bags', icon:'fa-leaf', color:'#2c6e49', count:inv.vegBags.count, min:inv.vegBags.min },
+        { id:'liquidCubes', label:'Liquid cubes', icon:'fa-droplet', color:'#4a8db7', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+        { id:'herbCubes', label:'Herb cubes', icon:'fa-seedling', color:'#b07d2a', count:inv.herbCubes.count, min:inv.herbCubes.min },
+        { id:'starch', label:'Starch (fridge)', icon:'fa-bowl-food', color:'#c8933a', count:inv.starch.count, min:inv.starch.min },
       ];
       let invHtml = invItems.map(item => {
         const ok = item.count >= item.min;
         const status = ok ? '🟢' : '🔴';
-        return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid var(--border);">
-          <span><i class="fa-solid ${item.icon}" style="color:${item.color};width:20px;"></i> ${item.label}</span>
+        return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px solid var(--border);">
+          <span><i class="fa-solid ${item.icon}" style="color:${item.color};width:24px;"></i> ${item.label}</span>
           <span><strong>${item.count}</strong> ${item.min > 0 ? 'min '+item.min : ''} ${!ok ? '⚠️ batch soon' : ''}</span>
         </div>`;
       }).join('');
@@ -656,7 +789,7 @@
       const container = document.getElementById('homeContent');
       container.innerHTML = `
         <div class="card">
-          <div style="text-align:center;font-size:13px;color:var(--text3);font-weight:500;"><i class="fa-solid fa-paw" style="color:var(--primary);"></i> ACTIVE DOG</div>
+          <div style="text-align:center;font-size:14px;color:var(--text3);font-weight:600;"><i class="fa-solid fa-paw" style="color:var(--primary);"></i> ACTIVE DOG</div>
           <div class="dog-switcher">
             <button class="btn" onclick="switchDog(-1)" ${state.dogs.length<=1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>
             <div style="text-align:center;">
@@ -666,17 +799,17 @@
             <button class="btn" onclick="switchDog(1)" ${state.dogs.length<=1?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>
             <button class="add-btn" onclick="openAddDogModal()"><i class="fa-solid fa-plus"></i></button>
           </div>
-          <div style="text-align:center;margin-top:4px;font-size:13px;color:var(--text2);"><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ${dog.weight} lb · <i class="fa-solid fa-fire" style="color:#ff9f0a;"></i> ${Math.round(calcMER(dog))} kcal/day</div>
+          <div style="text-align:center;margin-top:4px;font-size:14px;color:var(--text2);"><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ${dog.weight} lb · <i class="fa-solid fa-fire" style="color:#e05252;"></i> ${Math.round(calcMER(dog))} kcal/day</div>
         </div>
 
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-warehouse icon icon-gold"></i> Freezer Inventory</div>
+          <div class="card-title"><i class="fa-solid fa-warehouse icon"></i> Freezer Inventory</div>
           ${invHtml}
           <button class="secondary w-full mt-2" onclick="navigateTo('utilities')"><i class="fa-solid fa-pen"></i> Manage Inventory →</button>
         </div>
 
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-utensils icon icon-gold"></i> Today's Meals</div>
+          <div class="card-title"><i class="fa-solid fa-bowl-food icon"></i> Today's Meals</div>
           <div class="meal-card ${amFed?'fed':''}">
             <div class="meal-header"><span class="meal-label"><i class="fa-solid fa-sun"></i> AM</span><span class="meal-fed ${amFed?'':'not'}">${amFed?'✅ Fed':'Tap to mark fed'}</span></div>
             ${amMeal ? `<div class="meal-protein">${amMeal.protein}</div><div class="meal-details">${amMeal.starch} · ${amMeal.veg}${amMeal.organ ? ' · '+amMeal.organ : ''}</div>` : '<div class="text-muted text-sm">No meal</div>'}
@@ -690,16 +823,16 @@
         </div>
 
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-person-walking icon icon-green"></i> Walk Tracker</div>
+          <div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Walk Tracker</div>
           ${renderWalkTracker()}
         </div>
 
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-chart-simple icon icon-gold"></i> Quick Stats</div>
+          <div class="card-title"><i class="fa-solid fa-chart-simple icon"></i> Quick Stats</div>
           <div class="grid-3">
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary);">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted"><i class="fa-solid fa-shoe-prints"></i> Walks today</div></div>
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary);">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted"><i class="fa-solid fa-utensils"></i> Meals fed</div></div>
-            <div class="text-center"><div style="font-size:24px;font-weight:800;color:var(--primary);">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met</div></div>
+            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${state.walkLogs.filter(w=>w.date===todayKey()).length}</div><div class="text-xs text-muted"><i class="fa-solid fa-shoe-prints"></i> Walks today</div></div>
+            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${Object.keys(state.fedLog).filter(k=>k.startsWith(todayKey())&&state.fedLog[k]).length}/2</div><div class="text-xs text-muted"><i class="fa-solid fa-utensils"></i> Meals fed</div></div>
+            <div class="text-center"><div style="font-size:26px;font-weight:900;color:var(--primary);">${metCount}/${AAFCO.length}</div><div class="text-xs text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met</div></div>
           </div>
         </div>
       `;
@@ -715,30 +848,43 @@
       let historyHtml = '';
       if (state.walkLogs.length > 0) {
         const display = state.showAllWalks ? state.walkLogs : state.walkLogs.slice(0,2);
-        historyHtml = display.map((w,i) => `<div class="walk-history-item"><div><span>${w.date}</span> <span class="text-muted">${w.mins}m ${w.secs||0}s</span> <span class="text-muted">${w.dist.toFixed(2)} mi</span></div><button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+        historyHtml = display.map((w,i) => `<div class="walk-history-item"><div><span>${w.date}</span> <span class="text-muted">${w.mins}m ${w.secs||0}s</span> <span class="text-muted">${w.dist.toFixed(2)} mi</span></div><button class="secondary" style="padding:2px 10px;font-size:12px;" onclick="deleteWalkLog(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
         if (!state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">See More</button>`;
         else if (state.showAllWalks && state.walkLogs.length > 2) historyHtml += `<button class="secondary w-full mt-1" onclick="toggleWalkHistory()">Show Less</button>`;
       } else { historyHtml = '<div class="text-muted text-sm">No walks saved.</div>'; }
+
+      // Map container
+      const mapId = 'walkMapContainer';
+      setTimeout(() => {
+        if (currentCoords.length > 0) {
+          renderWalkMap(mapId, currentCoords);
+        } else {
+          const mapDiv = document.getElementById(mapId);
+          if (mapDiv) mapDiv.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-weight:600;">Start a walk to see the map</div>';
+        }
+      }, 50);
+
       return `
         <div class="walk-display">
           <div class="walk-time">${String(cMins).padStart(2,'0')}:${String(cSecs).padStart(2,'0')}</div>
           <div class="walk-dist">${currentDist.toFixed(2)} miles</div>
           <div class="walk-points">${currentCoords.length} GPS points</div>
         </div>
-        ${currentCoords.length > 0 ? `<div class="walk-map">${walkRouteToSvg(currentCoords, 400, 100)}</div>` : ''}
+        <div class="walk-map" id="${mapId}">${currentCoords.length > 0 ? 'Loading map...' : 'Start a walk to see the map'}</div>
         <div class="grid-2" style="margin-top:8px;">
           <button class="primary" onclick="startWalk()"><i class="fa-solid fa-play"></i> ${walkActive ? 'Recording...' : 'Start Walk'}</button>
           <button class="secondary" onclick="stopWalk()" ${!walkActive ? 'disabled' : ''}><i class="fa-solid fa-stop"></i> Stop & Save</button>
         </div>
         <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
-          <div style="font-weight:600;font-size:14px;margin-bottom:6px;"><i class="fa-solid fa-clock-rotate-left"></i> Recent Walks</div>
+          <div style="font-weight:700;font-size:15px;margin-bottom:6px;"><i class="fa-solid fa-clock-rotate-left"></i> Recent Walks</div>
           ${historyHtml}
         </div>
       `;
     }
 
-    // ── RENDER: PLAN ──
+    // ── RENDER: PLAN ── (unchanged structure, just icon updates)
     function renderPlan() {
+      // ... same as before with icons updated
       const container = document.getElementById('planContent');
       let protHtml = PROTEIN_OPTIONS.map(p => {
         const checked = state.selectedProteins.includes(p);
@@ -746,12 +892,12 @@
         const display = p.replace(' (canned)','').replace(' (85/15)','');
         return `<label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid ${checked?'var(--primary)':'var(--border)'};cursor:pointer;">
           <input type="checkbox" ${checked?'checked':''} onchange="toggleProtein('${p}')" style="accent-color:var(--primary);width:16px;height:16px;" />
-          <span>${display}</span>${isFish?' <i class="fa-solid fa-fish" style="color:#5ac8fa;"></i>':''}
+          <span>${display}</span>${isFish?' <i class="fa-solid fa-fish" style="color:var(--blue);"></i>':''}
         </label>`;
       }).join('');
       let favHtml = (arr,cat) => arr.map(v => {
         const on = state.favorites[cat].includes(v);
-        return `<button class="${on?'primary':'secondary'}" style="padding:4px 12px;font-size:12px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' <i class="fa-solid fa-star" style="color:var(--primary);"></i>':''}</button>`;
+        return `<button class="${on?'primary':'secondary'}" style="padding:4px 14px;font-size:13px;border-radius:var(--radius-full);" onclick="toggleFav('${cat}','${v}')">${v}${on?' <i class="fa-solid fa-star" style="color:var(--primary);"></i>':''}</button>`;
       }).join('');
       let rotationHtml = '';
       for (let w=1; w<=4; w++) {
@@ -765,28 +911,29 @@
         rotationHtml += `</div></div>`;
       }
       container.innerHTML = `
-        <div class="card"><div class="card-title"><i class="fa-solid fa-drumstick-bite icon icon-gold"></i> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Rebuild Rotation</button></div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-star icon icon-gold"></i> Favorites</div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-leaf" style="color:#34c759;"></i> Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
-          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-bowl-food" style="color:#ff9f0a;"></i> Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
-          <div><label class="text-muted text-sm"><i class="fa-solid fa-heart" style="color:#ff2d55;"></i> Organs</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(ORGAN_OPTIONS,'organs')}</div></div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-drumstick-bite icon"></i> Select Proteins</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${protHtml}</div><button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Rebuild Rotation</button></div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-star icon"></i> Favorites</div>
+          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-leaf" style="color:var(--green);"></i> Vegetables</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(VEG_OPTIONS,'vegs')}</div></div>
+          <div style="margin-bottom:8px;"><label class="text-muted text-sm"><i class="fa-solid fa-bowl-food" style="color:var(--primary);"></i> Starches</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(STARCH_OPTIONS,'starches')}</div></div>
+          <div><label class="text-muted text-sm"><i class="fa-solid fa-heart" style="color:#d98c2a;"></i> Organs</label><div class="flex flex-wrap gap-1 mt-1">${favHtml(ORGAN_OPTIONS,'organs')}</div></div>
           <button class="primary w-full mt-2" onclick="rebuildRotation()"><i class="fa-solid fa-arrows-rotate"></i> Update with Favorites</button>
         </div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-calendar-days icon icon-gold"></i> 4‑Week Rotation</div>${rotationHtml}</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-calendar-days icon"></i> 4‑Week Rotation</div>${rotationHtml}</div>
       `;
     }
 
-    // ── RENDER: NUTRITION ──
+    // ── RENDER: NUTRITION ── (with enhanced source breakdown)
     function renderNutrition() {
       const container = document.getElementById('nutritionContent');
       const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
       const start = new Date(y,m,d), end = new Date(y,m,d);
-      const result = calcNutritionForDateRange(start, end);
-      const total = result.total;
+      const result = calcNutritionWithSources(start, end);
+      const total = result.totals;
       const mealCount = result.mealCount;
+      const sources = result.sources;
       const protein = total.protein||0, fat = total.fat||0, carbs = total.carbs||0, moisture = total.moisture||0, ash = total.ash||0;
       const macroTotal = protein + fat + carbs + moisture + ash || 1;
-      const slices = [{label:'Protein',val:protein,color:'#f5c842'},{label:'Fat',val:fat,color:'#e8b830'},{label:'Carbs',val:carbs,color:'#c9a030'},{label:'Moisture',val:moisture,color:'#8a7a40'},{label:'Ash',val:ash,color:'#5a4a30'}].filter(s=>s.val>0.01);
+      const slices = [{label:'Protein',val:protein,color:'#c8933a'},{label:'Fat',val:fat,color:'#d98c2a'},{label:'Carbs',val:carbs,color:'#b07d2a'},{label:'Moisture',val:moisture,color:'#4a8db7'},{label:'Ash',val:ash,color:'#7a6a5a'}].filter(s=>s.val>0.01);
       let donutHtml='';
       if (slices.length) {
         const cx=60,cy=60,r=50,ir=30; let cum=-Math.PI/2; let paths='';
@@ -800,7 +947,7 @@
           paths += `<path d="M${xi1.toFixed(1)} ${yi1.toFixed(1)} L${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} L${xi2.toFixed(1)} ${yi2.toFixed(1)} A${ir} ${ir} 0 ${large} 0 ${xi1.toFixed(1)} ${yi1.toFixed(1)} Z" fill="${s.color}" />`;
           cum+=angle;
         });
-        donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="700">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
+        donutHtml = `<div class="donut-wrap"><svg width="120" height="120" viewBox="0 0 120 120"><circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--surface2)" />${paths}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--text)" font-size="14" font-weight="800">${Math.round(protein)}g</text></svg><div class="donut-legend">${slices.map(s => `<div class="donut-row"><span class="donut-swatch" style="background:${s.color}"></span><span class="donut-label">${s.label}</span><span class="donut-val">${s.val.toFixed(0)}g</span></div>`).join('')}</div></div>`;
       } else { donutHtml = '<div class="text-muted text-center"><i class="fa-solid fa-circle-exclamation"></i> No meals logged today.</div>'; }
       let metCount=0, nutrientHtml='';
       AAFCO.forEach(target => {
@@ -808,42 +955,82 @@
         const status = getAAFCOStatus(value, target);
         if (status==='ok') metCount++;
         const pct = target.max<9999 ? Math.min((value/target.max)*100,100) : Math.min((value/(target.min*1.5))*100,100);
-        const color = status==='ok' ? '#34c759' : (status==='low' ? '#ff9f0a' : '#ff453a');
+        const color = status==='ok' ? 'var(--green)' : (status==='low' ? '#d98c2a' : '#e05252');
         const label = status==='ok' ? 'OK' : (status==='low' ? 'LOW' : 'HIGH');
-        nutrientHtml += `<div class="nutrient-item"><div class="flex-between"><span>${target.label}</span><span>${value.toFixed(1)} ${target.unit} <span class="badge ${status==='ok'?'green':(status==='low'?'orange':'red')}">${label}</span></span></div><div class="bar"><div class="fill" style="width:${pct}%;background:${color};"></div></div><div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit}</div></div>`;
+        // click to show sources
+        const clickAttr = `onclick="openNutrientBreakdown('${target.k}', ${JSON.stringify(sources[target.k] || {})}, '${target.label}')"`;
+        nutrientHtml += `<div class="nutrient-item" style="cursor:pointer;" ${clickAttr}>
+          <div class="flex-between"><span>${target.label}</span><span>${value.toFixed(1)} ${target.unit} <span class="badge ${status==='ok'?'green':(status==='low'?'orange':'red')}">${label}</span></span></div>
+          <div class="bar"><div class="fill" style="width:${pct}%;background:${color};"></div></div>
+          <div class="text-xs text-muted">Target: ${target.min}–${target.max<9999?target.max:'∞'} ${target.unit} <i class="fa-solid fa-circle-info" style="color:var(--primary);margin-left:4px;" title="Tap for food sources"></i></div>
+        </div>`;
       });
       container.innerHTML = `
-        <div class="card"><div class="card-title"><i class="fa-solid fa-chart-pie icon icon-gold"></i> Today's Nutrition</div><div class="flex-between"><span class="text-muted"><i class="fa-solid fa-utensils"></i> Meals logged: ${mealCount}</span><span class="text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met: ${metCount}/${AAFCO.length}</span></div>${donutHtml}</div>
-        <div class="card"><div class="card-title"><i class="fa-solid fa-bullseye icon icon-gold"></i> AAFCO Tracking</div>${nutrientHtml}</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-chart-pie icon"></i> Today's Nutrition <span class="badge-aafco">AAFCO 2023 + NRC 2006</span></div><div class="flex-between"><span class="text-muted"><i class="fa-solid fa-utensils"></i> Meals logged: ${mealCount}</span><span class="text-muted"><i class="fa-solid fa-check-circle"></i> AAFCO met: ${metCount}/${AAFCO.length}</span></div>${donutHtml}</div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-bullseye icon"></i> AAFCO Tracking <span style="font-size:12px;font-weight:400;color:var(--text3);">(tap any nutrient for food sources)</span></div>${nutrientHtml}</div>
       `;
     }
 
-    // ── RENDER: PROFILE ──
+    // ── Nutrient breakdown modal (enhanced) ──
+    function openNutrientBreakdown(key, sourcesMap, label) {
+      const total = Object.values(sourcesMap).reduce((a,b) => a+b, 0);
+      if (total === 0) {
+        alert('No contributing foods for this nutrient in the logged period.');
+        return;
+      }
+      const sorted = Object.keys(sourcesMap).sort((a,b) => sourcesMap[b] - sourcesMap[a]);
+      let rows = sorted.map(name => {
+        const val = sourcesMap[name];
+        const pct = total > 0 ? (val/total*100) : 0;
+        return `<div class="item"><span>${name}</span><span>${val.toFixed(2)} <span class="pct">(${pct.toFixed(1)}%)</span></span></div>`;
+      }).join('');
+      const modalHtml = `
+        <div class="modal-overlay" id="breakdownModal">
+          <div class="modal" onclick="event.stopPropagation();">
+            <div class="modal-header">
+              <span class="modal-title"><i class="fa-solid fa-utensils"></i> ${label} Sources</span>
+              <button class="modal-close" onclick="closeBreakdownModal()">&times;</button>
+            </div>
+            <div style="margin-bottom:8px;font-size:15px;color:var(--text2);">Total: ${total.toFixed(2)} ${AAFCO.find(a=>a.k===key)?.unit || ''}</div>
+            <div class="nutrient-breakdown-list">${rows || '<div class="text-muted">No sources</div>'}</div>
+          </div>
+        </div>
+      `;
+      const overlay = document.createElement('div');
+      overlay.innerHTML = modalHtml;
+      document.body.appendChild(overlay.firstElementChild);
+    }
+    function closeBreakdownModal() {
+      const el = document.getElementById('breakdownModal');
+      if (el) el.remove();
+    }
+
+    // ── RENDER: PROFILE ── (with updated icons)
     function renderProfile() {
       const dog = getActiveDog();
       if (!dog) { document.getElementById('profileContent').innerHTML = '<div class="card"><div class="text-muted">No dogs.</div></div>'; return; }
       const mer = calcMER(dog);
       const html = `
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-user icon icon-gold"></i> ${dog.name}'s Profile</div>
+          <div class="card-title"><i class="fa-solid fa-user icon"></i> ${dog.name}'s Profile</div>
           <div style="display:flex;align-items:center;gap:16px;">
             <div class="dog-avatar" onclick="document.getElementById('photoInputProf').click()">
               ${petPhoto ? '<img src="'+petPhoto+'" alt="'+dog.name+'" />' : '<i class="fa-solid fa-dog" style="font-size:32px;color:var(--text3);"></i>'}
               <input type="file" id="photoInputProf" accept="image/*" onchange="handlePhotoProf(event)" />
             </div>
             <div>
-              <div style="font-weight:700;font-size:20px;">${dog.name}</div>
+              <div style="font-weight:800;font-size:22px;">${dog.name}</div>
               <div class="dog-stats">
                 <span><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ${dog.weight} lb</span>
-                <span><i class="fa-solid fa-person-running" style="color:#34c759;"></i> ${dog.activityLabel}</span>
-                <span><i class="fa-solid fa-fire" style="color:#ff9f0a;"></i> ${Math.round(mer)} kcal/day</span>
+                <span><i class="fa-solid fa-person-running" style="color:var(--green);"></i> ${dog.activityLabel}</span>
+                <span><i class="fa-solid fa-fire" style="color:#e05252;"></i> ${Math.round(mer)} kcal/day</span>
               </div>
             </div>
           </div>
           <button class="secondary" style="margin-top:8px;" onclick="deleteDog('${dog.id}')"><i class="fa-solid fa-trash"></i> Remove Dog</button>
         </div>
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-chart-simple icon icon-gold"></i> Stats</div>
+          <div class="card-title"><i class="fa-solid fa-chart-simple icon"></i> Stats</div>
           <div class="profile-stats-grid">
             <div class="profile-stat"><div class="val">${dog.weight}</div><div class="lbl">Weight (lb)</div></div>
             <div class="profile-stat"><div class="val">${Math.round(mer)}</div><div class="lbl">Daily Calories</div></div>
@@ -852,7 +1039,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-pen icon icon-gold"></i> Edit</div>
+          <div class="card-title"><i class="fa-solid fa-pen icon"></i> Edit</div>
           <div class="input-group"><label><i class="fa-solid fa-tag"></i> Name</label><input type="text" value="${dog.name}" onchange="updateDog('name',this.value)" /></div>
           <div class="grid-2">
             <div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (lb)</label><input type="number" value="${dog.weight}" onchange="updateDog('weight',parseFloat(this.value))" /></div>
@@ -900,7 +1087,7 @@
     }
     function saveProfile() { alert('Profile updated!'); }
 
-    // ── DOG SWITCHER ──
+    // ── DOG SWITCHER / ADD / DELETE (unchanged) ──
     function switchDog(dir) {
       const idx = state.dogs.findIndex(d => d.id === state.activeDogId);
       const newIdx = (idx + dir + state.dogs.length) % state.dogs.length;
@@ -912,7 +1099,7 @@
       overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
       overlay.innerHTML = `
         <div class="modal" onclick="event.stopPropagation();">
-          <div class="modal-header"><span style="font-weight:700;"><i class="fa-solid fa-dog" style="color:var(--primary);"></i> Add Dog</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+          <div class="modal-header"><span style="font-weight:800;"><i class="fa-solid fa-dog" style="color:var(--primary);"></i> Add Dog</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
           <div class="input-group"><label><i class="fa-solid fa-tag"></i> Name</label><input type="text" id="newDogName" placeholder="e.g. Charlie" /></div>
           <div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (lb)</label><input type="number" id="newDogWeight" value="50" /></div>
           <div class="input-group"><label><i class="fa-solid fa-person-running"></i> Activity</label>
@@ -948,7 +1135,7 @@
     }
     function closeModal() { const m = document.querySelector('.modal-overlay'); if (m) m.remove(); }
 
-    // ── INVENTORY MANAGEMENT ──
+    // ── INVENTORY MANAGEMENT (unchanged) ──
     function updateInventory(item, delta) {
       if (!state.inventory[item]) return;
       state.inventory[item].count += delta;
@@ -959,10 +1146,9 @@
       if (!state.inventory[item]) return;
       state.inventory[item].min = parseInt(val) || 0;
       saveState();
-      renderAll();
     }
 
-    // ── TOOLS (Health Tools with tabs) ──
+    // ── TOOLS (unchanged) ──
     function renderTools() {
       if (state.walkerMode) { renderWalkerView(); return; }
       const dog = getActiveDog();
@@ -977,8 +1163,8 @@
         { id: 'cost', lbl: '💰 Cost' }
       ];
       let html = `<div class="card" style="padding:12px 14px;margin-bottom:12px;">
-        <div style="font-weight:800;font-size:18px;color:var(--primary);"><i class="fa-solid fa-screwdriver-wrench"></i> Health Tools</div>
-        <div style="font-size:13px;color:var(--text2);">Vet-inspired calculators for ${dname}. Results save to profile.</div>
+        <div style="font-weight:900;font-size:20px;color:var(--primary);"><i class="fa-solid fa-screwdriver-wrench"></i> Health Tools</div>
+        <div style="font-size:14px;color:var(--text2);">Vet-inspired calculators for ${dname}. Results save to profile.</div>
       </div>`;
       html += `<div class="tools-tab-row">`;
       tabs.forEach(t => {
@@ -989,13 +1175,11 @@
       html += `<div id="toolsPanel">${getToolsPanel()}</div>`;
       document.getElementById('toolsContent').innerHTML = html;
     }
-
     function switchToolsTab(id) {
       state.toolsTab = id;
       saveState();
       renderTools();
     }
-
     function getToolsPanel() {
       const dog = getActiveDog();
       const dname = dog ? dog.name : 'your dog';
@@ -1010,17 +1194,15 @@
         default: return '<div class="text-muted">Select a tool.</div>';
       }
     }
-
     function getWalkTools() {
       return `<div class="card">${renderWalkTracker()}</div>`;
     }
-
-    // RR (Resting Respiratory Rate)
+    // ── RR, Calories, Chocolate, Flea, Treats, Cost (unchanged) ──
     let rrTimer = null, rrCount = 0, rrRunning = false, rrSeconds = 0;
     function getRRTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-lungs" style="color:#5ac8fa;"></i> Resting Respiratory Rate</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-lungs" style="color:var(--blue);"></i> Resting Respiratory Rate</div>
           <div class="rr-counter">
             <div class="big">${rrCount}</div>
             <div class="label">breaths ${rrRunning ? 'counting...' : 'counted'}</div>
@@ -1067,12 +1249,11 @@
       document.getElementById('rrResult').innerHTML = '✅ Saved '+rrCount+' breaths/min to '+dname+'\'s profile.';
       renderHome();
     }
-
     // Calories
     function getCalorieTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-bowl-food" style="color:#ff9f0a;"></i> Calories Per Meal</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-bowl-food" style="color:var(--primary);"></i> Calories Per Meal</div>
           <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="calW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label><i class="fa-solid fa-utensils"></i> Meals</label><select id="calM"><option value="2">2</option><option value="3">3</option></select></div></div>
           <div class="input-group"><label><i class="fa-solid fa-person-running"></i> Activity</label><select id="calA"><option value="1.6">Moderate</option><option value="1.8">Active</option><option value="1.2">Inactive</option></select></div>
           <button class="primary w-full" onclick="calcCalories()"><i class="fa-solid fa-calculator"></i> Calculate</button>
@@ -1096,12 +1277,11 @@
       alert('Saved to '+dname+'\'s profile!');
       renderHome();
     }
-
     // Chocolate
     function getChocolateTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-candy-cane" style="color:#8b5cf6;"></i> Chocolate Toxicity</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-candy-cane" style="color:#8b5cf6;"></i> Chocolate Toxicity</div>
           <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="chocW" value="${getActiveDog().weight / 2.2046 || 25}" /></div><div class="input-group"><label><i class="fa-solid fa-weight-hanging"></i> Amount (g)</label><input type="number" id="chocAmt" value="50" /></div></div>
           <div class="input-group"><label><i class="fa-solid fa-chocolate-bar"></i> Type</label><select id="chocType"><option value="150">Dark 70%</option><option value="45">Milk</option><option value="900">Cocoa</option></select></div>
           <button class="primary w-full" onclick="calcChoc()"><i class="fa-solid fa-calculator"></i> Calculate</button>
@@ -1116,10 +1296,10 @@
       const type=parseInt(document.getElementById('chocType').value)||150;
       if (amt<=0) return alert('Enter amount.');
       const dose=(amt*(type/1000)/w)*1000;
-      let risk='Low', color='#34c759';
-      if (dose>200){risk='Extreme – emergency!';color='#ff453a';}
-      else if (dose>100){risk='High – call vet';color='#ff9f0a';}
-      else if (dose>40){risk='Moderate – watch';color='#ff9f0a';}
+      let risk='Low', color='var(--green)';
+      if (dose>200){risk='Extreme – emergency!';color='#e05252';}
+      else if (dose>100){risk='High – call vet';color='#d98c2a';}
+      else if (dose>40){risk='Moderate – watch';color='#d98c2a';}
       state._chocResult = { dose, risk };
       document.getElementById('chocRes').innerHTML = '<div style="color:'+color+';font-weight:700;">'+risk+'</div><div>Dose: '+dose.toFixed(1)+' mg/kg</div>';
     }
@@ -1130,12 +1310,11 @@
       alert('Saved to '+dname+'\'s profile!');
       renderHome();
     }
-
     // Flea
     function getFleaTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-bug" style="color:#ff2d55;"></i> Flea/Tick Schedule</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-bug" style="color:#d98c2a;"></i> Flea/Tick Schedule</div>
           <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-calendar-day"></i> Last dose</label><input type="date" id="fleaDate" /></div><div class="input-group"><label><i class="fa-solid fa-arrows-rotate"></i> Frequency</label><select id="fleaFreq"><option value="30">Monthly</option><option value="90">Quarterly</option></select></div></div>
           <button class="primary w-full" onclick="genFlea()"><i class="fa-solid fa-clock"></i> Generate</button>
           <div id="fleaRes" class="mt-2 text-muted"></div>
@@ -1158,12 +1337,11 @@
       alert('Saved to '+dname+'\'s profile!');
       renderHome();
     }
-
     // Treats
     function getTreatTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-candy" style="color:#ff9f0a;"></i> Treat Allowance (10%)</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-candy" style="color:#d98c2a;"></i> Treat Allowance (10%)</div>
           <div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Weight (kg)</label><input type="number" id="treatW" value="${getActiveDog().weight / 2.2046 || 25}" /></div>
           <button class="primary w-full" onclick="calcTreats()"><i class="fa-solid fa-calculator"></i> Calculate</button>
           <div id="treatRes" class="mt-2 text-muted"></div>
@@ -1184,12 +1362,11 @@
       alert('Saved to '+dname+'\'s profile!');
       renderHome();
     }
-
     // Cost
     function getCostTools(dname) {
       return `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-coins" style="color:#f5c842;"></i> True Cost Per Day</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-coins" style="color:var(--primary);"></i> True Cost Per Day</div>
           <div class="grid-2"><div class="input-group"><label><i class="fa-solid fa-dollar-sign"></i> Price ($)</label><input type="number" id="costP" value="45" /></div><div class="input-group"><label><i class="fa-solid fa-weight-scale"></i> Bag (kg)</label><input type="number" id="costB" value="15" /></div></div>
           <div class="input-group"><label><i class="fa-solid fa-utensils"></i> Daily portion (g)</label><input type="number" id="costPort" value="300" /></div>
           <button class="primary w-full" onclick="calcCost()"><i class="fa-solid fa-calculator"></i> Calculate</button>
@@ -1215,7 +1392,7 @@
       renderHome();
     }
 
-    // ── WALKER ACCESS ──
+    // ── WALKER ACCESS (unchanged) ──
     function openWalkerSetup() {
       if (state.walkerMode) {
         state.walkerMode = false;
@@ -1227,7 +1404,7 @@
       overlay.onclick = function(e) { if (e.target === overlay) closeModal(); };
       overlay.innerHTML = `
         <div class="modal" onclick="event.stopPropagation();">
-          <div class="modal-header"><span style="font-weight:700;"><i class="fa-solid fa-dog" style="color:var(--primary);"></i> Walker Access</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
+          <div class="modal-header"><span style="font-weight:800;"><i class="fa-solid fa-dog" style="color:var(--primary);"></i> Walker Access</span><button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button></div>
           <div class="input-group"><label><i class="fa-solid fa-lock"></i> Enter PIN</label><input type="password" id="walkerPinInput" placeholder="default: 1234" /></div>
           <button class="primary w-full" onclick="enterWalkerMode()"><i class="fa-solid fa-right-to-bracket"></i> Enter Walker Mode</button>
           <div class="text-xs text-muted mt-2">Walker mode shows only the walk tracker and notes.</div>
@@ -1253,14 +1430,14 @@
         <div class="walker-view">
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:700;font-size:18px;color:var(--primary);"><i class="fa-solid fa-dog"></i> Walker Mode</span>
+              <span style="font-weight:800;font-size:20px;color:var(--primary);"><i class="fa-solid fa-dog"></i> Walker Mode</span>
               <button class="secondary" onclick="exitWalkerMode()"><i class="fa-solid fa-right-from-bracket"></i> Exit</button>
             </div>
             <div class="text-muted text-sm mt-1">Tracking walks for ${getActiveDog().name}</div>
           </div>
           <div class="card">${renderWalkTracker()}</div>
           <div class="card">
-            <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-pen"></i> Walker Notes</div>
+            <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-pen"></i> Walker Notes</div>
             <textarea rows="3" style="width:100%;" onchange="saveWalkerNote(this.value)" placeholder="Notes about the walk...">${state.walkerNote || ''}</textarea>
             <div class="text-xs text-muted mt-1">Auto-saved</div>
           </div>
@@ -1277,38 +1454,36 @@
       saveState();
     }
 
-    // ── RENDER: UTILITIES ──
+    // ── RENDER: UTILITIES ── (unchanged structure, with new icons)
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
-      // Inventory section
       const inv = state.inventory;
       const invItems = [
-        { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#ff6b6b', count:inv.proteinBags.count, min:inv.proteinBags.min },
-        { id:'organCubes', label:'Organ cubes', icon:'fa-heart', color:'#ff2d55', count:inv.organCubes.count, min:inv.organCubes.min },
-        { id:'vegBags', label:'Vegetable bags', icon:'fa-leaf', color:'#34c759', count:inv.vegBags.count, min:inv.vegBags.min },
-        { id:'liquidCubes', label:'Liquid cubes', icon:'fa-droplet', color:'#5ac8fa', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
-        { id:'herbCubes', label:'Herb cubes', icon:'fa-seedling', color:'#30b0c0', count:inv.herbCubes.count, min:inv.herbCubes.min },
-        { id:'starch', label:'Starch (fridge)', icon:'fa-bowl-food', color:'#ff9f0a', count:inv.starch.count, min:inv.starch.min },
+        { id:'proteinBags', label:'Protein bags', icon:'fa-drumstick-bite', color:'#e05252', count:inv.proteinBags.count, min:inv.proteinBags.min },
+        { id:'organCubes', label:'Organ cubes', icon:'fa-heart', color:'#d98c2a', count:inv.organCubes.count, min:inv.organCubes.min },
+        { id:'vegBags', label:'Vegetable bags', icon:'fa-leaf', color:'#2c6e49', count:inv.vegBags.count, min:inv.vegBags.min },
+        { id:'liquidCubes', label:'Liquid cubes', icon:'fa-droplet', color:'#4a8db7', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+        { id:'herbCubes', label:'Herb cubes', icon:'fa-seedling', color:'#b07d2a', count:inv.herbCubes.count, min:inv.herbCubes.min },
+        { id:'starch', label:'Starch (fridge)', icon:'fa-bowl-food', color:'#c8933a', count:inv.starch.count, min:inv.starch.min },
       ];
       let invHtml = invItems.map(item => `
         <div class="inventory-row">
-          <span class="label"><i class="fa-solid ${item.icon}" style="color:${item.color};width:24px;"></i> ${item.label}</span>
+          <span class="label"><i class="fa-solid ${item.icon}" style="color:${item.color};width:26px;"></i> ${item.label}</span>
           <div class="count">
             <button onclick="updateInventory('${item.id}', -1)">−</button>
             <span class="num">${item.count}</span>
             <button onclick="updateInventory('${item.id}', 1)">+</button>
-            <input type="number" value="${item.min}" style="width:50px;padding:4px;font-size:12px;" onchange="setInventoryMin('${item.id}', this.value)" title="min" />
+            <input type="number" value="${item.min}" style="width:50px;padding:4px;font-size:13px;font-weight:600;" onchange="setInventoryMin('${item.id}', this.value)" title="min" />
           </div>
         </div>
       `).join('');
 
-      // Install section
       const installHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-mobile-screen-button icon icon-gold"></i> Install as an App</div>
-          <div style="font-size:13px;color:var(--text2);line-height:1.6;">
-            FRESHBOWL can live on your home screen like a native app — full screen, its own icon.<br><br>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-mobile-screen-button icon"></i> Install as an App</div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.7;">
+            FRESH BOWL METHOD can live on your home screen like a native app — full screen, its own icon.<br><br>
             <i class="fa-brands fa-apple" style="color:#555;"></i> <strong>iPhone/iPad:</strong> Share → <strong>Add to Home Screen</strong>.<br>
             <i class="fa-brands fa-android" style="color:#3ddc84;"></i> <strong>Android/Chrome:</strong> browser menu → <strong>Install app</strong>.<br><br>
             Data stays on this device. Keep periodic exports as backup.
@@ -1316,20 +1491,18 @@
         </div>
       `;
 
-      // USDA
       const usdaHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-key icon icon-gold"></i> USDA API Key</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-key icon"></i> USDA API Key</div>
           <input type="text" id="usdaKeyInput" placeholder="Paste API key" value="${state.usdaKey||''}" onchange="saveUSDAKey(this.value)" />
           <div class="text-xs text-muted mt-1">Get free key at fdc.nal.usda.gov</div>
         </div>
       `;
 
-      // Vet
       const v = state.vetInfo;
       const vetHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-hospital icon icon-gold"></i> Vet Information</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-hospital icon"></i> Vet Information</div>
           <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-user-doctor"></i></span><input type="text" value="${v.name}" placeholder="Vet name" onchange="updateVet('name',this.value)" /></div>
           <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-building"></i></span><input type="text" value="${v.clinic}" placeholder="Clinic" onchange="updateVet('clinic',this.value)" /></div>
           <div class="vet-field-row"><span class="vet-field-label"><i class="fa-solid fa-phone"></i></span><input type="text" value="${v.phone}" placeholder="Phone" onchange="updateVet('phone',this.value)" /></div>
@@ -1339,7 +1512,6 @@
         </div>
       `;
 
-      // Vaccines
       const vax = state.vaccines || [];
       const totalVax = vax.length;
       let idx = state.vaccineRolodexIndex || 0;
@@ -1364,7 +1536,7 @@
             <div class="rolodex-controls">
               <button onclick="rolodexPrev()" ${idx<=0?'disabled':''}><i class="fa-solid fa-chevron-left"></i> Prev</button>
               <button onclick="rolodexNext()" ${idx>=totalVax-1?'disabled':''}>Next <i class="fa-solid fa-chevron-right"></i></button>
-              <button onclick="deleteCurrentVax()" style="background:#ff453a;color:#fff;"><i class="fa-solid fa-trash"></i> Delete</button>
+              <button onclick="deleteCurrentVax()" style="background:#e05252;color:#fff;"><i class="fa-solid fa-trash"></i> Delete</button>
             </div>
           </div>
         `;
@@ -1373,10 +1545,10 @@
       const datalistOpts = commonVax.map(v => '<option value="'+v+'">').join('');
       const vaccinesHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-syringe icon icon-gold"></i> Vaccine Records</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-syringe icon"></i> Vaccine Records</div>
           ${rolodexHtml}
           <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
-            <div style="font-weight:600;font-size:13px;"><i class="fa-solid fa-plus"></i> Add New</div>
+            <div style="font-weight:700;font-size:14px;"><i class="fa-solid fa-plus"></i> Add New</div>
             <div class="grid-2">
               <div class="input-group"><label><i class="fa-solid fa-tag"></i> Name</label><input type="text" id="vaccName" list="vaxDatalist" value="${state.vaccineForm.name}" oninput="updateVaxForm('name',this.value)" placeholder="e.g. Rabies" /></div>
               <div class="input-group"><label><i class="fa-solid fa-calendar-day"></i> Date given</label><input type="date" id="vaccDate" value="${state.vaccineForm.date}" onchange="updateVaxForm('date',this.value)" /></div>
@@ -1391,10 +1563,9 @@
         </div>
       `;
 
-      // Misc
       const miscHtml = `
         <div class="card">
-          <div class="card-title" style="cursor:default;font-size:14px;color:var(--text);"><i class="fa-solid fa-note-sticky icon icon-gold"></i> Misc Notes</div>
+          <div class="card-title" style="cursor:default;font-size:15px;color:var(--text);"><i class="fa-solid fa-note-sticky icon"></i> Misc Notes</div>
           <textarea rows="4" style="width:100%;" onchange="saveMisc(this.value)">${state.miscNotes}</textarea>
           <div class="text-muted text-center mt-1"><i class="fa-solid fa-floppy-disk"></i> Auto-saved</div>
         </div>
@@ -1409,13 +1580,13 @@
         { id: 'misc', icon: 'fa-note-sticky', label: 'Misc Notes', content: miscHtml }
       ];
 
-      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);"><i class="fa-solid fa-gear icon icon-gold"></i> Utilities</div>`;
+      let html = `<div class="card"><div class="card-title" style="cursor:default;color:var(--text);"><i class="fa-solid fa-gear icon"></i> Utilities</div>`;
       sections.forEach(s => {
         const open = state.utreeOpen[s.id] || false;
         html += `
           <div class="accordion-item">
             <div class="accordion-header" onclick="toggleTree('${s.id}')">
-              <span><i class="fa-solid ${s.icon}" style="color:var(--primary);width:24px;"></i> ${s.label}</span>
+              <span><i class="fa-solid ${s.icon}" style="color:var(--primary);width:26px;"></i> ${s.label}</span>
               <span class="arrow ${open?'open':''}"><i class="fa-solid fa-chevron-down"></i></span>
             </div>
             <div class="accordion-body ${open?'open':''}">${s.content}</div>
@@ -1426,7 +1597,7 @@
       container.innerHTML = html;
     }
 
-    // ── UTILITY FUNCTIONS ──
+    // ── Utility functions (unchanged) ──
     function toggleTree(id) { state.utreeOpen[id] = !state.utreeOpen[id]; saveState(); renderUtilities(); }
     function updateVet(field,val) { state.vetInfo[field] = val; saveState(); }
     function saveMisc(val) { state.miscNotes = val; saveState(); }
@@ -1452,7 +1623,7 @@
       saveState(); renderUtilities();
     }
 
-    // ── SWAP / ADDINS MODALS ──
+    // ── Swap / Addins modals (unchanged) ──
     function openSwap(dateKey, slot) {
       const y=parseInt(dateKey.split('-')[0]), m=parseInt(dateKey.split('-')[1])-1, d=parseInt(dateKey.split('-')[2]);
       const meal = getMealForDate(y,m,d,slot);
