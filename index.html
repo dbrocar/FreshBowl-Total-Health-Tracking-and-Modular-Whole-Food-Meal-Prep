@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>FRESHBOWL — v.96</title>
+  <title>FRESHBOWL — Total Health</title>
   <meta name="theme-color" content="#f5f5f7" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -61,8 +61,7 @@
     .header-actions { display: flex; gap: 8px; align-items: center; }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
     .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 12px; font-size: 11px; font-weight: 500; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 2px; transition: color var(--transition); border: none; }
-    .bottom-nav button .icon { font-size: 24px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
-    .bottom-nav button.active .icon { color: var(--primary); transform: scale(1.1); }
+    .bottom-nav button .icon { font-size: 22px; line-height: 1; }
     .bottom-nav button.active { color: var(--primary); }
     .page { display: none; padding: 16px 0 20px; animation: fadeUp 0.25s ease; }
     .page.active { display: block; }
@@ -254,7 +253,7 @@
     });
 
     // ═══════════════════════════════════════════════════════════════════════
-    //  STATE (same as before – abbreviated for space)
+    //  STATE
     // ═══════════════════════════════════════════════════════════════════════
 
     let state = {
@@ -302,7 +301,7 @@
     const STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
     const ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
 
-    // ── FOODS Database (abbreviated – full from original) ──
+    // ── FOODS Database ──
     function mkN(p,f,ca,ph,po,so,cl,mg,fe,cu,zn,io,se,o3,o6,vA,vD,vE,vK,b1,b2,b3,b5,b6,b12,fo,ch,mn) {
       return {protein:p, fat:f, calcium:ca, phosphorus:ph, potassium:po, sodium:so, chloride:cl, magnesium:mg, iron:fe, copper:cu, zinc:zn, iodine:io, selenium:se, omega3:o3, omega6:o6, vitA:vA, vitD:vD, vitE:vE, vitK:vK, vitB1:b1, vitB2:b2, vitB3:b3, vitB5:b5, vitB6:b6, vitB12:b12, folate:fo, choline:ch, manganese:mn||0, carbs:0, moisture:0, ash:0 };
     }
@@ -443,18 +442,68 @@
 
     // ── Rotation Engine ──
     function generateRotation(proteins, favs) {
-      // ... (same as before – omitted for brevity, but included in full code)
       const mains = proteins.filter(p => !p.includes('Sardine') && !p.includes('Salmon'));
       const fish = proteins.filter(p => p.includes('Sardine') || p.includes('Salmon'));
       while (mains.length < 4) mains.push('Beef (85/15)');
       const mainA = { 1:mains[0], 2:mains[2], 3:mains[1], 4:mains[3] };
       const mainB = { 1:mains[1], 2:mains[3], 3:mains[0], 4:mains[2] };
       const alt   = { 1:fish[0]||mains[0], 2:fish[1]||mains[2], 3:fish[0]||mains[1], 4:fish[1]||mains[3] };
-      const base = { /* ... full base object from original ... */ };
-      // For brevity in this response, I'll assume the full base is included in the actual code.
-      // The complete code I'll provide has all of it.
+      const base = {
+        1: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Tue: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Bell Peppers', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Liver' } },
+          Wed: { am: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null }, pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Liver' }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } },
+        },
+        2: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' }, pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' }, pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Liver' }, pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+        },
+        3: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Peas', organ:null }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' }, pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Tue: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Beef Heart' }, pm: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Chicken Liver' } },
+          Fri: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Sat: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } },
+        },
+        4: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' }, pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Wed: { am: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Carrots', organ:'Beef Liver' }, pm: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:null }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } },
+          Fri: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' }, pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Sat: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Zucchini', organ:'Beef Liver' }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+        },
+      };
       const result = {}; let idx = 0;
-      // ... build result ...
+      for (let w = 1; w <= 4; w++) {
+        result[w] = {};
+        for (const day of DAYS) {
+          const b = base[w]?.[day]; if (!b) continue;
+          const isAlt = (day === 'Thu' || day === 'Sun');
+          const favStarch = favs.starches.length ? favs.starches[idx % favs.starches.length] : b.am.starch;
+          const favVeg = favs.vegs.length ? favs.vegs[idx % favs.vegs.length] : b.am.veg;
+          const favOrgan = favs.organs.length ? favs.organs[idx % favs.organs.length] : (b.am.organ || '');
+          result[w][day] = {
+            am: { protein: isAlt ? alt[w] : mainA[w], starch: favStarch, veg: favVeg, organ: favOrgan || null },
+            pm: { protein: mainB[w], starch: favs.starches.length ? favs.starches[(idx+1)%favs.starches.length] : b.pm.starch,
+                  veg: favs.vegs.length ? favs.vegs[(idx+1)%favs.vegs.length] : b.pm.veg,
+                  organ: favs.organs.length ? favs.organs[(idx+1)%favs.organs.length] : b.pm.organ || null },
+          };
+          idx++;
+        }
+      }
       return result;
     }
 
@@ -570,7 +619,7 @@
       }
     }
 
-    // ── RENDER: HOME (with new icons) ──
+    // ── RENDER: HOME ──
     function renderHome() {
       const dog = getActiveDog();
       const today = new Date();
@@ -688,7 +737,7 @@
       `;
     }
 
-    // ── RENDER: PLAN (with icons) ──
+    // ── RENDER: PLAN ──
     function renderPlan() {
       const container = document.getElementById('planContent');
       let protHtml = PROTEIN_OPTIONS.map(p => {
@@ -727,7 +776,7 @@
       `;
     }
 
-    // ── RENDER: NUTRITION (with icons) ──
+    // ── RENDER: NUTRITION ──
     function renderNutrition() {
       const container = document.getElementById('nutritionContent');
       const today = new Date(), y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
@@ -769,7 +818,7 @@
       `;
     }
 
-    // ── RENDER: PROFILE (with icons) ──
+    // ── RENDER: PROFILE ──
     function renderProfile() {
       const dog = getActiveDog();
       if (!dog) { document.getElementById('profileContent').innerHTML = '<div class="card"><div class="text-muted">No dogs.</div></div>'; return; }
@@ -1228,7 +1277,7 @@
       saveState();
     }
 
-    // ── RENDER: UTILITIES (with icons) ──
+    // ── RENDER: UTILITIES ──
     function renderUtilities() {
       const container = document.getElementById('utilitiesContent');
 
@@ -1403,7 +1452,7 @@
       saveState(); renderUtilities();
     }
 
-    // ── SWAP / ADDINS MODALS (simplified) ──
+    // ── SWAP / ADDINS MODALS ──
     function openSwap(dateKey, slot) {
       const y=parseInt(dateKey.split('-')[0]), m=parseInt(dateKey.split('-')[1])-1, d=parseInt(dateKey.split('-')[2]);
       const meal = getMealForDate(y,m,d,slot);
