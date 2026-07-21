@@ -53,17 +53,27 @@
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
 
     /* ── HEADER ── */
-    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
     .header-top { display: flex; align-items: flex-start; justify-content: space-between; }
-    .header-title { font-size: 28px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; line-height: 1.1; }
-    .header-title small { font-size: 11px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; letter-spacing: 0.3px; }
-    .header-version { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--surface2); padding: 2px 10px; border-radius: var(--radius-full); flex-shrink: 0; margin-top: 2px; }
+    .header-left { flex: 1; min-width: 0; }
+    .header-title { font-size: 26px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; line-height: 1.1; }
+    .header-title small { font-size: 10px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; letter-spacing: 0.3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-top: 4px; }
+    .header-version { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--surface2); padding: 2px 10px; border-radius: var(--radius-full); }
+
+    /* ── TOGGLE (in header) ── */
+    .toggle-switch { display: flex; align-items: center; gap: 4px; }
+    .toggle-switch .track { position: relative; width: 40px; height: 22px; background: var(--border); border-radius: 11px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
+    .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    [data-theme="dark"] .toggle-switch .track { background: var(--primary); }
+    [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(18px); }
+    .toggle-switch .label { font-size: 10px; font-weight: 600; color: var(--text2); line-height: 1; }
 
     /* ── TOP CONTROLS ROW ── */
     .top-controls { display: flex; align-items: stretch; gap: 10px; margin: 12px 0 10px; }
     .top-controls .left { display: flex; gap: 8px; flex: 1; }
     .top-controls .right { flex: 1; }
-    .ctrl-btn { flex: 1; padding: 10px 8px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 15px; font-weight: 800; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+    .ctrl-btn { flex: 1; padding: 10px 8px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 800; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
     .ctrl-btn:active { transform: scale(0.95); }
     .ctrl-btn.walk { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
     .ctrl-btn.feed { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary); }
@@ -92,8 +102,8 @@
     .pet-dashboard .dash-item:active { transform: scale(0.96); background: var(--border); }
     .pet-dashboard .dash-item .icon { font-size: 20px; width: 30px; text-align: center; color: var(--primary); }
     .pet-dashboard .dash-item .info { flex: 1; min-width: 0; }
-    .pet-dashboard .dash-item .info .label { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.3px; }
-    .pet-dashboard .dash-item .info .value { font-size: 16px; font-weight: 800; color: var(--text); }
+    .pet-dashboard .dash-item .info .label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.3px; }
+    .pet-dashboard .dash-item .info .value { font-size: 15px; font-weight: 800; color: var(--text); }
     .pet-dashboard .dash-item .arrow { color: var(--text3); font-size: 14px; }
 
     /* ── BOTTOM NAV ── */
@@ -134,22 +144,14 @@
     .inventory-warning { background: var(--red-dim); border-left: 4px solid var(--red); padding: 10px 12px; border-radius: var(--radius-sm); font-size: 14px; color: var(--text2); margin-bottom: 6px; }
     .inventory-warning strong { color: var(--red); }
 
-    /* ── TOGGLE ── */
-    .toggle-switch { display: flex; align-items: center; gap: 6px; }
-    .toggle-switch .track { position: relative; width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
-    .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-    [data-theme="dark"] .toggle-switch .track { background: var(--primary); }
-    [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(20px); }
-    .toggle-switch .label { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1; }
-
-    /* ── CURRENT WALK PAGE ── */
+    /* ── WALK MAP ── */
     .walk-map-placeholder { width: 100%; height: 240px; border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--text3); font-weight: 600; border: 1px solid var(--border); flex-direction: column; gap: 8px; }
     .walk-map-placeholder .big-icon { font-size: 48px; color: var(--primary); opacity: 0.5; }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 480px) {
       .header-title { font-size: 22px; }
-      .header-title small { font-size: 10px; }
+      .header-title small { font-size: 9px; }
       .ctrl-btn { font-size: 13px; padding: 8px 6px; }
       .pet-dashboard .pet-name { font-size: 17px; }
       .pet-dashboard .dash-grid { grid-template-columns: 1fr 1fr; }
@@ -164,10 +166,17 @@
   <!-- HEADER -->
   <header class="header">
     <div class="header-top">
-      <div>
+      <div class="header-left">
         <div class="header-title">Canine OS <small>Complete Health and Nutrition System for Your Dog</small></div>
       </div>
-      <div class="header-version">v.96</div>
+      <div class="header-right">
+        <div class="header-version">v.96</div>
+        <div class="toggle-switch">
+          <span class="label">☀️</span>
+          <div class="track" id="themeTrack"><div class="thumb"></div></div>
+          <span class="label">🌙</span>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -187,7 +196,7 @@
     </div>
   </div>
 
-  <!-- PET DASHBOARD (shown on Home page) -->
+  <!-- PAGES -->
   <main class="container">
     <section id="page-home" class="page active"><div id="homeContent"></div></section>
     <section id="page-feed" class="page"><div id="feedContent"></div></section>
@@ -435,11 +444,7 @@
 
         // Walk stats for today
         const todayWalks = state.walkLogs.filter(w => w.date === todayKey());
-        const totalSteps = todayWalks.reduce((sum, w) => sum + Math.round(w.dist * 5280 / (state.strideLength || 2.5)), 0);
         const totalDist = todayWalks.reduce((sum, w) => sum + w.dist, 0);
-        const totalTime = todayWalks.reduce((sum, w) => sum + (w.mins*60 + (w.secs||0)), 0);
-        const mins = Math.floor(totalTime / 60);
-        const secs = totalTime % 60;
 
         // Inventory warnings
         const inv = state.inventory;
@@ -497,7 +502,7 @@
                 </div>
                 <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
               </div>
-              <div class="dash-item" onclick="navigateTo('history')">
+              <div class="dash-item" onclick="navigateTo('feed')">
                 <div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <div class="info">
                   <div class="label">History</div>
@@ -505,7 +510,7 @@
                 </div>
                 <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
               </div>
-              <div class="dash-item" onclick="navigateTo('nutrition')">
+              <div class="dash-item" onclick="navigateTo('feed')">
                 <div class="icon"><i class="fa-solid fa-chart-pie"></i></div>
                 <div class="info">
                   <div class="label">Nutrition</div>
@@ -625,7 +630,7 @@
       `;
     }
 
-    // ── RENDER: CASH (placeholder) ──
+    // ── RENDER: CASH ──
     function renderCash() {
       document.getElementById('cashContent').innerHTML = `
         <div class="card">
@@ -635,7 +640,7 @@
       `;
     }
 
-    // ── RENDER: MAP (placeholder) ──
+    // ── RENDER: MAP ──
     function renderMap() {
       document.getElementById('mapContent').innerHTML = `
         <div class="card">
@@ -712,12 +717,21 @@
     }
 
     // ── Theme ──
-    document.getElementById('themeTrack').addEventListener('click', toggleTheme);
+    function setupTheme() {
+      const track = document.getElementById('themeTrack');
+      if (track) {
+        track.addEventListener('click', toggleTheme);
+      } else {
+        // fallback — try again later
+        setTimeout(setupTheme, 100);
+      }
+    }
 
     // ── Init ──
     function init() {
       try {
         loadState();
+        setupTheme();
         document.querySelectorAll('.bottom-nav button').forEach(btn => {
           btn.addEventListener('click', () => navigateTo(btn.dataset.page));
         });
