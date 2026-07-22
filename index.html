@@ -61,7 +61,7 @@
     .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-top: 4px; }
     .header-version { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--surface2); padding: 2px 10px; border-radius: var(--radius-full); }
 
-    /* ── TOGGLE (in header) ── */
+    /* ── TOGGLE ── */
     .toggle-switch { display: flex; align-items: center; gap: 4px; }
     .toggle-switch .track { position: relative; width: 40px; height: 22px; background: var(--border); border-radius: 11px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
     .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
@@ -106,7 +106,7 @@
     .pet-dashboard .dash-item .info .value { font-size: 15px; font-weight: 800; color: var(--text); }
     .pet-dashboard .dash-item .arrow { color: var(--text3); font-size: 14px; }
 
-    /* ── BOTTOM NAV ── */
+    /* ── BOTTOM NAV ── ORIGINAL ── */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
     .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 1px; transition: color var(--transition); border: none; }
     .bottom-nav button .icon { font-size: 22px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
@@ -199,19 +199,21 @@
   <!-- PAGES -->
   <main class="container">
     <section id="page-home" class="page active"><div id="homeContent"></div></section>
-    <section id="page-feed" class="page"><div id="feedContent"></div></section>
-    <section id="page-current" class="page"><div id="currentContent"></div></section>
-    <section id="page-cash" class="page"><div id="cashContent"></div></section>
-    <section id="page-map" class="page"><div id="mapContent"></div></section>
+    <section id="page-plan" class="page"><div id="planContent"></div></section>
+    <section id="page-nutrition" class="page"><div id="nutritionContent"></div></section>
+    <section id="page-history" class="page"><div id="historyContent"></div></section>
+    <section id="page-profile" class="page"><div id="profileContent"></div></section>
+    <section id="page-utilities" class="page"><div id="utilitiesContent"></div></section>
   </main>
 
-  <!-- BOTTOM NAV -->
+  <!-- BOTTOM NAV - ORIGINAL -->
   <nav class="bottom-nav" id="bottomNav">
     <button data-page="home" class="active"><i class="fa-solid fa-house icon"></i>Home</button>
-    <button data-page="feed"><i class="fa-solid fa-utensils icon"></i>Feed</button>
-    <button data-page="current"><i class="fa-solid fa-location-dot icon"></i>Current</button>
-    <button data-page="cash"><i class="fa-solid fa-coins icon"></i>Cash</button>
-    <button data-page="map"><i class="fa-solid fa-map icon"></i>Map</button>
+    <button data-page="plan"><i class="fa-solid fa-clipboard-list icon"></i>Plan</button>
+    <button data-page="nutrition"><i class="fa-solid fa-chart-pie icon"></i>Nutrition</button>
+    <button data-page="history"><i class="fa-solid fa-clock-rotate-left icon"></i>History</button>
+    <button data-page="profile"><i class="fa-solid fa-user icon"></i>Profile</button>
+    <button data-page="utilities"><i class="fa-solid fa-gear icon"></i>Utils</button>
   </nav>
 
   <div id="modalRoot"></div>
@@ -415,10 +417,11 @@
         const id = activePage.id.replace('page-','');
         switch(id) {
           case 'home': renderHome(); break;
-          case 'feed': renderFeed(); break;
-          case 'current': renderCurrent(); break;
-          case 'cash': renderCash(); break;
-          case 'map': renderMap(); break;
+          case 'plan': renderPlan(); break;
+          case 'nutrition': renderNutrition(); break;
+          case 'history': renderHistory(); break;
+          case 'profile': renderProfile(); break;
+          case 'utilities': renderUtilities(); break;
         }
       }
       updateHeaderDogName();
@@ -442,11 +445,9 @@
         const amMeal = getEffectiveMeal(y,m,d,'am');
         const pmMeal = getEffectiveMeal(y,m,d,'pm');
 
-        // Walk stats for today
         const todayWalks = state.walkLogs.filter(w => w.date === todayKey());
         const totalDist = todayWalks.reduce((sum, w) => sum + w.dist, 0);
 
-        // Inventory warnings
         const inv = state.inventory;
         const warnings = [];
         const items = [
@@ -460,7 +461,6 @@
         items.forEach(it => { if (it.count < it.min) warnings.push(`${it.label} (${it.count}/${it.min})`); });
         let warnHtml = warnings.length ? `<div class="inventory-warning"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Batch soon:</strong> ${warnings.join(', ')}</div>` : '';
 
-        // Dog chips
         let chipsHtml = state.dogs.map(dg => {
           const active = dg.id === state.activeDogId ? 'active' : '';
           return `<button class="dog-chip ${active}" onclick="switchDog('${dg.id}')">${dg.name}</button>`;
@@ -502,7 +502,7 @@
                 </div>
                 <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
               </div>
-              <div class="dash-item" onclick="navigateTo('feed')">
+              <div class="dash-item" onclick="navigateTo('history')">
                 <div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <div class="info">
                   <div class="label">History</div>
@@ -510,7 +510,7 @@
                 </div>
                 <div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>
               </div>
-              <div class="dash-item" onclick="navigateTo('feed')">
+              <div class="dash-item" onclick="navigateTo('nutrition')">
                 <div class="icon"><i class="fa-solid fa-chart-pie"></i></div>
                 <div class="info">
                   <div class="label">Nutrition</div>
@@ -526,8 +526,9 @@
       }
     }
 
-    // ── RENDER: FEED ──
+    // ── RENDER: FEED (mapped to Plan tab temporarily) ──
     function renderFeed() {
+      // Just redirect to the feed content
       const today = new Date();
       const y=today.getFullYear(), m=today.getMonth(), d=today.getDate();
       const key = dateKey(y,m,d);
@@ -536,7 +537,7 @@
       const amMeal = getEffectiveMeal(y,m,d,'am');
       const pmMeal = getEffectiveMeal(y,m,d,'pm');
 
-      const container = document.getElementById('feedContent');
+      const container = document.getElementById('planContent');
       container.innerHTML = `
         <div class="card">
           <div class="card-title"><i class="fa-solid fa-bowl-food icon"></i> Today's Meals</div>
@@ -599,7 +600,7 @@
       const steps = currentDist > 0 ? Math.round(currentDist * 5280 / strideFt) : 0;
       const pace = currentDist > 0 ? (currentTime / 60) / currentDist : 0;
 
-      const container = document.getElementById('currentContent');
+      const container = document.getElementById('historyContent');
       container.innerHTML = `
         <div class="card">
           <div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Current Walk</div>
@@ -630,26 +631,99 @@
       `;
     }
 
-    // ── RENDER: CASH ──
-    function renderCash() {
-      document.getElementById('cashContent').innerHTML = `
+    // ── RENDER: PLAN ──
+    function renderPlan() {
+      const container = document.getElementById('nutritionContent');
+      container.innerHTML = `
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-coins icon"></i> Cash / Cost Tracker</div>
-          <div class="text-muted text-center" style="padding:20px 0;">Coming soon — track food costs, treat budget, and more.</div>
+          <div class="card-title"><i class="fa-solid fa-clipboard-list icon"></i> Meal Plan</div>
+          <div class="text-muted">Full meal plan and rotation coming soon.</div>
         </div>
       `;
     }
 
-    // ── RENDER: MAP ──
-    function renderMap() {
-      document.getElementById('mapContent').innerHTML = `
+    // ── RENDER: NUTRITION ──
+    function renderNutrition() {
+      const container = document.getElementById('profileContent');
+      container.innerHTML = `
         <div class="card">
-          <div class="card-title"><i class="fa-solid fa-map icon"></i> Map View</div>
-          <div class="walk-map-placeholder" style="height:400px;">
-            <div class="big-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-            <div>Interactive map coming soon</div>
-            <div style="font-size:12px;color:var(--text3);">View all your dog's walks on a map</div>
+          <div class="card-title"><i class="fa-solid fa-chart-pie icon"></i> Nutrition Tracking</div>
+          <div class="text-muted">AAFCO nutrition tracking coming soon.</div>
+        </div>
+      `;
+    }
+
+    // ── RENDER: HISTORY ──
+    function renderHistory() {
+      const container = document.getElementById('utilitiesContent');
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-clock-rotate-left icon"></i> Walk History</div>
+          ${state.walkLogs.slice(0, 10).map((w, i) => `
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:14px;">
+              <span>${w.date} · ${w.dist.toFixed(2)} mi · ${w.mins}m ${w.secs||0}s</span>
+              <button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(${i})">✕</button>
+            </div>
+          `).join('') || '<div class="text-muted text-sm">No walks saved.</div>'}
+        </div>
+      `;
+    }
+
+    // ── RENDER: PROFILE ──
+    function renderProfile() {
+      const dog = getActiveDog();
+      const container = document.getElementById('utilitiesContent');
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-user icon"></i> ${dog.name}'s Profile</div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div class="pet-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--surface2);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;flex-shrink:0;cursor:pointer;" onclick="document.getElementById('photoInputProf').click()">
+              ${petPhoto ? `<img src="${petPhoto}" alt="${dog.name}" style="width:100%;height:100%;object-fit:cover;" />` : '🐕'}
+              <input type="file" id="photoInputProf" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)" />
+            </div>
+            <div>
+              <div style="font-weight:800;font-size:22px;">${dog.name}</div>
+              <div style="font-size:14px;color:var(--text2);display:flex;gap:12px;flex-wrap:wrap;">
+                <span><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ${dog.weight} lb</span>
+                <span><i class="fa-solid fa-person-running" style="color:var(--green);"></i> ${dog.activityLabel}</span>
+                <span><i class="fa-solid fa-fire" style="color:var(--primary);"></i> ${Math.round(calcMER(dog))} kcal</span>
+              </div>
+            </div>
           </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-pen icon"></i> Edit Profile</div>
+          <div class="input-group"><label>Name</label><input type="text" value="${dog.name}" onchange="updateDogName(this.value)" /></div>
+          <div class="input-group"><label>Weight (lb)</label><input type="number" value="${dog.weight}" onchange="updateDogWeight(parseFloat(this.value))" /></div>
+          <button class="primary w-full" onclick="saveProfile()">Save Changes</button>
+        </div>
+      `;
+    }
+
+    function updateDogName(val) {
+      const dog = getActiveDog();
+      dog.name = val;
+      saveState();
+      renderAll();
+    }
+    function updateDogWeight(val) {
+      const dog = getActiveDog();
+      dog.weight = val;
+      saveState();
+      renderAll();
+    }
+    function saveProfile() {
+      alert('Profile updated!');
+      renderAll();
+    }
+
+    // ── RENDER: UTILITIES ──
+    function renderUtilities() {
+      const container = document.getElementById('utilitiesContent');
+      container.innerHTML = `
+        <div class="card">
+          <div class="card-title"><i class="fa-solid fa-gear icon"></i> Utilities</div>
+          <div class="text-muted">Settings and tools coming soon.</div>
         </div>
       `;
     }
@@ -692,7 +766,7 @@
           ctx.drawImage(img, 0, 0, w, h);
           petPhoto = canvas.toDataURL('image/jpeg', 0.7);
           saveState();
-          renderHome();
+          renderAll();
         };
         img.src = ev.target.result;
       };
@@ -708,10 +782,22 @@
 
     // ── Navigation ──
     function navigateTo(page) {
+      // If page is "feed", "current", etc., map to the actual page IDs
+      const pageMap = {
+        'home': 'home',
+        'feed': 'plan',
+        'current': 'history',
+        'plan': 'plan',
+        'nutrition': 'profile',
+        'history': 'utilities',
+        'profile': 'utilities',
+        'utilities': 'utilities'
+      };
+      const target = pageMap[page] || page;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const el = document.getElementById('page-'+page);
+      const el = document.getElementById('page-'+target);
       if (el) el.classList.add('active');
-      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+      document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === target));
       renderAll();
       window.scrollTo(0,0);
     }
@@ -722,7 +808,6 @@
       if (track) {
         track.addEventListener('click', toggleTheme);
       } else {
-        // fallback — try again later
         setTimeout(setupTheme, 100);
       }
     }
@@ -735,7 +820,6 @@
         document.querySelectorAll('.bottom-nav button').forEach(btn => {
           btn.addEventListener('click', () => navigateTo(btn.dataset.page));
         });
-        // Expose functions
         window.switchDog = switchDog;
         window.openAddDogModal = openAddDogModal;
         window.handlePhotoUpload = handlePhotoUpload;
@@ -745,7 +829,12 @@
         window.deleteWalkLog = deleteWalkLog;
         window.quickStartWalk = quickStartWalk;
         window.navigateTo = navigateTo;
+        window.updateDogName = updateDogName;
+        window.updateDogWeight = updateDogWeight;
+        window.saveProfile = saveProfile;
         renderAll();
+        // Navigate to home on load
+        navigateTo('home');
       } catch(e) {
         const el = document.getElementById('errorBox');
         if (el) { el.textContent = '❌ Init error: ' + e.message + '\n' + e.stack; el.className = 'error-box show'; }
