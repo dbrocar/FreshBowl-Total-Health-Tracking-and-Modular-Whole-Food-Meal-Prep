@@ -1,1 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Canine OS — Complete Health & Nutrition</title>
+  <meta name="theme-color" content="#c8933a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Canine OS" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg: #f0ebe3;
+      --surface: #ffffff;
+      --surface2: #f5f0ea;
+      --border: #dccfc0;
+      --text: #1c1c1e;
+      --text2: #3a3a3c;
+      --text3: #7a6a5a;
+      --primary: #c8933a;
+      --primary-dark: #b07d2a;
+      --primary-dim: rgba(200,147,58,0.12);
+      --green: #2c6e49;
+      --green-dim: rgba(44,110,73,0.12);
+      --blue: #4a8db7;
+      --blue-dim: rgba(74,141,183,0.12);
+      --red: #e05252;
+      --red-dim: rgba(224,82,82,0.12);
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --radius: 18px; --radius-sm: 10px; --radius-full: 9999px;
+      --font: 'Baloo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --transition: 0.2s ease;
+    }
+    [data-theme="dark"] {
+      --bg: #1a1a1e;
+      --surface: #2a2a2e;
+      --surface2: #343438;
+      --border: #4a4a4e;
+      --text: #f0ece8;
+      --text2: #b0a8a0;
+      --text3: #8a7a6a;
+      --shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    html { font-size: 16px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; padding-bottom: 70px; transition: background var(--transition), color var(--transition); }
+    .error-box { background: #ffebee; color: #b71c1c; padding: 10px; border-radius: 8px; margin: 10px; display: none; border: 1px solid #ffcdd2; white-space: pre-wrap; font-size: 13px; }
+    .error-box.show { display: block; }
+    .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
 
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 16px 10px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+    .header-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .header-left { flex: 1; min-width: 0; }
+    .header-title { font-size: 26px; font-weight: 900; background: linear-gradient(135deg, var(--primary), #b07d2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; line-height: 1.1; }
+    .header-title small { font-size: 10px; font-weight: 400; color: var(--text3); display: block; -webkit-text-fill-color: var(--text3); margin-top: -2px; letter-spacing: 0.3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-top: 4px; }
+    .header-version { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--surface2); padding: 2px 10px; border-radius: var(--radius-full); }
+
+    .toggle-switch { display: flex; align-items: center; gap: 4px; }
+    .toggle-switch .track { position: relative; width: 40px; height: 22px; background: var(--border); border-radius: 11px; cursor: pointer; transition: background 0.3s; flex-shrink: 0; }
+    .toggle-switch .track .thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    [data-theme="dark"] .toggle-switch .track { background: var(--primary); }
+    [data-theme="dark"] .toggle-switch .track .thumb { transform: translateX(18px); }
+    .toggle-switch .label { font-size: 10px; font-weight: 600; color: var(--text2); line-height: 1; }
+
+    .top-controls { display: flex; align-items: stretch; gap: 10px; margin: 12px 0 10px; }
+    .top-controls .left { display: flex; gap: 8px; flex: 1; }
+    .top-controls .right { flex: 1; }
+    .ctrl-btn { flex: 1; padding: 10px 8px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 800; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; cursor: pointer; }
+    .ctrl-btn:active { transform: scale(0.95); }
+    .ctrl-btn.walk { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+    .ctrl-btn.feed { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary); }
+    .ctrl-btn.dashboard { background: var(--surface); border: 1px solid var(--border); color: var(--text2); width: 100%; }
+    .ctrl-btn.dashboard .dog-name { font-weight: 900; color: var(--primary); }
+
+    .pet-dashboard { background: var(--surface); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); margin-bottom: 14px; box-shadow: var(--shadow); }
+    .pet-dashboard .pet-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .pet-dashboard .pet-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 28px; overflow: hidden; flex-shrink: 0; cursor: pointer; }
+    .pet-dashboard .pet-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .pet-dashboard .pet-avatar input[type="file"] { display: none; }
+    .pet-dashboard .pet-info { flex: 1; min-width: 0; }
+    .pet-dashboard .pet-name { font-size: 20px; font-weight: 900; color: var(--text); }
+    .pet-dashboard .pet-name .tag { font-size: 12px; font-weight: 700; color: var(--text3); background: var(--surface2); padding: 1px 10px; border-radius: var(--radius-full); margin-left: 6px; }
+    .pet-dashboard .pet-stats { display: flex; gap: 12px; font-size: 13px; color: var(--text2); margin-top: 2px; flex-wrap: wrap; }
+    .pet-dashboard .pet-stats span { display: flex; align-items: center; gap: 4px; }
+    .pet-dashboard .dog-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .pet-dashboard .dog-chip { padding: 4px 14px; border-radius: var(--radius-full); font-family: var(--font); font-size: 13px; font-weight: 700; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); cursor: pointer; transition: all 0.2s; }
+    .pet-dashboard .dog-chip.active { background: var(--primary); border-color: var(--primary); color: #0a0e1a; }
+    .pet-dashboard .dog-chip.add { border-style: dashed; background: transparent; }
+    .pet-dashboard .dog-chip:active { transform: scale(0.95); }
+    .pet-dashboard .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .pet-dashboard .dash-item { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
+    .pet-dashboard .dash-item:active { transform: scale(0.96); background: var(--border); }
+    .pet-dashboard .dash-item .icon { font-size: 20px; width: 30px; text-align: center; color: var(--primary); }
+    .pet-dashboard .dash-item .info { flex: 1; min-width: 0; }
+    .pet-dashboard .dash-item .info .label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.3px; }
+    .pet-dashboard .dash-item .info .value { font-size: 15px; font-weight: 800; color: var(--text); }
+    .pet-dashboard .dash-item .arrow { color: var(--text3); font-size: 14px; }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 6px 0 env(safe-area-inset-bottom); z-index: 100; backdrop-filter: blur(12px); }
+    .bottom-nav button { background: transparent; color: var(--text2); padding: 6px 8px; font-size: 10px; font-weight: 700; border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 1px; transition: color var(--transition); border: none; cursor: pointer; }
+    .bottom-nav button .icon { font-size: 22px; line-height: 1; color: var(--text3); transition: color 0.2s, transform 0.2s; }
+    .bottom-nav button.active .icon { color: var(--primary); transform: scale(1.1); }
+    .bottom-nav button.active { color: var(--primary); }
+
+    .page { display: none; padding: 12px 0 20px; animation: fadeUp 0.25s ease; }
+    .page.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .card-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: var(--primary); cursor: default; }
+    .card-title .icon { font-size: 20px; width: 28px; text-align: center; background: var(--primary-dim); border-radius: 8px; padding: 4px; color: var(--primary); }
+
+    .walk-timer { font-size: 40px; font-weight: 900; text-align: center; color: var(--primary); letter-spacing: 2px; padding: 8px 0; font-variant-numeric: tabular-nums; }
+    .walk-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0; }
+    .walk-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
+    .walk-stat .num { font-size: 20px; font-weight: 900; color: var(--text); line-height: 1.1; }
+    .walk-stat .lbl { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+    .meal-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; border-left: 4px solid var(--border); cursor: pointer; transition: all 0.2s; }
+    .meal-card:active { transform: scale(0.98); }
+    .meal-card.fed { border-left-color: var(--green); background: var(--green-dim); }
+    .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .meal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); }
+    .meal-fed { font-size: 13px; font-weight: 700; color: var(--green); }
+    .meal-fed.not { color: var(--text3); }
+    .meal-protein { font-size: 16px; font-weight: 800; }
+    .meal-details { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+    .inventory-warning { background: var(--red-dim); border-left: 4px solid var(--red); padding: 10px 12px; border-radius: var(--radius-sm); font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+    .inventory-warning strong { color: var(--red); }
+
+    .walk-map-placeholder { width: 100%; height: 240px; border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--text3); font-weight: 600; border: 1px solid var(--border); flex-direction: column; gap: 8px; }
+    .walk-map-placeholder .big-icon { font-size: 48px; color: var(--primary); opacity: 0.5; }
+
+    @media (max-width: 480px) {
+      .header-title { font-size: 22px; }
+      .header-title small { font-size: 9px; }
+      .ctrl-btn { font-size: 13px; padding: 8px 6px; }
+      .pet-dashboard .pet-name { font-size: 17px; }
+      .pet-dashboard .dash-grid { grid-template-columns: 1fr 1fr; }
+      .walk-timer { font-size: 32px; }
+      .walk-stats { grid-template-columns: 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="errorBox" class="error-box"></div>
+
+  <header class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="header-title">Canine OS <small>Complete Health and Nutrition System for Your Dog</small></div>
+      </div>
+      <div class="header-right">
+        <div class="header-version">v.96</div>
+        <div class="toggle-switch">
+          <span class="label">☀️</span>
+          <div class="track" id="themeTrack"><div class="thumb"></div></div>
+          <span class="label">🌙</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="top-controls">
+      <div class="left">
+        <button class="ctrl-btn walk" onclick="quickStartWalk()"><i class="fa-solid fa-person-walking"></i> WALK</button>
+        <button class="ctrl-btn feed" onclick="navigateTo('feed')"><i class="fa-solid fa-utensils"></i> FEED</button>
+      </div>
+      <div class="right">
+        <button class="ctrl-btn dashboard" onclick="navigateTo('home')">
+          <i class="fa-solid fa-paw" style="color:var(--primary);"></i>
+          <span class="dog-name" id="headerDogName">Bella</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section id="page-home" class="page active"><div id="homeContent"></div></section>
+    <section id="page-plan" class="page"><div id="planContent"></div></section>
+    <section id="page-nutrition" class="page"><div id="nutritionContent"></div></section>
+    <section id="page-history" class="page"><div id="historyContent"></div></section>
+    <section id="page-profile" class="page"><div id="profileContent"></div></section>
+    <section id="page-utilities" class="page"><div id="utilitiesContent"></div></section>
+  </main>
+
+  <nav class="bottom-nav" id="bottomNav">
+    <button data-page="home" class="active"><i class="fa-solid fa-house icon"></i>Home</button>
+    <button data-page="plan"><i class="fa-solid fa-clipboard-list icon"></i>Plan</button>
+    <button data-page="nutrition"><i class="fa-solid fa-chart-pie icon"></i>Nutrition</button>
+    <button data-page="history"><i class="fa-solid fa-clock-rotate-left icon"></i>History</button>
+    <button data-page="profile"><i class="fa-solid fa-user icon"></i>Profile</button>
+    <button data-page="utilities"><i class="fa-solid fa-gear icon"></i>Utils</button>
+  </nav>
+
+  <div id="modalRoot"></div>
+
+  <script>
+    window.onerror = function(msg, url, line, col, error) {
+      var el = document.getElementById('errorBox');
+      if (el) {
+        el.textContent = '❌ ' + msg + '\nLine: ' + line + (error ? '\n' + error.stack : '');
+        el.className = 'error-box show';
+      }
+      return true;
+    };
+
+    var state = {
+      dogs: [{ id: 'dog1', name: 'Bella', weight: 65, activity: 1.6, activityLabel: 'Moderate' }],
+      activeDogId: 'dog1',
+      selectedProteins: ['Beef (85/15)','Ground Turkey','Pork Loin','Ground Chicken'],
+      favorites: { vegs: [], starches: [], organs: [] },
+      rotation: {},
+      fedLog: {},
+      addinsLog: {},
+      swaps: {},
+      suppChecks: {},
+      walkLogs: [],
+      theme: 'light',
+      inventory: {
+        proteinBags: { count: 1, min: 4 },
+        organCubes: { count: -24, min: 6 },
+        vegBags: { count: -16, min: 4 },
+        liquidCubes: { count: -38, min: 6 },
+        herbCubes: { count: -7, min: 6 },
+        starch: { count: 0, min: 0 }
+      },
+      strideLength: 2.5
+    };
+    var petPhoto = '';
+
+    var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var PROTEIN_OPTIONS = ['Beef (85/15)','Ground Turkey','Ground Chicken','Pork Loin','Lamb','Veal','Bison','Duck','Sardines (canned)','Salmon (canned)'];
+    var VEG_OPTIONS = ['Green Beans','Zucchini','Bell Peppers','Carrots','Peas','Spinach','Romaine Lettuce'];
+    var STARCH_OPTIONS = ['Quinoa (cooked)','Sweet Potato (cooked)','Oats (cooked)','White Rice (cooked)'];
+    var ORGAN_OPTIONS = ['Beef Liver','Chicken Liver','Beef Heart','Chicken Heart','Kidney'];
+
+    function getActiveDog() {
+      var found = null;
+      for (var i = 0; i < state.dogs.length; i++) {
+        if (state.dogs[i].id === state.activeDogId) found = state.dogs[i];
+      }
+      return found || state.dogs[0];
+    }
+
+    function calcMER(dog) {
+      var kg = (dog.weight || 65) / 2.2046;
+      return 70 * Math.pow(kg, 0.75) * (dog.activity || 1.6);
+    }
+
+    function dateKey(y,m,d) {
+      return y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    }
+
+    function todayKey() {
+      var d = new Date();
+      return dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+
+    function getWeekNumber(y,m,d) {
+      var jan1 = new Date(y,0,1);
+      var doy = Math.round((new Date(y,m,d) - jan1) / 86400000);
+      return (Math.floor(doy/7) % 4) + 1;
+    }
+
+    function getMealForDate(y,m,d,slot) {
+      var week = getWeekNumber(y,m,d);
+      var day = DAYS[new Date(y,m,d).getDay()];
+      var wd = state.rotation[week];
+      if (!wd) return null;
+      var dd = wd[day];
+      if (!dd) return null;
+      return dd[slot] || null;
+    }
+
+    function getEffectiveMeal(y,m,d,slot) {
+      var sch = getMealForDate(y,m,d,slot);
+      if (!sch) return null;
+      var key = dateKey(y,m,d) + '_' + slot;
+      var sw = state.swaps && state.swaps[key] ? state.swaps[key] : {};
+      return {
+        protein: sw.protein || sch.protein,
+        starch: sw.starch || sch.starch,
+        veg: sw.veg || sch.veg,
+        organ: sw.organ !== undefined ? sw.organ : sch.organ
+      };
+    }
+
+    function isFish(p) {
+      return p && (p.indexOf('Sardine') !== -1 || p.indexOf('Salmon') !== -1);
+    }
+
+    function generateRotation(proteins, favs) {
+      var mains = proteins.filter(function(p) {
+        return p.indexOf('Sardine') === -1 && p.indexOf('Salmon') === -1;
+      });
+      var fish = proteins.filter(function(p) {
+        return p.indexOf('Sardine') !== -1 || p.indexOf('Salmon') !== -1;
+      });
+      while (mains.length < 4) mains.push('Beef (85/15)');
+      var mainA = { 1:mains[0], 2:mains[2], 3:mains[1], 4:mains[3] };
+      var mainB = { 1:mains[1], 2:mains[3], 3:mains[0], 4:mains[2] };
+      var alt = {
+        1: fish[0] || mains[0],
+        2: fish[1] || mains[2],
+        3: fish[0] || mains[1],
+        4: fish[1] || mains[3]
+      };
+      var base = {
+        1: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Tue: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Bell Peppers', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Liver' } },
+          Wed: { am: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null }, pm: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Liver' }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } }
+        },
+        2: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' }, pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' }, pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Chicken Liver' }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' } },
+          Fri: { am: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' } },
+          Sat: { am: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Liver' }, pm: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Beef Heart' } }
+        },
+        3: {
+          Sun: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Peas', organ:null }, pm: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Turkey', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' }, pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Tue: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Romaine Lettuce', organ:'Beef Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:'Chicken Liver' } },
+          Wed: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Carrots', organ:'Beef Heart' }, pm: { protein:'Beef (85/15)', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Thu: { am: { protein:'Sardines (canned)', starch:'Quinoa (cooked)', veg:'Green Beans', organ:null }, pm: { protein:'Beef (85/15)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Chicken Liver' } },
+          Fri: { am: { protein:'Ground Turkey', starch:'Oats (cooked)', veg:'Zucchini', organ:'Chicken Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } },
+          Sat: { am: { protein:'Ground Turkey', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Liver' }, pm: { protein:'Beef (85/15)', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } }
+        },
+        4: {
+          Sun: { am: { protein:'Salmon (canned)', starch:'Quinoa (cooked)', veg:'Zucchini', organ:null }, pm: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Green Beans', organ:'Beef Heart' } },
+          Mon: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Peas', organ:'Beef Heart' }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Tue: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Bell Peppers', organ:'Chicken Liver' }, pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Zucchini', organ:'Beef Heart' } },
+          Wed: { am: { protein:'Ground Chicken', starch:'Oats (cooked)', veg:'Carrots', organ:'Beef Liver' }, pm: { protein:'Pork Loin', starch:'Sweet Potato (cooked)', veg:'Green Beans', organ:'Chicken Liver' } },
+          Thu: { am: { protein:'Salmon (canned)', starch:'Sweet Potato (cooked)', veg:'Peas', organ:null }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Romaine Lettuce', organ:'Beef Heart' } },
+          Fri: { am: { protein:'Ground Chicken', starch:'Quinoa (cooked)', veg:'Green Beans', organ:'Beef Heart' }, pm: { protein:'Pork Loin', starch:'Oats (cooked)', veg:'Bell Peppers', organ:'Beef Liver' } },
+          Sat: { am: { protein:'Ground Chicken', starch:'Sweet Potato (cooked)', veg:'Zucchini', organ:'Beef Liver' }, pm: { protein:'Pork Loin', starch:'Quinoa (cooked)', veg:'Carrots', organ:'Beef Heart' } }
+        }
+      };
+      var result = {};
+      var idx = 0;
+      for (var w = 1; w <= 4; w++) {
+        result[w] = {};
+        for (var di = 0; di < DAYS.length; di++) {
+          var day = DAYS[di];
+          var b = base[w] && base[w][day] ? base[w][day] : null;
+          if (!b) continue;
+          var isAlt = (day === 'Thu' || day === 'Sun');
+          var favStarch = favs.starches.length ? favs.starches[idx % favs.starches.length] : b.am.starch;
+          var favVeg = favs.vegs.length ? favs.vegs[idx % favs.vegs.length] : b.am.veg;
+          var favOrgan = favs.organs.length ? favs.organs[idx % favs.organs.length] : (b.am.organ || '');
+          result[w][day] = {
+            am: {
+              protein: isAlt ? alt[w] : mainA[w],
+              starch: favStarch,
+              veg: favVeg,
+              organ: favOrgan || null
+            },
+            pm: {
+              protein: mainB[w],
+              starch: favs.starches.length ? favs.starches[(idx+1) % favs.starches.length] : b.pm.starch,
+              veg: favs.vegs.length ? favs.vegs[(idx+1) % favs.vegs.length] : b.pm.veg,
+              organ: favs.organs.length ? favs.organs[(idx+1) % favs.organs.length] : b.pm.organ || null
+            }
+          };
+          idx++;
+        }
+      }
+      return result;
+    }
+
+    function saveState() {
+      try { localStorage.setItem('cos_state', JSON.stringify(state)); } catch(e) {}
+      try { if (petPhoto) localStorage.setItem('cos_photo', petPhoto); else localStorage.removeItem('cos_photo'); } catch(e) {}
+    }
+
+    function loadState() {
+      try {
+        var saved = localStorage.getItem('cos_state');
+        if (saved) {
+          var parsed = JSON.parse(saved);
+          for (var key in parsed) {
+            if (parsed.hasOwnProperty(key)) state[key] = parsed[key];
+          }
+        }
+        var photo = localStorage.getItem('cos_photo');
+        if (photo) petPhoto = photo;
+      } catch(e) {}
+      if (!state.rotation || Object.keys(state.rotation).length === 0) {
+        state.rotation = generateRotation(state.selectedProteins, state.favorites);
+      }
+      if (!state.inventory) {
+        state.inventory = {
+          proteinBags: { count: 1, min: 4 },
+          organCubes: { count: -24, min: 6 },
+          vegBags: { count: -16, min: 4 },
+          liquidCubes: { count: -38, min: 6 },
+          herbCubes: { count: -7, min: 6 },
+          starch: { count: 0, min: 0 }
+        };
+      }
+      applyTheme();
+      saveState();
+    }
+
+    function applyTheme() {
+      var dark = state.theme === 'dark';
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    }
+
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+      saveState();
+    }
+
+    var walkInterval = null, walkStartTime = null, walkCoords = [];
+
+    function startWalk() {
+      if (!navigator.geolocation) { alert('GPS not available.'); return; }
+      if (walkStartTime !== null) return;
+      walkStartTime = Date.now();
+      walkCoords = [];
+      navigator.geolocation.watchPosition(function(pos) {
+        walkCoords.push({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        renderAll();
+      }, null, { enableHighAccuracy: true, maximumAge: 3000, timeout: 20000 });
+      walkInterval = setInterval(renderAll, 1000);
+      renderAll();
+    }
+
+    function stopWalk() {
+      if (walkInterval) { clearInterval(walkInterval); walkInterval = null; }
+      if (walkStartTime) {
+        var elapsed = (Date.now() - walkStartTime) / 1000;
+        var mins = Math.floor(elapsed / 60);
+        var secs = Math.floor(elapsed % 60);
+        var dist = calcDist(walkCoords) * 0.621371;
+        state.walkLogs.unshift({ date: todayKey(), mins: mins, secs: secs, dist: dist, coords: walkCoords.slice() });
+        if (state.walkLogs.length > 50) state.walkLogs.length = 50;
+        saveState();
+        walkStartTime = null;
+        walkCoords = [];
+        renderAll();
+        alert('Walk saved! ' + mins + 'm ' + secs + 's, ' + dist.toFixed(2) + ' miles');
+      }
+    }
+
+    function calcDist(coords) {
+      var total = 0;
+      for (var i = 1; i < coords.length; i++) {
+        var a = coords[i-1], b = coords[i];
+        var dLat = (b.lat - a.lat) * Math.PI / 180;
+        var dLng = (b.lng - a.lng) * Math.PI / 180;
+        var h = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+        total += 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
+      }
+      return total;
+    }
+
+    function quickStartWalk() {
+      if (!navigator.geolocation) { alert('GPS not available.'); return; }
+      navigateTo('history');
+      setTimeout(function() { startWalk(); }, 300);
+    }
+
+    function deleteWalkLog(idx) {
+      state.walkLogs.splice(idx, 1);
+      saveState();
+      renderAll();
+    }
+
+    function renderAll() {
+      var activePage = document.querySelector('.page.active');
+      if (activePage) {
+        var id = activePage.id.replace('page-', '');
+        switch(id) {
+          case 'home': renderHome(); break;
+          case 'plan': renderPlan(); break;
+          case 'nutrition': renderNutrition(); break;
+          case 'history': renderHistory(); break;
+          case 'profile': renderProfile(); break;
+          case 'utilities': renderUtilities(); break;
+        }
+      }
+      updateHeaderDogName();
+    }
+
+    function updateHeaderDogName() {
+      var dog = getActiveDog();
+      var el = document.getElementById('headerDogName');
+      if (el && dog) el.textContent = dog.name;
+    }
+
+    function renderHome() {
+      try {
+        var dog = getActiveDog();
+        var today = new Date();
+        var y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+        var key = dateKey(y,m,d);
+        var amKey = key + '_am', pmKey = key + '_pm';
+        var amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
+        var amMeal = getEffectiveMeal(y,m,d,'am');
+        var pmMeal = getEffectiveMeal(y,m,d,'pm');
+
+        var todayWalks = state.walkLogs.filter(function(w) { return w.date === todayKey(); });
+        var totalDist = 0;
+        for (var i = 0; i < todayWalks.length; i++) { totalDist += todayWalks[i].dist; }
+
+        var inv = state.inventory;
+        var warnings = [];
+        var items = [
+          { id:'proteinBags', label:'Protein bags', count:inv.proteinBags.count, min:inv.proteinBags.min },
+          { id:'organCubes', label:'Organ cubes', count:inv.organCubes.count, min:inv.organCubes.min },
+          { id:'vegBags', label:'Vegetable bags', count:inv.vegBags.count, min:inv.vegBags.min },
+          { id:'liquidCubes', label:'Liquid cubes', count:inv.liquidCubes.count, min:inv.liquidCubes.min },
+          { id:'herbCubes', label:'Herb cubes', count:inv.herbCubes.count, min:inv.herbCubes.min },
+          { id:'starch', label:'Starch (fridge)', count:inv.starch.count, min:inv.starch.min }
+        ];
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].count < items[i].min) {
+            warnings.push(items[i].label + ' (' + items[i].count + '/' + items[i].min + ')');
+          }
+        }
+        var warnHtml = warnings.length ?
+          '<div class="inventory-warning"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Batch soon:</strong> ' + warnings.join(', ') + '</div>' : '';
+
+        var chipsHtml = '';
+        for (var i = 0; i < state.dogs.length; i++) {
+          var dg = state.dogs[i];
+          var active = dg.id === state.activeDogId ? 'active' : '';
+          chipsHtml += '<button class="dog-chip ' + active + '" onclick="switchDog(\'' + dg.id + '\')">' + dg.name + '</button>';
+        }
+        chipsHtml += '<button class="dog-chip add" onclick="openAddDogModal()">+ Add</button>';
+
+        var container = document.getElementById('homeContent');
+        container.innerHTML = '<div class="pet-dashboard">' +
+          '<div class="pet-header">' +
+            '<div class="pet-avatar" onclick="document.getElementById(\'photoInput\').click()">' +
+              (petPhoto ? '<img src="' + petPhoto + '" alt="' + dog.name + '" />' : '🐕') +
+              '<input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" />' +
+            '</div>' +
+            '<div class="pet-info">' +
+              '<div class="pet-name">' + dog.name + ' <span class="tag">' + dog.weight + ' lb</span></div>' +
+              '<div class="pet-stats">' +
+                '<span><i class="fa-solid fa-fire" style="color:var(--primary);"></i> ' + Math.round(calcMER(dog)) + ' kcal</span>' +
+                '<span><i class="fa-solid fa-person-running" style="color:var(--green);"></i> ' + dog.activityLabel + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dog-chips">' + chipsHtml + '</div>' +
+          warnHtml +
+          '<div class="dash-grid">' +
+            '<div class="dash-item" onclick="navigateTo(\'history\')">' +
+              '<div class="icon"><i class="fa-solid fa-shoe-prints"></i></div>' +
+              '<div class="info"><div class="label">Walks Today</div><div class="value">' + todayWalks.length + ' · ' + totalDist.toFixed(1) + ' mi</div></div>' +
+              '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' +
+            '</div>' +
+            '<div class="dash-item" onclick="navigateTo(\'plan\')">' +
+              '<div class="icon"><i class="fa-solid fa-utensils"></i></div>' +
+              '<div class="info"><div class="label">Meals Fed</div><div class="value">' + ((amFed?1:0)+(pmFed?1:0)) + '/2</div></div>' +
+              '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' +
+            '</div>' +
+            '<div class="dash-item" onclick="navigateTo(\'history\')">' +
+              '<div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div>' +
+              '<div class="info"><div class="label">History</div><div class="value">' + state.walkLogs.length + ' walks</div></div>' +
+              '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' +
+            '</div>' +
+            '<div class="dash-item" onclick="navigateTo(\'nutrition\')">' +
+              '<div class="icon"><i class="fa-solid fa-chart-pie"></i></div>' +
+              '<div class="info"><div class="label">Nutrition</div><div class="value">AAFCO tracker</div></div>' +
+              '<div class="arrow"><i class="fa-solid fa-chevron-right"></i></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      } catch(e) {
+        document.getElementById('homeContent').innerHTML = '<div class="card"><div class="text-muted">' + e.message + '</div></div>';
+      }
+    }
+
+    function renderWeekPreview() {
+      var today = new Date();
+      var start = new Date(today);
+      start.setDate(start.getDate() - start.getDay());
+      var html = '';
+      for (var i = 0; i < 7; i++) {
+        var dt = new Date(start);
+        dt.setDate(dt.getDate() + i);
+        var y = dt.getFullYear(), m = dt.getMonth(), d = dt.getDate();
+        var ds = dateKey(y,m,d);
+        var amFed = !!state.fedLog[ds + '_am'], pmFed = !!state.fedLog[ds + '_pm'];
+        var isToday = ds === todayKey();
+        var amMeal = getEffectiveMeal(y,m,d,'am');
+        var pmMeal = getEffectiveMeal(y,m,d,'pm');
+        var label = dt.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        var amProtein = amMeal ? amMeal.protein.replace(' (85/15)','').replace(' (canned)','') : '—';
+        var pmProtein = pmMeal ? pmMeal.protein.replace(' (85/15)','').replace(' (canned)','') : '—';
+        html += '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px;' + (isToday ? 'font-weight:800;' : '') + '">' +
+          '<span>' + label + '</span>' +
+          '<span>' + (amFed ? '✅' : '⬜') + ' ' + (pmFed ? '✅' : '⬜') + '</span>' +
+          '<span style="color:var(--text3);font-size:12px;">' + amProtein + ' / ' + pmProtein + '</span>' +
+        '</div>';
+      }
+      return html;
+    }
+
+    function renderPlan() {
+      var today = new Date();
+      var y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+      var key = dateKey(y,m,d);
+      var amKey = key + '_am', pmKey = key + '_pm';
+      var amFed = !!state.fedLog[amKey], pmFed = !!state.fedLog[pmKey];
+      var amMeal = getEffectiveMeal(y,m,d,'am');
+      var pmMeal = getEffectiveMeal(y,m,d,'pm');
+
+      var container = document.getElementById('planContent');
+      container.innerHTML =
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-bowl-food icon"></i> Today\'s Meals</div>' +
+          '<div class="meal-card ' + (amFed ? 'fed' : '') + '" onclick="toggleFed(\'' + amKey + '\')">' +
+            '<div class="meal-header"><span class="meal-label"><i class="fa-solid fa-sun"></i> AM</span><span class="meal-fed ' + (amFed ? '' : 'not') + '">' + (amFed ? '✅ Fed' : 'Tap to mark fed') + '</span></div>' +
+            (amMeal ? '<div class="meal-protein">' + amMeal.protein + '</div><div class="meal-details">' + amMeal.starch + ' · ' + amMeal.veg + (amMeal.organ ? ' · ' + amMeal.organ : '') + '</div>' : '<div class="text-muted text-sm">No meal scheduled</div>') +
+          '</div>' +
+          '<div class="meal-card ' + (pmFed ? 'fed' : '') + '" onclick="toggleFed(\'' + pmKey + '\')">' +
+            '<div class="meal-header"><span class="meal-label"><i class="fa-solid fa-moon"></i> PM</span><span class="meal-fed ' + (pmFed ? '' : 'not') + '">' + (pmFed ? '✅ Fed' : 'Tap to mark fed') + '</span></div>' +
+            (pmMeal ? '<div class="meal-protein">' + pmMeal.protein + '</div><div class="meal-details">' + pmMeal.starch + ' · ' + pmMeal.veg + (pmMeal.organ ? ' · ' + pmMeal.organ : '') + '</div>' : '<div class="text-muted text-sm">No meal scheduled</div>') +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-calendar-days icon"></i> This Week</div>' +
+          renderWeekPreview() +
+        '</div>';
+    }
+
+    function renderHistory() {
+      var walkActive = (walkStartTime !== null && walkInterval !== null);
+      var latestWalk = state.walkLogs.length > 0 ? state.walkLogs[0] : null;
+      var currentCoords = walkActive ? walkCoords : (latestWalk && latestWalk.coords ? latestWalk.coords : []);
+      var currentDist = walkActive ? calcDist(walkCoords) * 0.621371 : (latestWalk ? latestWalk.dist : 0);
+      var currentTime = walkActive ? Math.floor((Date.now() - walkStartTime) / 1000) : (latestWalk ? (latestWalk.mins * 60 + (latestWalk.secs || 0)) : 0);
+      var currentSecs = currentTime % 60;
+      var mins = Math.floor(currentTime / 60);
+      var timeStr = walkActive ?
+        String(Math.floor(mins/60)).padStart(2,'0') + ':' + String(mins%60).padStart(2,'0') + ':' + String(currentSecs).padStart(2,'0') :
+        (latestWalk ? String(latestWalk.mins).padStart(2,'0') + ':' + String(latestWalk.secs || 0).padStart(2,'0') : '00:00:00');
+
+      var strideFt = state.strideLength || 2.5;
+      var steps = currentDist > 0 ? Math.round(currentDist * 5280 / strideFt) : 0;
+      var pace = currentDist > 0 ? (currentTime / 60) / currentDist : 0;
+
+      var walkHistoryHtml = '';
+      for (var i = 0; i < Math.min(state.walkLogs.length, 5); i++) {
+        var w = state.walkLogs[i];
+        walkHistoryHtml += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:14px;">' +
+          '<span>' + w.date + ' · ' + w.dist.toFixed(2) + ' mi · ' + w.mins + 'm ' + (w.secs || 0) + 's</span>' +
+          '<button class="secondary" style="padding:2px 8px;font-size:12px;" onclick="deleteWalkLog(' + i + ')">✕</button>' +
+        '</div>';
+      }
+      if (!walkHistoryHtml) walkHistoryHtml = '<div class="text-muted text-sm">No walks saved.</div>';
+
+      var container = document.getElementById('historyContent');
+      container.innerHTML =
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-person-walking icon" style="color:var(--green);"></i> Current Walk</div>' +
+          '<div class="walk-timer">' + timeStr + '</div>' +
+          '<div class="walk-stats">' +
+            '<div class="walk-stat"><div class="num">' + steps.toLocaleString() + '</div><div class="lbl">Steps</div></div>' +
+            '<div class="walk-stat"><div class="num">' + currentDist.toFixed(2) + '</div><div class="lbl">Miles</div></div>' +
+            '<div class="walk-stat"><div class="num">' + (pace > 0 ? pace.toFixed(1) : '—') + '</div><div class="lbl">Pace</div></div>' +
+          '</div>' +
+          '<div class="walk-map-placeholder">' +
+            '<div class="big-icon"><i class="fa-solid fa-map"></i></div>' +
+            '<div>' + (currentCoords.length > 0 ? currentCoords.length + ' GPS points' : 'Start walking to see your route') + '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:12px;margin-top:12px;justify-content:center;">' +
+            '<button class="ctrl-btn walk" onclick="startWalk()"' + (walkActive ? ' disabled style="opacity:0.5;"' : '') + '><i class="fa-solid fa-play"></i> Start</button>' +
+            '<button class="ctrl-btn" style="background:var(--red-dim);color:var(--red);border:1px solid var(--red);" onclick="stopWalk()"' + (!walkActive ? ' disabled style="opacity:0.5;"' : '') + '><i class="fa-solid fa-stop"></i> Stop</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-clock-rotate-left icon"></i> Recent Walks</div>' +
+          walkHistoryHtml +
+        '</div>';
+    }
+
+    function renderNutrition() {
+      var container = document.getElementById('nutritionContent');
+      container.innerHTML =
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-chart-pie icon"></i> Nutrition Tracking</div>' +
+          '<div class="text-muted">AAFCO nutrition tracking coming soon.</div>' +
+        '</div>';
+    }
+
+    function renderProfile() {
+      var dog = getActiveDog();
+      var container = document.getElementById('profileContent');
+      container.innerHTML =
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-user icon"></i> ' + dog.name + '\'s Profile</div>' +
+          '<div style="display:flex;align-items:center;gap:16px;">' +
+            '<div class="pet-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--surface2);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;flex-shrink:0;cursor:pointer;" onclick="document.getElementById(\'photoInputProf\').click()">' +
+              (petPhoto ? '<img src="' + petPhoto + '" alt="' + dog.name + '" style="width:100%;height:100%;object-fit:cover;" />' : '🐕') +
+              '<input type="file" id="photoInputProf" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)" />' +
+            '</div>' +
+            '<div>' +
+              '<div style="font-weight:800;font-size:22px;">' + dog.name + '</div>' +
+              '<div style="font-size:14px;color:var(--text2);display:flex;gap:12px;flex-wrap:wrap;">' +
+                '<span><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> ' + dog.weight + ' lb</span>' +
+                '<span><i class="fa-solid fa-person-running" style="color:var(--green);"></i> ' + dog.activityLabel + '</span>' +
+                '<span><i class="fa-solid fa-fire" style="color:var(--primary);"></i> ' + Math.round(calcMER(dog)) + ' kcal</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-pen icon"></i> Edit Profile</div>' +
+          '<div class="input-group" style="margin-bottom:8px;"><label>Name</label><input type="text" value="' + dog.name + '" id="editDogName" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);background:var(--surface2);color:var(--text);" /></div>' +
+          '<div class="input-group" style="margin-bottom:8px;"><label>Weight (lb)</label><input type="number" value="' + dog.weight + '" id="editDogWeight" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);background:var(--surface2);color:var(--text);" /></div>' +
+          '<button class="primary w-full" onclick="saveProfileEdit()">Save Changes</button>' +
+        '</div>';
+    }
+
+    function saveProfileEdit() {
+      var dog = getActiveDog();
+      var nameEl = document.getElementById('editDogName');
+      var weightEl = document.getElementById('editDogWeight');
+      if (nameEl) dog.name = nameEl.value;
+      if (weightEl) dog.weight = parseFloat(weightEl.value) || 50;
+      saveState();
+      renderAll();
+      alert('Profile updated!');
+    }
+
+    function renderUtilities() {
+      var container = document.getElementById('utilitiesContent');
+      container.innerHTML =
+        '<div class="card">' +
+          '<div class="card-title"><i class="fa-solid fa-gear icon"></i> Utilities</div>' +
+          '<div class="text-muted">Settings and tools coming soon.</div>' +
+        '</div>';
+    }
+
+    function switchDog(id) {
+      state.activeDogId = id;
+      saveState();
+      renderAll();
+    }
+
+    function openAddDogModal() {
+      var name = prompt("New dog's name?") || 'New Dog';
+      var weight = parseFloat(prompt("Weight (lb)?", "50")) || 50;
+      var id = 'dog' + Date.now();
+      state.dogs.push({ id: id, name: name, weight: weight, activity: 1.6, activityLabel: 'Moderate (neutered)' });
+      state.activeDogId = id;
+      saveState();
+      renderAll();
+    }
+
+    function handlePhotoUpload(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var MAX = 200;
+          var w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            var ratio = Math.min(MAX / w, MAX / h);
+            w = Math.round(w * ratio);
+            h = Math.round(h * ratio);
+          }
+          canvas.width = w;
+          canvas.height = h;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          petPhoto = canvas.toDataURL('image/jpeg', 0.7);
+          saveState();
+          renderAll();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function toggleFed(key) {
+      state.fedLog[key] = !state.fedLog[key];
+      saveState();
+      renderAll();
+    }
+
+    function navigateTo(page) {
+      var pageMap = {
+        'home': 'home',
+        'feed': 'plan',
+        'current': 'history',
+        'plan': 'plan',
+        'nutrition': 'nutrition',
+        'history': 'history',
+        'profile': 'profile',
+        'utilities': 'utilities'
+      };
+      var target = pageMap[page] || page;
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+      }
+      var el = document.getElementById('page-' + target);
+      if (el) el.classList.add('active');
+      var navBtns = document.querySelectorAll('.bottom-nav button');
+      for (var i = 0; i < navBtns.length; i++) {
+        navBtns[i].classList.toggle('active', navBtns[i].dataset.page === target);
+      }
+      renderAll();
+      window.scrollTo(0, 0);
+    }
+
+    function setupTheme() {
+      var track = document.getElementById('themeTrack');
+      if (track) {
+        track.addEventListener('click', toggleTheme);
+      } else {
+        setTimeout(setupTheme, 100);
+      }
+    }
+
+    function init() {
+      try {
+        loadState();
+        setupTheme();
+        var navBtns = document.querySelectorAll('.bottom-nav button');
+        for (var i = 0; i < navBtns.length; i++) {
+          navBtns[i].addEventListener('click', function() {
+            navigateTo(this.dataset.page);
+          });
+        }
+        window.switchDog = switchDog;
+        window.openAddDogModal = openAddDogModal;
+        window.handlePhotoUpload = handlePhotoUpload;
+        window.toggleFed = toggleFed;
+        window.startWalk = startWalk;
+        window.stopWalk = stopWalk;
+        window.deleteWalkLog = deleteWalkLog;
+        window.quickStartWalk = quickStartWalk;
+        window.navigateTo = navigateTo;
+        window.saveProfileEdit = saveProfileEdit;
+        renderAll();
+        navigateTo('home');
+      } catch(e) {
+        var el = document.getElementById('errorBox');
+        if (el) {
+          el.textContent = '❌ Init error: ' + e.message + '\n' + e.stack;
+          el.className = 'error-box show';
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
